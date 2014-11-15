@@ -259,7 +259,7 @@ public class ZombieKI : Health
         }
         AttackTimer -= Time.deltaTime;
 
-        if (player != null && ragdolled == false)
+        if (player != null && ragdolled == false && !isDead())
         {
             if (Vector3.Distance(player.transform.position, transform.position) < 1.0f)
             {
