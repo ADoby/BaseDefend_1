@@ -52,7 +52,6 @@
      <None Include="Assets\Reflect-BumpSpecDetail.shader" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\WeaponsHD\Pistol01\ShooterPistol01OutOfControl.txt" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\Standard\Camera\CameraClimb.txt" />
-     <None Include="Assets\UFPS\Base\Content\Levels\SkyCity\CustomShaders\ReflectiveCubeMapped_Glass.shader" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\Standard\Shooter\ShooterMachinegunZoom.txt" />
      <None Include="Assets\ProCore\ProGrids\Shader\PerspectiveGrid.shader" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\Demo\SystemOFFShooter.txt" />
@@ -216,7 +215,6 @@
      <None Include="Assets\ProCore\Prototype\About\pc_AboutEntry_ProBuilder.txt" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\Demo\PerspOldCamera.txt" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\WeaponsHD\Shotgun01\WeaponShotgun01Run.txt" />
-     <None Include="Assets\UFPS\Base\Content\Levels\SkyCity\CustomShaders\ReflectiveCubeMapped.shader" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\Standard\Weapon\WeaponGenericSlide.txt" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\Demo\MafiaWeapon.txt" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\Demo\DrunkInput.txt" />
@@ -225,7 +223,6 @@
      <None Include="Assets\UFPS\Base\Scripts\Presets\Demo\MechShooter.txt" />
      <None Include="Assets\ProCoreUtilityBundle\!!README.txt" />
      <None Include="Assets\ProCore\ProGrids\About\changelog.txt" />
-     <None Include="Assets\UFPS\Base\Content\Levels\SkyCity\CustomShaders\Scroll_Emissive.shader" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\Demo\MechInput.txt" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\Demo\MeleeAttackToLeft.txt" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\Demo\TurretCamera.txt" />
@@ -266,7 +263,6 @@
      <None Include="Assets\UFPS\Base\Scripts\Presets\Demo\ImmobileInput.txt" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\Demo\SniperShooter.txt" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\Demo\CowboyWeaponCrouch.txt" />
-     <None Include="Assets\UFPS\Base\Content\Levels\SkyCity\CustomShaders\SimpleEmissive.shader" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\Demo\FreezeCamera.txt" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\Standard\Weapon\WeaponMachinegunOutOfControl.txt" />
      <None Include="Assets\UFPS\Base\Scripts\Presets\Demo\MouseSmoothingWeapon.txt" />
