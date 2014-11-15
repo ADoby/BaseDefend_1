@@ -324,6 +324,7 @@ public class ZombieKI : Health
                     if (root.transform.position.y >= 100)
                     {
                         GameObjectPool.Instance.Despawn(poolName, gameObject);
+                        Game.ZombieDespawned(gameObject);
                     }
                 }
 

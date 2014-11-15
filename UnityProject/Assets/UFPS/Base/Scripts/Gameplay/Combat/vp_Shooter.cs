@@ -323,11 +323,11 @@ public class vp_Shooter : vp_Component
 	/// </summary>
 	public void SetSpread(int seed, Transform target)
 	{
-        ProjectileSpread = DynamicCrosshair.Spread;
+        float currentSpread = ProjectileSpread + DynamicCrosshair.Spread;
 		Random.seed = seed;
 		//vp_MasterClient.DebugMsg = "Firing shot from '" + photonView.viewID + "' with seed: " + Random.seed + ".";
 		target.Rotate(0, 0, Random.Range(0, 360));									// first, rotate up to 360 degrees around z for circular spread
-		target.Rotate(0, Random.Range(-ProjectileSpread, ProjectileSpread), 0);		// then rotate around y with user defined deviation
+        target.Rotate(0, Random.Range(-currentSpread, currentSpread), 0);		// then rotate around y with user defined deviation
 		
 	}
 	
