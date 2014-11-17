@@ -49,6 +49,7 @@
      <Compile Include="Assets\FreezeLocal.cs" />
      <Compile Include="Assets\GameObjectPool\GameObjectPool.cs" />
      <Compile Include="Assets\GameObjectPool\GameObjectPoolCreate.cs" />
+     <Compile Include="Assets\LegMovement.cs" />
      <Compile Include="Assets\ProCore\ProGrids\Classes\pg_Util.cs" />
      <Compile Include="Assets\ProCore\Prototype\Scripts\RebuildMeshOnWake.cs" />
      <Compile Include="Assets\ProCore\QuickBrush\QuickBrushClasses\qb_Group.cs" />
