@@ -34,6 +34,39 @@ ModelImporter:
     100056: pSphere3 5
     100058: pSphere3 6
     100060: pSphere3 7
+    100062: Eye
+    100064: LL_L_B_Cube
+    100066: LL_L_B_Foot
+    100068: LL_L_F_Cube
+    100070: LL_L_F_Foot
+    100072: LL_R_B_Cube
+    100074: LL_R_B_Foot
+    100076: LL_R_F_Cube
+    100078: LL_R_F_Foot
+    100080: LowerLeg_Left_Back
+    100082: LowerLeg_Left_Front
+    100084: LowerLeg_Right_Back
+    100086: LowerLeg_Right_Front
+    100088: UpperLeg_Left_Back
+    100090: UpperLeg_Left_Front
+    100092: UpperLeg_Right_Back
+    100094: UpperLeg_Right_Front
+    100096: Foot
+    100098: Foot 1
+    100100: Foot 2
+    100102: Foot 3
+    100104: LowerLeg
+    100106: LowerLeg 1
+    100108: LowerLeg 2
+    100110: LowerLeg 3
+    100112: LowestLeg
+    100114: LowestLeg 1
+    100116: LowestLeg 2
+    100118: LowestLeg 3
+    100120: UpperLeg
+    100122: UpperLeg 1
+    100124: UpperLeg 2
+    100126: UpperLeg 3
     400000: Arm
     400002: Body
     400004: //RootNode
@@ -65,6 +98,39 @@ ModelImporter:
     400056: pSphere3 5
     400058: pSphere3 6
     400060: pSphere3 7
+    400062: Eye
+    400064: LL_L_B_Cube
+    400066: LL_L_B_Foot
+    400068: LL_L_F_Cube
+    400070: LL_L_F_Foot
+    400072: LL_R_B_Cube
+    400074: LL_R_B_Foot
+    400076: LL_R_F_Cube
+    400078: LL_R_F_Foot
+    400080: LowerLeg_Left_Back
+    400082: LowerLeg_Left_Front
+    400084: LowerLeg_Right_Back
+    400086: LowerLeg_Right_Front
+    400088: UpperLeg_Left_Back
+    400090: UpperLeg_Left_Front
+    400092: UpperLeg_Right_Back
+    400094: UpperLeg_Right_Front
+    400096: Foot
+    400098: Foot 1
+    400100: Foot 2
+    400102: Foot 3
+    400104: LowerLeg
+    400106: LowerLeg 1
+    400108: LowerLeg 2
+    400110: LowerLeg 3
+    400112: LowestLeg
+    400114: LowestLeg 1
+    400116: LowestLeg 2
+    400118: LowestLeg 3
+    400120: UpperLeg
+    400122: UpperLeg 1
+    400124: UpperLeg 2
+    400126: UpperLeg 3
     2300000: Arm
     2300002: Body
     2300004: Hip
@@ -95,6 +161,39 @@ ModelImporter:
     2300054: pSphere3 5
     2300056: pSphere3 6
     2300058: pSphere3 7
+    2300060: Eye
+    2300062: LL_L_B_Cube
+    2300064: LL_L_B_Foot
+    2300066: LL_L_F_Cube
+    2300068: LL_L_F_Foot
+    2300070: LL_R_B_Cube
+    2300072: LL_R_B_Foot
+    2300074: LL_R_F_Cube
+    2300076: LL_R_F_Foot
+    2300078: LowerLeg_Left_Back
+    2300080: LowerLeg_Left_Front
+    2300082: LowerLeg_Right_Back
+    2300084: LowerLeg_Right_Front
+    2300086: UpperLeg_Left_Back
+    2300088: UpperLeg_Left_Front
+    2300090: UpperLeg_Right_Back
+    2300092: UpperLeg_Right_Front
+    2300094: Foot
+    2300096: Foot 1
+    2300098: Foot 2
+    2300100: Foot 3
+    2300102: LowerLeg
+    2300104: LowerLeg 1
+    2300106: LowerLeg 2
+    2300108: LowerLeg 3
+    2300110: LowestLeg
+    2300112: LowestLeg 1
+    2300114: LowestLeg 2
+    2300116: LowestLeg 3
+    2300118: UpperLeg
+    2300120: UpperLeg 1
+    2300122: UpperLeg 2
+    2300124: UpperLeg 3
     3300000: Arm
     3300002: Body
     3300004: Hip
@@ -125,6 +224,39 @@ ModelImporter:
     3300054: pSphere3 5
     3300056: pSphere3 6
     3300058: pSphere3 7
+    3300060: Eye
+    3300062: LL_L_B_Cube
+    3300064: LL_L_B_Foot
+    3300066: LL_L_F_Cube
+    3300068: LL_L_F_Foot
+    3300070: LL_R_B_Cube
+    3300072: LL_R_B_Foot
+    3300074: LL_R_F_Cube
+    3300076: LL_R_F_Foot
+    3300078: LowerLeg_Left_Back
+    3300080: LowerLeg_Left_Front
+    3300082: LowerLeg_Right_Back
+    3300084: LowerLeg_Right_Front
+    3300086: UpperLeg_Left_Back
+    3300088: UpperLeg_Left_Front
+    3300090: UpperLeg_Right_Back
+    3300092: UpperLeg_Right_Front
+    3300094: Foot
+    3300096: Foot 1
+    3300098: Foot 2
+    3300100: Foot 3
+    3300102: LowerLeg
+    3300104: LowerLeg 1
+    3300106: LowerLeg 2
+    3300108: LowerLeg 3
+    3300110: LowestLeg
+    3300112: LowestLeg 1
+    3300114: LowestLeg 2
+    3300116: LowestLeg 3
+    3300118: UpperLeg
+    3300120: UpperLeg 1
+    3300122: UpperLeg 2
+    3300124: UpperLeg 3
     4300000: Body
     4300002: Hip
     4300004: Joint_Shoulder
@@ -155,6 +287,39 @@ ModelImporter:
     4300054: pSphere3
     4300056: pCube7
     4300058: pSphere3
+    4300060: Eye
+    4300062: UpperLeg_Right_Front
+    4300064: LowerLeg_Right_Front
+    4300066: LL_R_F_Cube
+    4300068: LL_R_F_Foot
+    4300070: UpperLeg_Right_Back
+    4300072: LowerLeg_Right_Back
+    4300074: LL_R_B_Cube
+    4300076: LL_R_B_Foot
+    4300078: UpperLeg_Left_Front
+    4300080: LowerLeg_Left_Front
+    4300082: LL_L_F_Cube
+    4300084: LL_L_F_Foot
+    4300086: UpperLeg_Left_Back
+    4300088: LowerLeg_Left_Back
+    4300090: LL_L_B_Cube
+    4300092: LL_L_B_Foot
+    4300094: UpperLeg
+    4300096: LowerLeg
+    4300098: LowestLeg
+    4300100: Foot
+    4300102: UpperLeg
+    4300104: LowerLeg
+    4300106: LowestLeg
+    4300108: Foot
+    4300110: UpperLeg
+    4300112: LowerLeg
+    4300114: LowestLeg
+    4300116: Foot
+    4300118: UpperLeg
+    4300120: LowerLeg
+    4300122: LowestLeg
+    4300124: Foot
     9500000: //RootNode
   materials:
     importMaterials: 1
