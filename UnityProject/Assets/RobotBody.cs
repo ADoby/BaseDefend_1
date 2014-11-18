@@ -40,7 +40,9 @@ public class Leg
 
     private bool NeedsNewPosition()
     {
-        CurrentDistance = Vector3.Distance(Foot.position, FootIK.position);
+        Vector3 diff = FootIK.position - Foot.position; 
+        diff.y = 0;
+        CurrentDistance = diff.magnitude;
         return (CurrentDistance > MaxDistance);
     }
 
@@ -66,7 +68,10 @@ public class Leg
 
         Vector3 wantedPos = procentage < 0.5f ? LastPosition : WantedPosition;
         wantedPos.y += sinVal * TransitionYDiff;
-        FootIK.position = wantedPos;
+
+        Vector3 diff = wantedPos - FootIK.position;
+        diff = diff.normalized * Mathf.Min(TransitionDamping, diff.magnitude);
+        FootIK.position += diff;
 
         if (procentage >= 1f)
             WaitTimer = Mathf.Min(WaitTimer + Time.deltaTime, WaitTime);
@@ -74,6 +79,7 @@ public class Leg
         if (WaitTimer >= WaitTime && NeedsNewPosition())
         {
             Vector3 direction = Foot.position - FootIK.position;
+            direction = Owner.body.rigidbody.velocity.magnitude > 0f ? Owner.body.rigidbody.velocity.normalized : direction;
             direction.y = 0;
             direction.Normalize();
 
@@ -113,22 +119,24 @@ public class RobotBody : MonoBehaviour
     public float RotateSpeed = 2.0f;
 
     public Transform body;
-    public float YDistanceToFeet = 1.0f;
-    [Range(0f, 2f)]
-    public float HeightSpring = 5.0f;
-    public float HeightDamping = 1.0f;
+
     [Range(0f, 1f)]
     public float VelocityDamping = 0.2f;
-
-
-    [Range(0f, 2f)]
-    public float RotationSpring = 3.0f;
     [Range(0f, 1.0f)]
     public float RotateVelocityDamping = 0.2f;
 
-    public float RotateDamping = 1.0f;
-
     public float GroundDistance = 0.75f;
+    [Range(0f, 2f)]
+    public float HeightSpring = 5.0f;
+    public float HeightDamping = 1.0f;
+
+    [Range(0f, 0.25f)]
+    public float RotationSpring = 3.0f;
+    public float RotateDamping = 1.0f;
+    
+    public float YDistanceToFeet = 1.0f;
+    public float FeetSpring = 5.0f;
+    public float FeetDamping = 1.0f;
 
 	// Update is called once per frame
 	void Update ()
@@ -158,6 +166,15 @@ public class RobotBody : MonoBehaviour
         Vector3 rotation = Input.GetAxis("Horizontal") * Vector3.up;
         body.rigidbody.angularVelocity += rotation * RotateSpeed * delta;
 
+        Vector3 currentVector = body.up;
+        Vector3 targetVector = body.up;
+        targetVector.x = 0;
+        targetVector.z = 0;
+
+        float cosAngle;
+        Vector3 crossResult;
+        float turnAngle;
+
         float heightestYFoot = 0f;
         for (int i = 0; i < legs.Length; i++)
         {
@@ -169,20 +186,38 @@ public class RobotBody : MonoBehaviour
             if (i == 0 || y > heightestYFoot)
                 heightestYFoot = y;
 
+            //float upForce = (body.position.y + YDistanceToFeet) - y;
+            //upForce = Mathf.Min(FeetDamping, upForce);
+
+            Vector3 targetV = leg.Foot.position - body.position;
+            //targetV = Quaternion.LookRotation(-targetV).eulerAngles;
+            //targetV.y = 0;
+
+            cosAngle = Vector3.Dot(currentVector, targetV);
+
+            crossResult = Vector3.Cross(currentVector, targetV);
+            crossResult.Normalize();
+
+            turnAngle = Mathf.Acos(cosAngle);
+            turnAngle = Mathf.Min(turnAngle, FeetDamping);
+            turnAngle = turnAngle * Mathf.Rad2Deg;
+
+            //crossResult = Vector3.Reflect(currentVector, targetV);
+
+            //targetVector += crossResult * turnAngle * FeetSpring * delta;
+
+            //Vector3 cross = Vector3.Cross(body.up, targetV);
+            //cross.Normalize();
+            //body.rigidbody.AddForceAtPosition(Vector3.up * upForce * FeetSpring, leg.Root.position);
         }
 
 
-        Vector3 currentVector = body.up;
-        Vector3 targetVector = body.up;
-        targetVector.x = 0;
-        targetVector.z = 0;
+        cosAngle = Vector3.Dot(currentVector, targetVector);
 
-        float cosAngle = Vector3.Dot(currentVector, targetVector);
-
-        Vector3 crossResult = Vector3.Cross(currentVector, targetVector);
+        crossResult = Vector3.Cross(currentVector, targetVector);
         crossResult.Normalize();
 
-        float turnAngle = Mathf.Acos(cosAngle);
+        turnAngle = Mathf.Acos(cosAngle);
         turnAngle = Mathf.Min(turnAngle, RotateDamping);
         turnAngle = turnAngle * Mathf.Rad2Deg;
 
