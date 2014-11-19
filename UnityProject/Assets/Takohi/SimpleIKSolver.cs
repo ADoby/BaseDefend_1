@@ -98,7 +98,7 @@ public class SimpleIKSolver : MonoBehaviour
 				crossResult.Normalize ();
  
 				turnAngle = Mathf.Acos (cosAngle); 
-                turnAngle = IsDamping ? Mathf.Min(turnAngle, DampingMax) : turnAngle;
+                turnAngle = IsDamping ? Mathf.Min(turnAngle, DampingMax * 0.01f) : turnAngle;
 
 				turnAngle = turnAngle * Mathf.Rad2Deg;
  
