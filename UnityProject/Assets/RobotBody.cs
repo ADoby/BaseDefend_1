@@ -127,15 +127,16 @@ public class Leg
         Vector3 pos3 = max;
         Vector3 pos4 = new Vector3(max.x, min.y, min.z);
 
+        pos1.y -= Owner.YDistanceToFeet;
+        pos2.y -= Owner.YDistanceToFeet;
+        pos3.y -= Owner.YDistanceToFeet;
+        pos4.y -= Owner.YDistanceToFeet;
+
         pos1 = Owner.body.TransformPoint(pos1);
         pos2 = Owner.body.TransformPoint(pos2);
         pos3 = Owner.body.TransformPoint(pos3);
         pos4 = Owner.body.TransformPoint(pos4);
         
-        pos1.y -= Owner.YDistanceToFeet;
-        pos2.y -= Owner.YDistanceToFeet;
-        pos3.y -= Owner.YDistanceToFeet;
-        pos4.y -= Owner.YDistanceToFeet;
 
         Debug.DrawLine(pos1, pos2, Color.red);
         Debug.DrawLine(pos2, pos3, Color.red);
@@ -145,8 +146,8 @@ public class Leg
         Vector3 centerOfFootPlacement = Vector3.zero;
         centerOfFootPlacement.x = min.x + (max.x - min.x)/2;
         centerOfFootPlacement.z = min.z + (max.z - min.z)/2;
-        centerOfFootPlacement = Owner.body.TransformPoint(centerOfFootPlacement);
         centerOfFootPlacement.y -= Owner.YDistanceToFeet;
+        centerOfFootPlacement = Owner.body.TransformPoint(centerOfFootPlacement);
 
         Debug.DrawRay(centerOfFootPlacement, Vector3.up, Color.green);
     }
@@ -215,15 +216,6 @@ public class Leg
 
             Vector3 min = new Vector3(moveRestriction.x, 0, moveRestriction.z);
             Vector3 max = new Vector3(moveRestriction.y, 0, moveRestriction.w);
-            Vector3 pos1 = min;
-            Vector3 pos2 = new Vector3(min.x, min.y, max.z);
-            Vector3 pos3 = max;
-            Vector3 pos4 = new Vector3(max.x, min.y, min.z);
-
-            pos1 = Owner.body.TransformPoint(pos1);
-            pos2 = Owner.body.TransformPoint(pos2);
-            pos3 = Owner.body.TransformPoint(pos3);
-            pos4 = Owner.body.TransformPoint(pos4);
 
             min.x += 0.05f;
             min.z += 0.05f;
@@ -232,6 +224,7 @@ public class Leg
 
             centerOfFootPlacement.x = min.x + (max.x - min.x) / 2;
             centerOfFootPlacement.z = min.z + (max.z - min.z) / 2;
+            centerOfFootPlacement.y -= Owner.YDistanceToFeet;
 
             Vector3 moveDirection = Owner.body.InverseTransformDirection(Owner.body.rigidbody.velocity);
             if (moveDirection.magnitude <= 1f)
@@ -245,8 +238,8 @@ public class Leg
 
             newPos.x = Mathf.Clamp(newPos.x, min.x, max.x);
             newPos.z = Mathf.Clamp(newPos.z, min.z, max.z);
+            newPos.y = centerOfFootPlacement.y;
             newPos = Owner.body.TransformPoint(newPos);
-            newPos.y = 0f;
 
             LastPosition = WantedPosition;
             WantedPosition = newPos;
@@ -309,7 +302,7 @@ public class RobotBody : MonoBehaviour
         FootOnGroundTimer = 0f;
     }
 
-    public bool Debug = true;
+    public bool DebugON = true;
     public bool RunInEditor = true;
 
     public float MoveSpeed = 2.0f;
@@ -341,6 +334,9 @@ public class RobotBody : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+        if (Ragdolled)
+            return;
+
         FootLoseTimer = Mathf.Min(FootLoseTimer + Time.deltaTime, FootLoseTime);
         FootOnGroundTimer = Mathf.Min(FootOnGroundTimer + Time.deltaTime, FootOnGroundTime);
 
@@ -358,7 +354,7 @@ public class RobotBody : MonoBehaviour
             if (i == 0 || y > heightestYFoot)
                 heightestYFoot = y;
 
-            if (Debug)
+            if (DebugON)
                 leg.DebugRestrictionArea();
         }
 	}
@@ -372,25 +368,71 @@ public class RobotBody : MonoBehaviour
     }
 
     public bool grounded;
+    public bool PlayerControlled = true;
+    public float GroundCheckDistance = 1.25f;
+
+    public bool Ragdolled = false;
+    public float MaxDiffBodyAngle = 40f;
+    public bool FeetYToBodyY = false;
+
+    public GameObject PlayerMovementCollider;
+
+    public float DiffAngle = 0f;
+
+    public void Ragdoll()
+    {
+        Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
+        foreach (var item in rigidbodies)
+        {
+            ConfigurableJoint joint = item.GetComponent<ConfigurableJoint>();
+            if(joint)
+            {
+                joint.xMotion = ConfigurableJointMotion.Locked;
+                joint.yMotion = ConfigurableJointMotion.Locked;
+                joint.zMotion = ConfigurableJointMotion.Locked;
+            }
+            item.collider.isTrigger = false;
+            item.isKinematic = false;
+            item.useGravity = true;
+        }
+        if (PlayerMovementCollider)
+            PlayerMovementCollider.SetActive(false);
+        Ragdolled = true;
+    }
 
     void FixedUpdate()
     {
         if (!Application.isPlaying)
             return;
 
+        if (Ragdolled)
+            return;
 
         //Based on ground
         float currentHeightDamping = HeightDamping;
         float currentVelocityDamping = VelocityDamping;
 
-        float delta = Time.fixedDeltaTime / 0.02f;
+        float delta = Time.fixedDeltaTime / Game.DefaultFixedTime;
 
         #region Movement
 
         Vector3 currentVector = body.up;
-        Vector3 targetVector = body.up;
-        targetVector.x = 0;
-        targetVector.z = 0;
+        Vector3 targetVector = Vector3.up;
+
+        
+
+        RaycastHit hit;
+        if (Physics.Raycast(body.position, -body.up, out hit, GroundCheckDistance, FootWalkLayerMask))
+        {
+            targetVector = hit.normal;
+        }
+
+        DiffAngle = Vector3.Angle(currentVector, targetVector);
+        if (DiffAngle > MaxDiffBodyAngle)
+        {
+            Ragdoll();
+            return;
+        }
 
         float cosAngle;
         Vector3 crossResult;
@@ -428,16 +470,19 @@ public class RobotBody : MonoBehaviour
         #endregion
 
 
-
-        Vector3 moveDirection = Input.GetAxis("Vertical") * body.forward;
-        if (CanMove)
-            velocity += moveDirection * MoveSpeed * delta;
-        Vector3 rotation = Input.GetAxis("Horizontal") * Vector3.up;
-        if (CanMove)
-            body.rigidbody.angularVelocity += rotation * RotateSpeed * delta;
+        if (PlayerControlled)
+        {
+            Vector3 moveDirection = Input.GetAxis("Vertical") * body.forward;
+            if (CanMove)
+                velocity += moveDirection * MoveSpeed * delta;
+            Vector3 rotation = Input.GetAxis("Horizontal") * Vector3.up;
+            if (CanMove)
+                body.rigidbody.angularVelocity += rotation * RotateSpeed * delta;
+        }
+        
 
         Vector3 groundPosition;
-        grounded = GetGround(body.position, out groundPosition);
+        grounded = GetGround(body.position, out groundPosition, GroundCheckDistance);
         if (!grounded)
         {
             currentHeightDamping = 0f;
@@ -446,7 +491,9 @@ public class RobotBody : MonoBehaviour
         }
         else
         {
-            groundPosition += Vector3.up * YDistanceToFeet + Vector3.up * averageYFoot;
+            groundPosition += Vector3.up * YDistanceToFeet;
+            if (FeetYToBodyY)
+                groundPosition += Vector3.up * averageYFoot;
             velocity += (groundPosition - body.position) * HeightSpring * delta;
 
             if (feetOnGround < 2)
@@ -465,10 +512,10 @@ public class RobotBody : MonoBehaviour
         body.rigidbody.velocity = velocity;
     }
 
-    private bool GetGround(Vector3 position, out Vector3 hitPoint)
+    private bool GetGround(Vector3 position, out Vector3 hitPoint, float distance)
     {
         RaycastHit hit;
-        if (Physics.Raycast(position, Vector3.down, out hit, 1f, FootWalkLayerMask))
+        if (Physics.Raycast(position, Vector3.down, out hit, distance, FootWalkLayerMask))
         {
             hitPoint = hit.point;
             return true;

@@ -16,6 +16,11 @@ using System.Collections.Generic;
 public class vp_FPInput : vp_Component
 {
 
+    public void TryJumpHere()
+    {
+        FPPlayer.Jump.TryStart();
+    }
+
     protected vp_PlayerEventHandler m_Player = null;
     protected virtual void Awake()
     {

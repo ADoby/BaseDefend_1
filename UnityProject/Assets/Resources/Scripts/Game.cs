@@ -52,6 +52,8 @@ public class Game : MonoBehaviour
     #endregion
 
     #region PublicStatic
+    public static float DefaultFixedTime = 0.02f;
+
     public static bool NewSpawnAllowed
     {
         get
