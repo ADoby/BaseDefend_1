@@ -24,7 +24,7 @@ public class ColliderHit : MonoBehaviour {
     {
         if (healthScript)
         {
-            healthScript.doDamage(damage * damageMultiplier);
+            healthScript.Damage(damage * damageMultiplier);
         }
     }
 

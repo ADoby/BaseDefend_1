@@ -16,6 +16,12 @@ public class Leg
         public Transform Foot;
         public Transform FootIK;
         public Transform DefaultPosition;
+        public SimpleIKSolver ik;
+    }
+
+    public void SetRagdoll(bool value)
+    {
+        targets.ik.enabled = value;
     }
 
     private RobotBody owner;
@@ -367,6 +373,14 @@ public class RobotBody : MonoBehaviour
         }
     }
 
+    public Vector3 Position
+    {
+        get
+        {
+            return body.position;
+        }
+    }
+
     public bool grounded;
     public bool PlayerControlled = true;
     public float GroundCheckDistance = 1.25f;
@@ -397,7 +411,14 @@ public class RobotBody : MonoBehaviour
         }
         if (PlayerMovementCollider)
             PlayerMovementCollider.SetActive(false);
+
+        foreach (var leg in legs)
+        {
+            leg.SetRagdoll(true);
+        }
+
         Ragdolled = true;
+
     }
 
     void FixedUpdate()

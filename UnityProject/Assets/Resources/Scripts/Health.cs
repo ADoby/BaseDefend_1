@@ -5,7 +5,7 @@ public class Health : MonoBehaviour {
 
     public float health;
 
-    public virtual void doDamage(float dmg)
+    public virtual void Damage(float dmg)
     {
         health -= dmg;
         if (health < 0)

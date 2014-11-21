@@ -125,9 +125,11 @@ public class ZombieKI : Health
         StartCoroutine(UpdatePath());
     }
 
-    public override void doDamage(float dmg)
+    public override void Damage(float dmg)
     {
-        base.doDamage(dmg);
+        if (isDead())
+            return;
+        base.Damage(dmg);
         ResetDeathRaise();
         if (isDead())
         {
