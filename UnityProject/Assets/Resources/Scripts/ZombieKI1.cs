@@ -98,9 +98,9 @@ public class ZombieKI1 : Health
         StartCoroutine(UpdatePath());
     }
 
-    public override void Damage(float dmg)
+    public override void Damage(vp_DamageInfo info)
     {
-        base.Damage(dmg);
+        base.Damage(info);
         currentUpwardsVelocity = 0.0f;
     }
 

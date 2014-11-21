@@ -9,7 +9,9 @@ public class FallDownDeath : MonoBehaviour
 	void Update () {
 	    if(transform.position.y < -10)
         {
-            SendMessage("Damage", 1000, SendMessageOptions.DontRequireReceiver);
+            vp_DamageInfo info = new vp_DamageInfo(1000f, null);
+
+            SendMessage("Damage", info, SendMessageOptions.DontRequireReceiver);
         }
 	}
 }

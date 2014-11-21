@@ -5,9 +5,9 @@ public class Health : MonoBehaviour {
 
     public float health;
 
-    public virtual void Damage(float dmg)
+    public virtual void Damage(vp_DamageInfo info)
     {
-        health -= dmg;
+        health -= info.Damage;
         if (health < 0)
             health = 0;
     }

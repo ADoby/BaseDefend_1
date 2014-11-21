@@ -18,13 +18,10 @@ public class ColliderHit : MonoBehaviour {
 
     void Damage(vp_DamageInfo damageInfo)
     {
-        Damage(damageInfo.Damage);
-    }
-    void Damage(float damage)
-    {
         if (healthScript)
         {
-            healthScript.Damage(damage * damageMultiplier);
+            damageInfo.Damage *= damageMultiplier;
+            healthScript.Damage(damageInfo);
         }
     }
 
