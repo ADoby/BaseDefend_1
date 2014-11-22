@@ -12,7 +12,6 @@ public class MainHelp : MonoBehaviour {
             "You can walk (W,A,S,D)\n, run (shift)\n, jump (space)\n, shoot (left mouse button)\n, switch weapons (Q,E)\n" +
             "It will auto jump when running towards jumpable obstacles\n" +
             "Weapons have forces which can bring down enemies\n" + 
-            "Press R to reset robot\n" +
             "Zombie guy can kill you :P");
         GUILayout.EndArea();
     }

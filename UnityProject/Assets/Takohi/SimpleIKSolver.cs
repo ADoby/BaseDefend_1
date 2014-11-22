@@ -13,7 +13,7 @@ public class SimpleIKSolver : MonoBehaviour
         public float weight;
 		public AngleRestriction AngleRestrictionRange;
 		
-		internal Quaternion _initialRotation;
+		public Quaternion _initialRotation;
 	}
  
 	/// <summary>
@@ -40,15 +40,19 @@ public class SimpleIKSolver : MonoBehaviour
 	public bool IsDamping = false;
 	public float DampingMax = 0.5f;
     public float DynamicDamping = 1.0f;
-	
+
+    void Awake()
+    {
+        foreach (JointEntity jointEntity in JointEntities)
+        {
+            jointEntity._initialRotation = jointEntity.Joint.localRotation;
+        }
+    }
+
 	void Start ()
 	{
 		if (Target == null)
 			Target = transform;
-
-		foreach(JointEntity jointEntity in JointEntities) {
-			jointEntity._initialRotation = jointEntity.Joint.localRotation;
-		}
 	}
  
 	void LateUpdate ()
@@ -93,7 +97,7 @@ public class SimpleIKSolver : MonoBehaviour
 			cosAngle = Vector3.Dot (currentVector, targetVector);
  
 			// IF THE DOT PRODUCT RETURNS 1.0, I DON'T NEED TO ROTATE AS IT IS 0 DEGREES
-			if (cosAngle < 0.999999f) {
+			if (cosAngle < 0.99999f) {
 				// USE THE CROSS PRODUCT TO CHECK WHICH WAY TO ROTATE
 				crossResult = Vector3.Cross (currentVector, targetVector);
 				crossResult.Normalize ();

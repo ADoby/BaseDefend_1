@@ -15,6 +15,10 @@ public class Timer {
     {
         timer = 0f;
     }
+    public void Finish()
+    {
+        timer = Value;
+    }
 	// Update is called once per frame
 	public bool Update ()
     {

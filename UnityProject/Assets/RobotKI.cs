@@ -125,10 +125,15 @@ public class RobotKI : MonoBehaviour
         agent.updateRotation = false;
 
         rigidBody = Body.body.rigidbody;
+
+        Body.PlayerControlled = PlayerInput;
 	}
 
     void Update()
     {
+        if (Body.Ragdolled)
+            return;
+
         if(FindTargetTimer.Update())
         {
             FindTargetTimer.Reset();
@@ -212,6 +217,9 @@ public class RobotKI : MonoBehaviour
 	// Update is called once per frame
 	void FixedUpdate ()
     {
+        if (Body.Ragdolled)
+            return;
+
         float delta = Time.fixedDeltaTime / Game.DefaultFixedTime;
 
         #region Movement

@@ -24,7 +24,7 @@ public class ZombieSpawner : MonoBehaviour
     {
         if (SpawnPoint == null)
             enabled = false;
-
+        ResetSpawn();
     }
 
 	void Start () 

@@ -36,7 +36,6 @@ public class Game : MonoBehaviour
     }
     bool OnAttempt_SpawnZombie()
     {
-        Debug.Log("Spawn?=: " + NewSpawnAllowed);
         return NewSpawnAllowed;
     }
     #endregion
@@ -53,6 +52,7 @@ public class Game : MonoBehaviour
 
     #region PublicStatic
     public static float DefaultFixedTime = 0.02f;
+    public static int Points = 0;
 
     public static bool NewSpawnAllowed
     {
@@ -68,6 +68,10 @@ public class Game : MonoBehaviour
     public static void ZombieDespawned(GameObject zombie)
     {
         currentZombieCount--;
+    }
+    public static void ZombieDied(GameObject zombie)
+    {
+        Points += 10;
     }
     #endregion
 

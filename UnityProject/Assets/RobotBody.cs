@@ -21,7 +21,12 @@ public class Leg
 
     public void SetRagdoll(bool value)
     {
-        targets.ik.enabled = value;
+        if (!value)
+        {
+            targets.ik.ResetJoints();
+            Reset();
+        }
+        targets.ik.IsActive = !value;
     }
 
     private RobotBody owner;
@@ -67,7 +72,7 @@ public class Leg
         }
     }
     public float MaxFeetDistance = 1.2f;
-    public float TransitionTime = 1.0f;
+    public Timer TransitionTimer;
     public float TransitionYDiff = 0.5f;
     public float TransitionDamping = 1.0f;
 
@@ -78,21 +83,27 @@ public class Leg
     private bool needsNewPosition = false;
     public bool SpecialPosition = true;
 
-    private float TransitionTimer;
     private Vector3 LastPosition;
     private Vector3 WantedPosition;
     private float procentage = 0f;
-    private bool moving = true;
 
-    public float NewPositionTime = 0.2f;
-    private float NewPositionTimer = 0f;
-    
+    public Timer NewPositionTimer;
+
     public void Start()
     {
+        Reset();
+    }
+
+    private bool moving = true;
+    private bool wasGrounded = false;
+
+    public void Reset()
+    {
         LastPosition = Foot.position;
-        WantedPosition = FootIK.position;
-        TransitionTimer = 0f;
+        WantedPosition = LastPosition;
+        TransitionTimer.Reset();
         moving = true;
+        wasGrounded = false;
     }
 
     private bool NeedsNewPosition()
@@ -162,13 +173,11 @@ public class Leg
 
     public void Update()
     {
-        NewPositionTimer = Mathf.Max(NewPositionTimer + Time.deltaTime, NewPositionTime);
+        NewPositionTimer.Update();
 
         //Stick on ground
         if (!GetGround(WantedPosition, out WantedPosition))
         {
-            //centerOfFootPlacement = Owner.body.TransformPoint(centerOfFootPlacement);
-            //centerOfFootPlacement.y = Owner.body.position.y - Owner.YDistanceToFeet;
             GetGround(DefaultPosition.position, out WantedPosition);
             SpecialPosition = false;
         }
@@ -176,45 +185,30 @@ public class Leg
             SpecialPosition = true;
 
         //Animate to next wanted position
-        TransitionTimer = Mathf.Min(TransitionTimer + Time.deltaTime, TransitionTime);
-        procentage = (TransitionTimer / TransitionTime);
+        TransitionTimer.Update();
+        procentage = TransitionTimer.Procentage;
         float sinVal = Mathf.Sin(procentage * PI);
 
         Vector3 wantedPos = procentage < 0.5f ? LastPosition : WantedPosition;
         wantedPos.y += sinVal * TransitionYDiff;
 
-        Vector3 diff = wantedPos - FootIK.position;
-        diff = diff.normalized * Mathf.Min(TransitionDamping, diff.magnitude);
-        FootIK.position += diff;
+        //diff = diff.normalized * Mathf.Min(TransitionDamping, distanceToTarget);
+        FootIK.position = Vector3.Lerp(FootIK.position, wantedPos, TransitionTimer.Procentage);
+        
+        moving = !TransitionTimer.Finished;
+        
+        if (OnGround && !wasGrounded)
+        {
+            Owner.FootStepOnGround();
+            wasGrounded = true;
+        }
 
         needsNewPosition = NeedsNewPosition();
-
-        if (procentage >= 1f)
-        {
-            if (moving && OnGround)
-            {
-                Owner.FootStepOnGround();
-                moving = false;
-            }
-            if (!moving && Vector3.Distance(FootIK.position, Foot.position) > 0.1f)
-            {
-                Owner.LoseFoot();
-                moving = true;
-            }
-        }
-        
-
         //Check if body moves and try to find new position for footIK
-        if (needsNewPosition && NewPositionTimer >= NewPositionTime)
+        if (!moving && needsNewPosition)
         {
-            //We stay on the floor and user cant lose foot, return
-            if (!moving)
-            {
-                if(Owner.CanLoseFoot)
-                    Owner.LoseFoot();
-                else
-                    return;
-            }
+            if (!Owner.CanLoseFoot)
+                return;
 
             Vector3 newPos = Vector3.zero;
             Vector3 DiffToCenter = Vector3.zero;
@@ -223,10 +217,10 @@ public class Leg
             Vector3 min = new Vector3(moveRestriction.x, 0, moveRestriction.z);
             Vector3 max = new Vector3(moveRestriction.y, 0, moveRestriction.w);
 
-            min.x += 0.05f;
-            min.z += 0.05f;
-            max.x -= 0.05f;
-            max.z -= 0.05f;
+            min.x += 0.1f;
+            min.z += 0.1f;
+            max.x -= 0.1f;
+            max.z -= 0.1f;
 
             centerOfFootPlacement.x = min.x + (max.x - min.x) / 2;
             centerOfFootPlacement.z = min.z + (max.z - min.z) / 2;
@@ -249,8 +243,22 @@ public class Leg
 
             LastPosition = WantedPosition;
             WantedPosition = newPos;
-            TransitionTimer = 0f;
+            TransitionTimer.Reset();
             moving = true;
+
+            if (wasGrounded)
+                Owner.LoseFoot();
+            wasGrounded = false;
+        }
+    }
+
+    public float MaxDistanceToTarget = 0.15f;
+
+    public bool OnTrack
+    {
+        get
+        {
+            return Vector3.Distance(FootIK.position, Foot.position) < MaxDistanceToTarget;
         }
     }
 
@@ -258,7 +266,7 @@ public class Leg
     {
         get
         {
-            return SpecialPosition && Vector3.Distance(FootIK.position, Foot.position) < 0.1f;
+            return TransitionTimer.Finished && SpecialPosition && OnTrack;
         }
     }
 }
@@ -271,48 +279,52 @@ public class RobotBody : MonoBehaviour
 
     public int feetOnGround = 0;
 
+    void Start()
+    {
+        Reset();
+    }
+
 	// Use this for initialization
-	void Start () 
+	void Reset () 
     {
         feetOnGround = 0;
         foreach (var item in legs)
         {
             item.Owner = this;
-            item.Start();
+            item.Reset();
         }
 	}
 
-    public float FootLoseTime = 0.15f;
-    public float FootOnGroundTime = 0.1f;
+    public Timer GetUpTimer;
+    public Timer StayRagdollTimer;
 
-    private float FootLoseTimer = 0f;
-    private float FootOnGroundTimer = 0f;
+    public Timer FootLoseTimer;
+    public Timer FootGroundedTimer;
 
+    public Timer RagdollAfterNoGroundTimer;
+    
     public float SlopeStairHeight = 1.0f;
 
     public bool CanLoseFoot
     {
         get
         {
-            return FootLoseTimer >= FootLoseTime && feetOnGround > 2;
+            return feetOnGround >= 2;
         }
     }
     public void LoseFoot()
     {
         feetOnGround--;
-        FootLoseTimer = 0f;
+        FootLoseTimer.Reset();
     }
     public void FootStepOnGround()
     {
         feetOnGround++;
-        FootOnGroundTimer = 0f;
+        FootGroundedTimer.Reset();
     }
 
     public bool DebugON = true;
     public bool RunInEditor = true;
-
-    public float MoveSpeed = 2.0f;
-    public float RotateSpeed = 2.0f;
 
     public Transform body;
 
@@ -343,9 +355,8 @@ public class RobotBody : MonoBehaviour
         if (Ragdolled)
             return;
 
-        FootLoseTimer = Mathf.Min(FootLoseTimer + Time.deltaTime, FootLoseTime);
-        FootOnGroundTimer = Mathf.Min(FootOnGroundTimer + Time.deltaTime, FootOnGroundTime);
-
+        FootLoseTimer.Update();
+        FootGroundedTimer.Update();
 
         float heightestYFoot = 0f;
         for (int i = 0; i < legs.Length; i++)
@@ -363,6 +374,17 @@ public class RobotBody : MonoBehaviour
             if (DebugON)
                 leg.DebugRestrictionArea();
         }
+
+        if (CanMove)
+        {
+            RagdollAfterNoGroundTimer.Reset();
+        }
+        else
+        {
+            if (RagdollAfterNoGroundTimer.Update())
+                Ragdoll();
+        }
+
 	}
 
     public bool CanMove
@@ -395,9 +417,14 @@ public class RobotBody : MonoBehaviour
 
     public void Ragdoll()
     {
+        body.rigidbody.useGravity = true;
+
         Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
         foreach (var item in rigidbodies)
         {
+            if (item == body.rigidbody)
+                continue;
+
             ConfigurableJoint joint = item.GetComponent<ConfigurableJoint>();
             if(joint)
             {
@@ -409,7 +436,7 @@ public class RobotBody : MonoBehaviour
             item.isKinematic = false;
             item.useGravity = true;
         }
-        if (PlayerMovementCollider)
+        if (PlayerMovementCollider && PlayerControlled)
             PlayerMovementCollider.SetActive(false);
 
         foreach (var leg in legs)
@@ -419,6 +446,99 @@ public class RobotBody : MonoBehaviour
 
         Ragdolled = true;
 
+        StayRagdollTimer.Reset();
+        GetUpTimer.Reset();
+        StartGetUpPosition = body.position;
+        RagdollAfterNoGroundTimer.Reset();
+    }
+
+    private Vector3 StartGetUpPosition = Vector3.zero;
+
+    public float GetUpSpring = 2.0f;
+    public float GetUpDamp = 0.5f;
+    public float GetUpRotationSpring = 2.0f;
+    public float GetUpRotationDamp = 0.5f;
+
+    public void GetUp(float delta)
+    {
+        if (!StayRagdollTimer.Update())
+            return;
+
+        body.rigidbody.useGravity = false;
+
+        if (GetUpTimer.Update())
+        {
+            UnRagdoll();
+            return;
+        }
+
+        //Update Position and Rotation
+        Vector3 currentVector = body.up;
+        Vector3 targetVector = Vector3.up;
+        Vector3 wantedPosition = StartGetUpPosition + Vector3.up;
+
+
+        RaycastHit hit;
+        if (Physics.Raycast(body.position, -body.up, out hit, GroundCheckDistance, FootWalkLayerMask))
+        {
+            wantedPosition = hit.point + Vector3.up;
+            //targetVector = hit.normal;
+        }
+
+        body.rigidbody.velocity += (wantedPosition - body.position) * GetUpSpring * delta;
+
+        body.rigidbody.velocity -= body.rigidbody.velocity * GetUpDamp * delta;
+
+        float cosAngle;
+        Vector3 crossResult;
+        float turnAngle;
+
+
+        cosAngle = Vector3.Dot(currentVector, targetVector);
+
+        crossResult = Vector3.Cross(currentVector, targetVector);
+        crossResult.Normalize();
+
+        turnAngle = Mathf.Acos(cosAngle);
+        turnAngle = Mathf.Min(turnAngle, RotateDamping);
+        turnAngle = turnAngle * Mathf.Rad2Deg;
+
+        body.rigidbody.angularVelocity += crossResult * turnAngle * GetUpRotationSpring * delta;
+
+        body.rigidbody.angularVelocity -= body.rigidbody.angularVelocity * GetUpRotationDamp * delta;
+    }
+
+    public void UnRagdoll()
+    {
+        body.rigidbody.useGravity = false;
+
+        Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
+        foreach (var item in rigidbodies)
+        {
+            if (item == body.rigidbody)
+                continue;
+
+            ConfigurableJoint joint = item.GetComponent<ConfigurableJoint>();
+            if (joint)
+            {
+                joint.xMotion = ConfigurableJointMotion.Free;
+                joint.yMotion = ConfigurableJointMotion.Free;
+                joint.zMotion = ConfigurableJointMotion.Free;
+            }
+            item.collider.isTrigger = true;
+            item.isKinematic = true;
+            item.useGravity = false;
+        }
+        if (PlayerMovementCollider && PlayerControlled)
+            PlayerMovementCollider.SetActive(true);
+
+        foreach (var leg in legs)
+        {
+            leg.SetRagdoll(false);
+        }
+
+        Ragdolled = false;
+        Reset();
     }
 
     void FixedUpdate()
@@ -426,14 +546,17 @@ public class RobotBody : MonoBehaviour
         if (!Application.isPlaying)
             return;
 
+        float delta = Time.fixedDeltaTime / Game.DefaultFixedTime;
         if (Ragdolled)
+        {
+            GetUp(delta);
             return;
+        }
 
         //Based on ground
         float currentHeightDamping = HeightDamping;
         float currentVelocityDamping = VelocityDamping;
 
-        float delta = Time.fixedDeltaTime / Game.DefaultFixedTime;
 
         #region Movement
 
@@ -490,16 +613,6 @@ public class RobotBody : MonoBehaviour
         body.rigidbody.angularVelocity += crossResult * turnAngle * RotationSpring * delta;
         #endregion
 
-
-        if (PlayerControlled)
-        {
-            Vector3 moveDirection = Input.GetAxis("Vertical") * body.forward;
-            if (CanMove)
-                velocity += moveDirection * MoveSpeed * delta;
-            Vector3 rotation = Input.GetAxis("Horizontal") * Vector3.up;
-            if (CanMove)
-                body.rigidbody.angularVelocity += rotation * RotateSpeed * delta;
-        }
         
 
         Vector3 groundPosition;
