@@ -6,23 +6,28 @@ using System.Collections.Generic;
 [System.Serializable]
 public class ColliderHit : MonoBehaviour {
 
-    public Health healthScript { set; private get; }
+    public HealthHandler healthScript;
 
     public DamageColliderManager owner;
 
-    public float damageMultiplier { set; private get; }
+    public float damageMultiplier;
 
-    public float minForceForRagdoll { get; set; }
+    public float minForceForRagdoll;
 
     public float forceMultToDamage = 1.0f;
 
-    void Damage(vp_DamageInfo damageInfo)
+    public void Damage(vp_DamageInfo damageInfo)
     {
         if (healthScript)
         {
             damageInfo.Damage *= damageMultiplier;
             healthScript.Damage(damageInfo);
         }
+    }
+
+    public void Damage(float damage)
+    {
+        Damage(new vp_DamageInfo(damage, null));
     }
 
     private List<HitInfo> hitForces = new List<HitInfo>();
@@ -51,11 +56,6 @@ public class ColliderHit : MonoBehaviour {
     void FixedUpdate()
     {
         AddCachedForces();
-    }
-
-    void LateUpdate()
-    {
-        
     }
 
     void OnCollisionEnter(Collision info)

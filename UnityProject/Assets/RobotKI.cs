@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RobotKI : MonoBehaviour 
+public class RobotKI : HealthHandler 
 {
     public bool PlayerInput = true;
 
@@ -117,6 +117,25 @@ public class RobotKI : MonoBehaviour
         }    
     }
 
+    public override void Damage(vp_DamageInfo info)
+    {
+        base.Damage(info);
+    }
+    public override void Damage(float damage)
+    {
+        base.Damage(damage);
+    }
+    public override void Die()
+    {
+        //Despawn later
+        Body.Ragdoll();
+    }
+
+    public override void SetPoolName(string value)
+    {
+        base.SetPoolName(value);
+    }
+
 	// Use this for initialization
 	void Awake () 
     {
@@ -129,9 +148,14 @@ public class RobotKI : MonoBehaviour
         Body.PlayerControlled = PlayerInput;
 	}
 
+    public void Reset()
+    {
+        base.Reset();
+    }
+
     void Update()
     {
-        if (Body.Ragdolled)
+        if (Body.Ragdolled || isDead)
             return;
 
         if(FindTargetTimer.Update())
@@ -165,7 +189,7 @@ public class RobotKI : MonoBehaviour
             agent.SetDestination(Body.Position);
     }
 
-    public float dot = 0f;
+    private float dot = 0f;
     public void MovementValue(out float vertical, out float horizontal)
     {
         vertical = 0f;
@@ -190,7 +214,7 @@ public class RobotKI : MonoBehaviour
         }
     }
 
-    public float angle = 0f;
+    private float angle = 0f;
     public void RotationValue(out float rotation)
     {
         rotation = 0f;
@@ -207,20 +231,29 @@ public class RobotKI : MonoBehaviour
         rotation = angle;
     }
 
-    public static float AngleSigned(Vector3 v1, Vector3 v2, Vector3 n)
-    {
-        return Mathf.Atan2(
-            Vector3.Dot(n, Vector3.Cross(v1, v2)),
-            Vector3.Dot(v1, v2)) * Mathf.Rad2Deg;
-    }
+    public float UpforceWhenDead = 2.0f;
+    public float DeathYPosition = 100f;
 
 	// Update is called once per frame
 	void FixedUpdate ()
     {
-        if (Body.Ragdolled)
-            return;
-
         float delta = Time.fixedDeltaTime / Game.DefaultFixedTime;
+        if (Body.Ragdolled)
+        {
+            if (isDead)
+            {
+                Body.body.rigidbody.useGravity = false;
+                Body.body.rigidbody.AddForce(Vector3.up * UpforceWhenDead * delta);
+                if (Body.Position.y > DeathYPosition)
+                    Despawn();
+            }
+            else
+            {
+                Body.GetUp(delta);
+            }
+            return;
+        }
+
 
         #region Movement
         float verticalInput = 0;

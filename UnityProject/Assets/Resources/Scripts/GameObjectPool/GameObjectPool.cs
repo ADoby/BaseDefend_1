@@ -36,7 +36,7 @@ using System.Collections.Generic;
 			if(Deactivate)
 				go.SetActive(false);
 
-			go.SendMessage("OnDespawn", SendMessageOptions.DontRequireReceiver);
+            go.SendMessageUpwards("OnDespawn", SendMessageOptions.DontRequireReceiver);
 
 			go.transform.position = disabledPosition;
 			pool.Enqueue(go);
@@ -118,8 +118,8 @@ using System.Collections.Generic;
 			if(Deactivate)
 				go.SetActive(true);
 
-			go.SendMessage("SetPoolName", poolName, SendMessageOptions.DontRequireReceiver);
-			go.SendMessage("Reset", SendMessageOptions.DontRequireReceiver);
+			go.SendMessageUpwards("SetPoolName", poolName, SendMessageOptions.DontRequireReceiver);
+            go.SendMessageUpwards("Reset", SendMessageOptions.DontRequireReceiver);
 
 			return go;
 		}

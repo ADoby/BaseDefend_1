@@ -4,24 +4,27 @@ using System.Collections.Generic;
 
 public class DamageColliderManager : MonoBehaviour
 {
-    public Health healthScript;
+    public HealthHandler healthScript;
 
     public hitPartInfo[] partInfo;
 
     public float forceMultToDamage = 1.0f;
+    public float DefaultMinForceForRagdoll = 5.0f;
+    public float MinForceMultipliedByMass = 0.5f;
+    public float DefaultDamageMult = 1.0f;
 
     List<Transform> colliders = new List<Transform>();
 
     // Use this for initialization
     void Start()
     {
-        Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
+        Collider[] rigidbodies = GetComponentsInChildren<Collider>();
 
-        foreach (Rigidbody child in rigidbodies)
+        foreach (var child in rigidbodies)
         {
             ColliderHit script = child.gameObject.AddComponent<ColliderHit>();
-            script.damageMultiplier = GetMultiplier(child.gameObject.name);
-            script.minForceForRagdoll = GetMinForceForRagdoll(child.gameObject.name);
+            script.damageMultiplier = GetMultiplier(child.gameObject);
+            script.minForceForRagdoll = GetMinForceForRagdoll(child.gameObject);
             script.healthScript = healthScript;
             script.forceMultToDamage = forceMultToDamage;
 
@@ -33,24 +36,28 @@ public class DamageColliderManager : MonoBehaviour
         }
     }
 
-    private float GetMultiplier(string name)
+    private float GetMultiplier(GameObject go)
     {
         foreach (var item in partInfo)
         {
-            if (name.Contains(item.name))
+            if (go.name.Contains(item.name))
                 return item.damageMultiply;
         }
-        return 1.0f;
+        float compute = DefaultDamageMult;
+        return compute;
     }
 
-    private float GetMinForceForRagdoll(string name)
+    private float GetMinForceForRagdoll(GameObject go)
     {
         foreach (var item in partInfo)
         {
-            if (name.Contains(item.name))
+            if (go.name.Contains(item.name))
                 return item.minHitForceForRagdoll;
         }
-        return 1.0f;
+        float compute = DefaultMinForceForRagdoll;
+        if (go.rigidbody)
+            compute += go.rigidbody.mass * MinForceMultipliedByMass;
+        return compute;
     }
 
     public bool PartOfMe(Transform collTransform)

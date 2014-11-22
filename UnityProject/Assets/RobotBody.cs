@@ -19,6 +19,13 @@ public class Leg
         public SimpleIKSolver ik;
     }
 
+    private Vector3 FootIKPos;
+
+    public void Awake()
+    {
+        FootIKPos = targets.FootIK.localPosition;
+    }
+
     public void SetRagdoll(bool value)
     {
         if (!value)
@@ -96,6 +103,12 @@ public class Leg
 
     private bool moving = true;
     private bool wasGrounded = false;
+
+    public void Respawn()
+    {
+        FootIK.localPosition = FootIKPos;
+        Reset();
+    }
 
     public void Reset()
     {
@@ -279,13 +292,33 @@ public class RobotBody : MonoBehaviour
 
     public int feetOnGround = 0;
 
+    private Vector3 hipStartPos = Vector3.zero;
+
+    void Awake()
+    {
+        hipStartPos = body.localPosition;
+    }
+
     void Start()
     {
-        Reset();
+        Respawn();
     }
 
 	// Use this for initialization
-	void Reset () 
+	public void Reset ()
+    {
+        body.localPosition = hipStartPos;
+        body.rigidbody.velocity = Vector3.zero;
+        feetOnGround = 0;
+        foreach (var item in legs)
+        {
+            item.Owner = this;
+            item.Respawn();
+        }
+        UnRagdoll();
+	}
+
+    public void Respawn()
     {
         feetOnGround = 0;
         foreach (var item in legs)
@@ -293,7 +326,7 @@ public class RobotBody : MonoBehaviour
             item.Owner = this;
             item.Reset();
         }
-	}
+    }
 
     public Timer GetUpTimer;
     public Timer StayRagdollTimer;
@@ -538,7 +571,7 @@ public class RobotBody : MonoBehaviour
         }
 
         Ragdolled = false;
-        Reset();
+        Respawn();
     }
 
     void FixedUpdate()
@@ -549,7 +582,6 @@ public class RobotBody : MonoBehaviour
         float delta = Time.fixedDeltaTime / Game.DefaultFixedTime;
         if (Ragdolled)
         {
-            GetUp(delta);
             return;
         }
 

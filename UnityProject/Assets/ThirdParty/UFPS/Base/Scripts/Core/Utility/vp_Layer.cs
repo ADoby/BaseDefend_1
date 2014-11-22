@@ -26,6 +26,8 @@ public sealed class vp_Layer
 	public const int IgnoreRaycast = 2;
 	public const int Water = 4;
 
+    public const int EnemyDamageCollider = 12;
+
 	// standard layers
 	public const int Ragdoll = 22;
 	public const int PlayerDamageCollider = 23;

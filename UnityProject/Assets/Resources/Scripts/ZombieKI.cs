@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class ZombieKI : Health
+public class ZombieKI : HealthHandler
 {
     NavMeshAgent agent;
     public Animator animator;
@@ -73,27 +73,11 @@ public class ZombieKI : Health
         health = Random.Range(minHealth, maxHealth);
 
         float random = Random.Range(minSpeed, maxSpeed);
-
-        //maxMoveSpeed = random * MoveSpeed;
-        //speedChange = maxMoveSpeed * 0.5f;
-        //speedBrake = maxMoveSpeed;
-
-        //maxRotateSpeed = random * RotateSpeed;
-        //rotateChange = maxRotateSpeed * 5.0f;
-        //rotateBreak = maxRotateSpeed * 10.0f;
-
-        //maxDiffAngle = random / 10.0f;
-
-        if (sightScript)
-        {
-            //sightScript.distance = random * LookRange;
-            //sightScript.sightTime = random;
-        }
-
     }
 
     public void Reset()
     {
+        base.Reset();
         if(!animatedRagdollCharakter)
             animatedRagdollCharakter = GetComponent<RagdollHelper>();
 
@@ -127,14 +111,18 @@ public class ZombieKI : Health
 
     public override void Damage(vp_DamageInfo info)
     {
-        if (isDead())
-            return;
         base.Damage(info);
-        ResetDeathRaise();
-        if (isDead())
+        if (isDead)
+            return;
+        if (isDead)
         {
+            ResetDeathRaise();
             animatedRagdollCharakter.ragdolled = true;
         }
+    }
+    public override void Damage(float damage)
+    {
+        base.Damage(damage);
     }
 
     public void ResetDeathRaise()
@@ -146,14 +134,14 @@ public class ZombieKI : Health
     public override void HitForce(float forceAmount, float minForceForRagdoll)
     {
 
-        ResetDeathRaise();
+        if(isDead)
+            ResetDeathRaise();
 
         if (forceAmount > minForceForRagdoll * Mathf.Clamp01(health / maxHealth))
         {
             animatedRagdollCharakter.ragdolled = true;
             ragdolled = true;
             ragdollTimer = ragdollTime;
-            //agent.enabled = false;
         }
     }
 
@@ -190,7 +178,7 @@ public class ZombieKI : Health
         }
 
         yield return new WaitForSeconds(PathUpdateTime);
-        if(!isDead())
+        if(!isDead)
             StartCoroutine(UpdatePath());
     }
 
@@ -234,11 +222,10 @@ public class ZombieKI : Health
 
     public float deathUpwardsForce = 1.0f;
     public float maxForceUpwards = 2.0f;
-    public string poolName = "Zombie";
 
-    public void SetPoolName(string value)
+    public override void SetPoolName(string value)
     {
-        poolName = value;
+        base.SetPoolName(value);
     }
 
     public float currentUpwardsVelMultiply = 1.0f;
@@ -261,7 +248,7 @@ public class ZombieKI : Health
         }
         AttackTimer -= Time.deltaTime;
 
-        if (player != null && ragdolled == false && !isDead())
+        if (player != null && ragdolled == false && !isDead)
         {
             if (Vector3.Distance(player.transform.position, transform.position) < 1.0f)
             {
@@ -283,7 +270,7 @@ public class ZombieKI : Health
                 if (ragdollTimer <= 0)
                 {
                     ragdolled = false;
-                    if (!isDead())
+                    if (!isDead)
                     {
                         animatedRagdollCharakter.ragdolled = false;
 
@@ -300,7 +287,6 @@ public class ZombieKI : Health
                             item.parent = transform;
                         }
 
-                        //agent.enabled = true;
                         agent.SetDestination(transform.position);
                     }
                 }
@@ -313,7 +299,7 @@ public class ZombieKI : Health
         }
         else
         {
-            if (isDead())
+            if (isDead)
             {
                 deathRagdollTimer += Time.deltaTime;
                 if (deathRagdollTimer > deathRagdollTime)
@@ -325,8 +311,8 @@ public class ZombieKI : Health
 
                     if (root.transform.position.y >= 100)
                     {
-                        GameObjectPool.Instance.Despawn(poolName, gameObject);
                         Game.ZombieDespawned(gameObject);
+                        Despawn();
                     }
                 }
 

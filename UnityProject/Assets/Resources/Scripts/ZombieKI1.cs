@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class ZombieKI1 : Health
+public class ZombieKI1 : HealthHandler
 {
     public NavMeshAgent agent;
     public Animator animator;
@@ -147,7 +147,7 @@ public class ZombieKI1 : Health
         }
 
         yield return new WaitForSeconds(PathUpdateTime);
-        if(!isDead())
+        if(!isDead)
             StartCoroutine(UpdatePath());
     }
 
@@ -191,7 +191,6 @@ public class ZombieKI1 : Health
 
     public float deathUpwardsForce = 1.0f;
     public float maxForceUpwards = 2.0f;
-    public string poolName = "";
 
     public float currentUpwardsVelMultiply = 1.0f;
     public float currentUpwardsVelocity = 0.0f;
@@ -209,7 +208,7 @@ public class ZombieKI1 : Health
                     ragdolled = false;
                     ragdollScript.Ragdoll(false);
 
-                    if (!isDead())
+                    if (!isDead)
                     {
 
                         List<Transform> childs = new List<Transform>();
@@ -238,7 +237,7 @@ public class ZombieKI1 : Health
         }
         else
         {
-            if (isDead())
+            if (isDead)
             {
                 currentUpwardsVelocity = Mathf.Lerp(currentUpwardsVelocity, maxForceUpwards, Time.deltaTime * deathUpwardsForce + Time.deltaTime * (currentUpwardsVelocity * currentUpwardsVelMultiply));
                 
@@ -247,7 +246,7 @@ public class ZombieKI1 : Health
 
                 if (root.transform.position.y >= 100)
                 {
-                    GameObjectPool.Instance.Despawn(poolName, gameObject);
+                    Despawn();
                 }
             }
             else
