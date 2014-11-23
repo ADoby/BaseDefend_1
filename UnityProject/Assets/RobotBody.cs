@@ -224,7 +224,6 @@ public class Leg
                 return;
 
             Vector3 newPos = Vector3.zero;
-            Vector3 DiffToCenter = Vector3.zero;
             Vector3 centerOfFootPlacement = Vector3.zero;
 
             Vector3 min = new Vector3(moveRestriction.x, 0, moveRestriction.z);
@@ -665,7 +664,7 @@ public class RobotBody : MonoBehaviour
             if (feetOnGround < 2)
             {
                 //Grounded but not enough feet, cheat to disred height
-                Vector3 diff = groundPosition - body.position;
+                //Vector3 diff = groundPosition - body.position;
                 //velocity += diff * HeightSpring * delta;
             }
         }

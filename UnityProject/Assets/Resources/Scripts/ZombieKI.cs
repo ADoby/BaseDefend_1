@@ -72,10 +72,9 @@ public class ZombieKI : HealthHandler
     {
         health = Random.Range(minHealth, maxHealth);
 
-        float random = Random.Range(minSpeed, maxSpeed);
     }
 
-    public void Reset()
+    public override void Reset()
     {
         base.Reset();
         if(!animatedRagdollCharakter)

@@ -57,8 +57,9 @@ public class ZombieKI1 : HealthHandler
         Reset();
     }
 
-    public void Reset()
+    public override void Reset()
     {
+        base.Reset();
 
         health = Random.Range(minHealth, maxHealth);
 

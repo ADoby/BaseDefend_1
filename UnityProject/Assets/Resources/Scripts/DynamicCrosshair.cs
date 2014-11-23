@@ -46,7 +46,6 @@ public class DynamicCrosshair : MonoBehaviour {
     public float rotAngle = 0.0f;
     public float rotSpeed = 0.0f;
  
-    private Texture2D temp;
     private float wantedSpread = 0f;
     private static float spread = 0f;
 
@@ -105,6 +104,8 @@ public class DynamicCrosshair : MonoBehaviour {
     {
         SetSpread(value.magnitude * SpreadForMouseMovement);
     }
+
+    private Texture temp = null;
 
     void OnGUI()
     {

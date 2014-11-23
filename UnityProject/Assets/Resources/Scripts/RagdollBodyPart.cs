@@ -108,7 +108,7 @@ public class RagdollBodyPart : MonoBehaviour {
     }
 
     [SerializeField]
-    protected bool enabled = true;
+    protected bool activated = true;
 
     public bool UseRigidbody = false;
 
@@ -147,7 +147,7 @@ public class RagdollBodyPart : MonoBehaviour {
     {
         get
         {
-            return enabled;
+            return activated;
         }
     }
 }

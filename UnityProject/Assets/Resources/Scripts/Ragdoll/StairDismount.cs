@@ -13,18 +13,7 @@ public class StairDismount : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
-		//Get all the rigid bodies that belong to the ragdoll
-		Rigidbody[] rigidBodies=GetComponentsInChildren<Rigidbody>();
 		
-		//Add the RagdollPartScript to all the gameobjects that also have the a rigid body
-		foreach (Rigidbody body in rigidBodies)
-		{
-			//RagdollPartScript rps=body.gameObject.AddComponent<RagdollPartScript>();
-			
-			//Set the scripts mainScript reference so that it can access
-			//the score and scoreTextTemplate member variables above
-			//rps.mainScript=this;
-		}
 	}
 	
 	// Update is called once per frame
