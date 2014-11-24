@@ -28,7 +28,7 @@ using System.Collections.Generic;
 				return;
 
 			if(!pools.ContainsKey(poolName)){
-				Debug.LogError("No pool with name '" + poolName + "' found.");
+				Debug.LogError("No pool with name '" + poolName + "' found." + go);
 				return;
 			}
 
@@ -36,7 +36,7 @@ using System.Collections.Generic;
 			if(Deactivate)
 				go.SetActive(false);
 
-            go.SendMessageUpwards("OnDespawn", SendMessageOptions.DontRequireReceiver);
+			go.SendMessageUpwards("OnDespawn", SendMessageOptions.DontRequireReceiver);
 
 			go.transform.position = disabledPosition;
 			pool.Enqueue(go);
@@ -95,6 +95,9 @@ using System.Collections.Generic;
 		}
 
 		public GameObject Spawn(string poolName, Vector3 position, Quaternion rotation){
+
+			if (!pools.ContainsKey(poolName))
+				return null;
 			GameObject go = Spawn(poolName, null, position, rotation, pools[poolName].prefab.transform.localScale);
 			
 			return go;
@@ -119,7 +122,7 @@ using System.Collections.Generic;
 				go.SetActive(true);
 
 			go.SendMessageUpwards("SetPoolName", poolName, SendMessageOptions.DontRequireReceiver);
-            go.SendMessageUpwards("Reset", SendMessageOptions.DontRequireReceiver);
+			go.SendMessageUpwards("Reset", SendMessageOptions.DontRequireReceiver);
 
 			return go;
 		}

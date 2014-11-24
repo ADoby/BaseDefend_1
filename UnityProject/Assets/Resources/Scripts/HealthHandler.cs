@@ -7,27 +7,40 @@ public class HealthHandler : MonoBehaviour {
     public float health;
     public bool alive = true;
 
+    public float Procentage
+    {
+        get
+        {
+            return Mathf.Clamp01(health / MaxHealth);
+        }
+    }
+
     protected string poolName = "";
     public virtual void SetPoolName(string value)
     {
         poolName = value;
     }
 
-    public virtual void Damage(vp_DamageInfo info)
+    protected virtual void Awake()
     {
-        Damage(info.Damage);
+        Reset();
     }
 
-    public virtual void Damage(float damage)
+    public virtual void Damage(vp_DamageInfo info)
     {
         if (isDead)
             return;
-        health = Mathf.Max(health - damage, 0);
+        health = Mathf.Max(health - info.Damage, 0);
         if (health == 0)
         {
             Die();
             alive = false;
         }
+    }
+
+    public virtual void Damage(float damage)
+    {
+        Damage(new vp_DamageInfo(damage, null));
     }
 
     public virtual void Reset()
