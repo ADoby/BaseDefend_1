@@ -1,11 +1,12 @@
 ﻿Shader "VertexLit/Diffuse_Bump_Detail" {
     Properties {
+    	_Color ("Color", Color) = (0.5, 0.5, 0.5, 1)
     	_SpecColor ("Specular Color", Color) = (0.5, 0.5, 0.5, 1)
     	_Shininess ("Shininess", Range (0.03, 4)) = 0.078125
 		_MainTex ("Base (RGB) Gloss (A)", 2D) = "white" {}
 		_BumpMap ("Bumpmap", 2D) = "bump" {}
 		_ParallaxMap ("Heightmap (A)", 2D) = "black" {}
-		_Parallax ("Height", Range (0.005, 0.08)) = 0.02
+		_Parallax ("Height", Range (0.000, 0.03)) = 0.02
 
 		_DetailBumpMap ("Detail Bumpmap", 2D) = "bump" {}
     }
@@ -23,6 +24,7 @@
 		    sampler2D _DetailBumpMap;
 		    sampler2D _ParallaxMap;
 		    half _Shininess;
+			fixed4 _Color;
 		    float _Parallax;
 			
 		    struct Input {
@@ -47,7 +49,7 @@
 			
 			    fixed4 tex = tex2D(_MainTex, IN.uv_MainTex);
 				
-			    o.Albedo = tex.rgb * IN.customColor.rgb;
+			    o.Albedo = tex.rgb * IN.customColor.rgb * _Color.rgb;
 			    o.Gloss = tex.a;
 			    o.Specular = _Shininess;
 			    o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap)) + UnpackNormal(tex2D (_DetailBumpMap, IN.uv_DetailBumpMap));

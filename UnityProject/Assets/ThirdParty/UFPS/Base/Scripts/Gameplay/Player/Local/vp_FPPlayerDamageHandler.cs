@@ -174,6 +174,7 @@ public class vp_FPPlayerDamageHandler : vp_PlayerDamageHandler
 
 		FPPlayer.InputAllowGameplay.Set(false);
 
+        Game.PlayerDied();
 	}
 
 

@@ -17,6 +17,7 @@ SubShader {
 CGPROGRAM
 #pragma surface surf BlinnPhong
 #pragma target 3.0
+#pragma glsl
 //input limit (8) exceeded, shader uses 9
 #pragma exclude_renderers d3d11_9x
 

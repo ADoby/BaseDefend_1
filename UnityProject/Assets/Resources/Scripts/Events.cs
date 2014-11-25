@@ -22,6 +22,6 @@ public class Events : vp_EventHandler
     }
     #endregion
 
-    public vp_Attempt SpawnZombie;
+    public vp_Attempt<Game.EnemyType> SpawnZombie;
 
 }

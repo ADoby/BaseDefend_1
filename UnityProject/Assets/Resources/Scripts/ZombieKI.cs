@@ -310,7 +310,6 @@ public class ZombieKI : HealthHandler
 
                     if (root.transform.position.y >= 100)
                     {
-                        Game.ZombieDespawned(gameObject);
                         Despawn();
                     }
                 }

@@ -9,7 +9,7 @@ public class DynamicCrosshair : MonoBehaviour {
     public bool HideOnDeath = true;
 
     public vp_FPPlayerEventHandler Player = null;
-
+    public vp_FPInput input;
 
     protected virtual void Awake()
     {
@@ -113,6 +113,9 @@ public class DynamicCrosshair : MonoBehaviour {
             return;
 
         if (HideOnDeath && Player.Dead.Active)
+            return;
+
+        if (input && input.MouseCursorForced)
             return;
 
         if(showCrosshair && verticalTexture && horizontalTexture){

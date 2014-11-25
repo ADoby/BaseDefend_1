@@ -6,7 +6,7 @@ using System.Linq;
 [System.Serializable]
 public class SpawnInfo
 {
-    public string Pool = "";
+    public Game.EnemyType type;
     public float weight = 0f;
 }
 
@@ -57,10 +57,10 @@ public class ZombieSpawner : MonoBehaviour
     {
         SpawnInfo info = GetNext();
 
-        if (info != null && Events.Instance.SpawnZombie.Try())
+        if (info != null && Events.Instance.SpawnZombie.Try(info.type))
         {
-            GameObject go = GameObjectPool.Instance.Spawn(info.Pool, SpawnPoint.position, Quaternion.identity);
-            Game.ZombieSpawned(go);
+            GameObject go = GameObjectPool.Instance.Spawn(Game.Instance.enemyinfos[(int)info.type].poolName, SpawnPoint.position, Quaternion.identity);
+            Game.EnemySpawned(info.type);
         }
 
         ResetSpawn();

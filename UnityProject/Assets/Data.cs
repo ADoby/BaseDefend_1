@@ -23,6 +23,11 @@ public class Data : vp_EventHandler
 	#endregion
 
 	public vp_Message<HealthHandler> BaseHealthChanged;
-	public vp_Value<int> BaseHealth;
+    public vp_Message<int> PointsChanged;
+    public vp_Message<float> TimePlayedChanged;
+    public vp_Message<GameUI.State> UIStateChanged;
+    public vp_Message<int> DeathsChanged;
+
+    public vp_Message<int> OnPointsGained;
 
 }

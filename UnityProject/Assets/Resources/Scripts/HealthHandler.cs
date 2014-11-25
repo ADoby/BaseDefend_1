@@ -71,7 +71,6 @@ public class HealthHandler : MonoBehaviour {
 
     public virtual void Despawn()
     {
-        Game.ZombieDespawned(gameObject);
         GameObjectPool.Instance.Despawn(poolName, gameObject);
     }
 

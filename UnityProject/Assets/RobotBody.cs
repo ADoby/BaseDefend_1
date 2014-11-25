@@ -220,8 +220,7 @@ public class Leg
 		//Check if body moves and try to find new position for footIK
 		if (!moving && needsNewPosition)
 		{
-			if (!Owner.CanLoseFoot)
-				return;
+
 
 			Vector3 newPos = Vector3.zero;
 			Vector3 centerOfFootPlacement = Vector3.zero;
@@ -423,7 +422,7 @@ public class RobotBody : MonoBehaviour
 	{
 		get
 		{
-			return (feetOnGround >= 2);
+			return (feetOnGround >= 1);
 		}
 	}
 

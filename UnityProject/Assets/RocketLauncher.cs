@@ -24,7 +24,7 @@ public class RocketLauncher : MonoBehaviour
 		Vector3 lookDirection = Owner.forward;
 		if (target)
 		{
-			lookDirection = (target.position + diff + Vector3.up) - transform.position;
+            lookDirection = target.position - (transform.position - diff);
 			angle = Vector3.Angle(Owner.forward, lookDirection);
 			if (angle > MaxAngle)
 				lookDirection = Owner.forward;
@@ -40,7 +40,11 @@ public class RocketLauncher : MonoBehaviour
 		if (angle > MaxAngle)
 			return false;
 
-		GameObject go = GameObjectPool.Instance.Spawn(rocketPool, Rocket_Pos1.position, Rocket_Pos1.rotation);
+        Vector3 direction = target.position - Rocket_Pos1.position;
+
+		GameObject go = GameObjectPool.Instance.Spawn(rocketPool, Rocket_Pos1.position, Quaternion.LookRotation(direction));
+        if (go == null)
+            return false;
 		Rocket rocket = go.GetComponent<Rocket>();
 		if (rocket)
 		{

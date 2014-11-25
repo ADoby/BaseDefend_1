@@ -76,7 +76,27 @@ public class UIRect : MonoBehaviour
 
     public string identifier = UIIdentifierTools.GetIdentifier();
 
-    public bool Visible = true;
+    [SerializeField]
+    private bool visible = true;
+    public bool Visible
+    {
+        get
+        {
+            return visible;
+        }
+        set
+        {
+            if(value != visible)
+            {
+                visible = value;
+                if (visible)
+                    OnShowing();
+                else
+                    OnHiding();
+            }
+        }
+    }
+
     public bool Enabled = true;
     public bool ShowBackground = false;
     public Vector2 RelativePosition = Vector2.zero;
@@ -181,6 +201,15 @@ public class UIRect : MonoBehaviour
 
 
     #region Virtual Functions
+
+    public virtual void OnHiding()
+    {
+
+    }
+    public virtual void OnShowing()
+    {
+
+    }
 
     public virtual void DrawMeBeforeChildren() 
     { 

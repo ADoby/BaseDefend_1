@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+using System.Linq;
+
 public class RobotKI : HealthHandler 
 {
 	public bool PlayerInput = true;
@@ -29,6 +31,13 @@ public class RobotKI : HealthHandler
 	public Timer ShootTimer;
 
 	public RocketLauncher weapon;
+
+    public override void Despawn()
+    {
+        agent.enabled = false;
+        Game.EnemyDespawned(Game.EnemyType.ROBOT1);
+        base.Despawn();
+    }
 
 	public bool HasTarget
 	{
@@ -131,6 +140,7 @@ public class RobotKI : HealthHandler
 	public override void Die()
 	{
 		//Despawn later
+        Game.EnemyDied(Game.EnemyType.ROBOT1);
 		Body.Ragdoll();
 	}
 
@@ -155,7 +165,10 @@ public class RobotKI : HealthHandler
 
 	public override void Reset()
 	{
+        LastTargetPos = Base.Instance.Position;
 		base.Reset();
+        Body.Reset();
+        agent.enabled = true;
 	}
 
 
@@ -178,7 +191,7 @@ public class RobotKI : HealthHandler
 		{
 			CanSeeTarget = false;
 			RaycastHit hit;
-			if (Physics.Raycast(EyePosition.position, TargetDirection, out hit, SightRange, playerSight))
+            if (Physics.Raycast(EyePosition.position, (Target.position - EyePosition.position).normalized, out hit, SightRange, playerSight))
 			{
 				if (hit.transform == Target)
 				{
@@ -217,32 +230,55 @@ public class RobotKI : HealthHandler
 	private void TargetChanged()
 	{
 		weapon.target = Target;
-		UpdateTarget();
+        UpdateTarget();
 	}
+
+    private bool TryTargeting(Collider coll)
+    {
+        if (coll == null || coll == default(Collider))
+            return false;
+        RaycastHit hit;
+        if (Physics.Raycast(EyePosition.position, (coll.transform.position - EyePosition.position).normalized, out hit, SightRange, playerSight))
+        {
+            if (hit.collider == coll)
+            {
+                Target = coll.transform;
+                LastTargetPos = TargetPosition;
+                TargetChanged();
+                return true;
+            }
+        }
+        return false;
+    }
 
 	private void FindTarget()
 	{
 		Collider[] foundCollider = Physics.OverlapSphere(Body.Position, SightRange, TargetLayer);
-		foreach (var coll in foundCollider)
-		{
-			RaycastHit hit;
-			if (Physics.Raycast(EyePosition.position, coll.transform.position- EyePosition.position, out hit, SightRange, playerSight))
-			{
-				Target = coll.transform;
-				TargetChanged();
-				return;
-			}
-		}
+        Collider player = foundCollider.FirstOrDefault(t => t.tag == "Player");
+        if (TryTargeting(player))
+            return;
+
+        foreach (var coll in foundCollider)
+        {
+            if (TryTargeting(coll))
+                return;
+        }
+        
 	}
 
 	public Timer RandomPositionTimer;
 
 	private void UpdateTarget()
 	{
-		if(!TargetInAttackRange || !CanSeeTarget)
-			agent.SetDestination(LastTargetPos);
+        if (!CanSeeTarget)
+            agent.SetDestination(LastTargetPos);
+        else if (!TargetInAttackRange)
+            agent.SetDestination(LastTargetPos);
 		else
 		{
+            agent.SetDestination(Body.Position);
+
+            return;
 			if (RandomPositionTimer.Update())
 			{
 				RandomPositionTimer.Reset();
@@ -251,7 +287,7 @@ public class RobotKI : HealthHandler
 				NavMeshHit hit;
 				if (NavMesh.SamplePosition(Body.Position + direction, out hit, 2f, NavMesh.GetNavMeshLayerFromName("Default")))
 				{
-					agent.SetDestination(hit.position);
+					//agent.SetDestination(hit.position);
 				}
 				else
 				{
@@ -267,6 +303,9 @@ public class RobotKI : HealthHandler
 		vertical = 0f;
 		horizontal = 0f;
 
+        if (CanSeeTarget && TargetDistance < 2.0f)
+            return;
+
 		Vector3 forward = Body.body.forward;
 		forward.y = 0;
 		Vector3 direction = MoveDirection;
@@ -274,15 +313,30 @@ public class RobotKI : HealthHandler
 
 		dot = Vector3.Dot(forward, direction);
 
+        if(dot > 0)
+            vertical = Mathf.Max(dot - 0.4f, 0.0f);
+        else
+            vertical = Mathf.Min(dot + 0.4f, 0.0f);
+
+        forward = Body.body.right;
+        forward.y = 0;
+        dot = Vector3.Dot(forward, direction);
+        //Move towards destination but sidewards
+        if (dot > 0)
+            horizontal = Mathf.Max(dot - 0.4f, 0.0f);
+        else
+            horizontal = Mathf.Min(dot + 0.4f, 0.0f);
+
+
 		if (!CanSeeTarget)
 		{
 			//Move towards destination forwards
-			vertical = Mathf.Max(dot - 0.7f, 0);
+			//vertical = Mathf.Max(dot - 0.5f, 0.1f);
+            horizontal *= 0.25f;
 		}
 		else
 		{
-			//Move towards destination but sidewards
-			horizontal = dot;
+            forward *= 0.25f;
 		}
 	}
 
@@ -316,7 +370,7 @@ public class RobotKI : HealthHandler
 			{
 				Body.body.rigidbody.useGravity = false;
 				Body.body.rigidbody.AddForce(Vector3.up * UpforceWhenDead * delta);
-				if (Body.Position.y > DeathYPosition)
+                if (Body.Position.y > DeathYPosition)
 					Despawn();
 			}
 			else

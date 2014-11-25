@@ -1,8 +1,32 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[System.Serializable]
+public class EnemyTypeInfo
+{
+    public string poolName = "";
+    public int points = 0;
+    public int maxSpawned = 0;
+    public int currentSpawned = 0;
+    public bool AllowMore
+    {
+        get
+        {
+            return currentSpawned < maxSpawned;
+        }
+    }
+}
+
 public class Game : MonoBehaviour
 {
+
+    public enum EnemyType
+    {
+        ROBOT1
+    }
+
+    public EnemyTypeInfo[] enemyinfos;
+
 
     #region Singleton
     private static Game instance;
@@ -18,7 +42,6 @@ public class Game : MonoBehaviour
     protected void Awake()
     {
         instance = this;
-        GameReset();
     }
     #endregion
 
@@ -34,50 +57,88 @@ public class Game : MonoBehaviour
         if (Events.Instance != null)
             Events.Instance.Unregister(this);
     }
-    bool OnAttempt_SpawnZombie()
+    bool OnAttempt_SpawnZombie(EnemyType type)
     {
-        return NewSpawnAllowed;
+        return enemyinfos[(int)type].AllowMore;
     }
     #endregion
 
+    public void Start()
+    {
+        GameReset();
+    }
+
     public void GameReset()
     {
-        MaxZombieCount = MaxZombies;
-        currentZombieCount = 0;
+        foreach (var item in enemyinfos)
+        {
+            item.currentSpawned = 0;
+        }
+        TimePlayed = 0;
+        Points = 0;
+        Deaths = 0;
+        Time.timeScale = 1f;
+        Data.Instance.UIStateChanged.Send(GameUI.State.GAME);
+        Data.Instance.PointsChanged.Send(Points);
+        Data.Instance.TimePlayedChanged.Send(TimePlayed);
+        Data.Instance.DeathsChanged.Send(Deaths);
     }
 
     #region PublicInspector
     public int MaxZombies = 10;
     #endregion
 
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Pause();
+
+        TimePlayed += Time.deltaTime;
+        Data.Instance.TimePlayedChanged.Send(TimePlayed);
+    }
+
+    public void Pause()
+    {
+        Time.timeScale = 0f;
+        Data.Instance.UIStateChanged.Send(GameUI.State.MENU);
+    }
+    public void Resume()
+    {
+        Data.Instance.UIStateChanged.Send(GameUI.State.GAME);
+        Time.timeScale = 1f;
+    }
+
     #region PublicStatic
     public static float DefaultFixedTime = 0.02f;
     public static int Points = 0;
+    public static float TimePlayed = 0f;
+    public static int Deaths = 0;
 
-    public static bool NewSpawnAllowed
+    public static void PlayerDied()
     {
-        get
-        {
-            return currentZombieCount < MaxZombieCount;
-        }
+        Deaths++;
+        Data.Instance.DeathsChanged.Send(Deaths);
     }
-    public static void ZombieSpawned(GameObject zombie)
+    public static void EnemySpawned(EnemyType type)
     {
-        currentZombieCount++;
+        Instance.enemyinfos[(int)type].currentSpawned++;
     }
-    public static void ZombieDespawned(GameObject zombie)
+    public static void EnemyDespawned(EnemyType type)
     {
-        currentZombieCount--;
+        Instance.enemyinfos[(int)type].currentSpawned--;
     }
-    public static void ZombieDied(GameObject zombie)
+    public static void EnemyDied(EnemyType type)
     {
-        Points += 10;
+        int pointsAdd = Instance.enemyinfos[(int)type].points;
+        Points += pointsAdd;
+        Data.Instance.OnPointsGained.Send(pointsAdd);
+        Data.Instance.PointsChanged.Send(Points);
+    }
+
+    public static void TriggerGameOver()
+    {
+        Time.timeScale = 0f;
+        Data.Instance.UIStateChanged.Send(GameUI.State.GAMEOVER);
     }
     #endregion
-
-    #region SpawnInfos
-    public static int MaxZombieCount = 10;
-    #endregion
-
-    private static int currentZombieCount = 0;
 }

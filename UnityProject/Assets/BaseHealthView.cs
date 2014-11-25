@@ -17,7 +17,7 @@ public class BaseHealthView : MonoBehaviour
 
 
 	// Use this for initialization
-	void Start () 
+    void Awake()
 	{
 		Data.Instance.Register(this);
 	}
@@ -41,7 +41,7 @@ public class BaseHealthView : MonoBehaviour
 			if (Mathf.Abs(currentValue - wantedValue) < minDiff)
 				currentValue = wantedValue;
 
-			bar.RelativeSize.y = currentValue;
+			bar.RelativeSize.x = currentValue;
 			text.Text = System.String.Format("{0:###%}", currentValue);
 		}
 	}
