@@ -43,7 +43,17 @@ public class vp_FPInput : vp_Component
 	// mouse cursor
 	public Rect[] MouseCursorZones = null;			// screen regions where mouse arrow remains visible when clicking. may be set up in the Inspector
 	// NOTE: these do not currently get saved to presets (!)
-	public bool MouseCursorForced = false;			// when true, the mouse arrow is enabled all over the screen and firing is disabled
+
+
+    // when true, the mouse arrow is enabled all over the screen and firing is disabled
+    public bool MouseCursorForced
+    {
+        get
+        {
+            return InputHandler.Instance.ForceMouseLock;
+        }
+    }
+
 	public bool MouseCursorBlocksMouseLook = true;	// if true, mouselook will be disabled while the mouse arrow is visible
 	public Vector2 MousePos { get { return m_MousePos; } }
 	protected Vector2 m_MousePos = Vector2.zero;	// current mouse position in GUI coordinates (Y flipped)

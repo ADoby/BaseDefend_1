@@ -42,6 +42,11 @@ public class vp_SpawnPoint : MonoBehaviour
 		}
 	}
 
+    public void Awake()
+    {
+        m_SpawnPoints = null;
+    }
+
 
 	/// <summary>
 	/// picks a random spawnpoint and returns a placement that is snapped

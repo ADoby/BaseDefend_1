@@ -310,6 +310,9 @@ public class vp_ItemPickup : MonoBehaviour
 		if (m_Depleted)
 			return;
 
+        if (col.tag != "Player")
+            return;
+
 		vp_Inventory inventory;
 		if (!m_ColliderInventories.TryGetValue(col, out inventory))
 		{

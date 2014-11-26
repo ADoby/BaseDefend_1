@@ -118,7 +118,7 @@ public class vp_FPInputEditor : Editor
 		if (m_MouseCursorFoldout)
 		{
 
-			m_Component.MouseCursorForced = EditorGUILayout.Toggle("Forced (always shown)", m_Component.MouseCursorForced);
+			//m_Component.MouseCursorForced = EditorGUILayout.Toggle("Forced (always shown)", m_Component.MouseCursorForced);
 			m_Component.MouseCursorBlocksMouseLook = EditorGUILayout.Toggle("Blocks Mouselook", m_Component.MouseCursorBlocksMouseLook);
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Mouse Cursor Zones");

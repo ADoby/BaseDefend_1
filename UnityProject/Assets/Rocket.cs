@@ -45,18 +45,22 @@ public class Rocket : MonoBehaviour {
 
 	public void Explode()
 	{
-		
-		Collider[] hits = Physics.OverlapSphere(transform.position, ExplosionRange, ExplosionMask);
-		foreach (var item in hits)
-		{
-			TryDamage(item);
-		}
+        if (ExplosionRange > 0)
+        {
+            Collider[] hits = Physics.OverlapSphere(transform.position, ExplosionRange, ExplosionMask);
+            foreach (var item in hits)
+            {
+                TryDamage(item);
+            }
+        }
 		GameObjectPool.Instance.Despawn(poolName, gameObject);
 	}
 
 	public void TryDamage(Collider item)
 	{
-		float procentage = Vector3.Distance(item.transform.position, transform.position) / ExplosionRange;
+        float procentage = 1f;
+        if (ExplosionRange > 0)
+            procentage = Vector3.Distance(item.transform.position, transform.position) / ExplosionRange;
 
 		Rigidbody rig = item.rigidbody;
 		if (rig)
