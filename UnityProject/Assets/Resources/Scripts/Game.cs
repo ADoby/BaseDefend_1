@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 [System.Serializable]
 public class EnemyTypeInfo
@@ -114,6 +115,19 @@ public class Game : MonoBehaviour
     public static float TimePlayed = 0f;
     public static int Deaths = 0;
 
+    public AnimationCurve DifficultyCurve;
+    //3600 = 1 hour
+    public float MaxDifficultyAtTime = 3600;
+
+    //0 - 1, Difficulty
+    public static float DifficultyLevel
+    {
+        get
+        {
+            return Instance.DifficultyCurve.Evaluate(Mathf.Clamp01(Mathf.Min(TimePlayed, Instance.MaxDifficultyAtTime) / Instance.MaxDifficultyAtTime));
+        }
+    }
+
     public static void PlayerDied()
     {
         Deaths++;
@@ -141,4 +155,28 @@ public class Game : MonoBehaviour
         Data.Instance.UIStateChanged.Send(GameUI.State.GAMEOVER);
     }
     #endregion
+
+    public static bool TrySpawnEnemy(EnemyType enemy, Vector3 position, Quaternion rotation)
+    {
+        if (Instance.enemyinfos.Length <= (int)enemy)
+        {
+            Debug.LogWarning("No Info for EnemyType: " + enemy);
+            return false;
+        }
+
+        if (!Events.Instance.SpawnZombie.Try(enemy))
+            return false;
+
+        Instance.SpawnEnemy(enemy, position, rotation);
+        
+        return true;
+    }
+
+    public void SpawnEnemy(EnemyType enemy, Vector3 position, Quaternion rotation)
+    {
+        GameObject go = GameObjectPool.Instance.Spawn(enemyinfos[(int)enemy].poolName, position, rotation);
+        Enemy enemyObject = go.GetComponent<Enemy>();
+        enemyObject.OnSpawn();
+        EnemySpawned(enemy);
+    }
 }

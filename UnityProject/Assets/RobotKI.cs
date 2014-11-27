@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
-
 using System.Linq;
 
-public class RobotKI : HealthHandler 
+public class RobotKI : Enemy 
 {
 	public bool PlayerInput = true;
 

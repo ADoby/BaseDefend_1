@@ -57,11 +57,8 @@ public class ZombieSpawner : MonoBehaviour
     {
         SpawnInfo info = GetNext();
 
-        if (info != null && Events.Instance.SpawnZombie.Try(info.type))
-        {
-            GameObject go = GameObjectPool.Instance.Spawn(Game.Instance.enemyinfos[(int)info.type].poolName, SpawnPoint.position, Quaternion.identity);
-            Game.EnemySpawned(info.type);
-        }
+        if (info != null)
+            Game.TrySpawnEnemy(info.type, SpawnPoint.position, Quaternion.identity);
 
         ResetSpawn();
     }

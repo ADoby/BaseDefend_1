@@ -122,7 +122,7 @@ using System.Collections.Generic;
 				go.SetActive(true);
 
 			go.SendMessageUpwards("SetPoolName", poolName, SendMessageOptions.DontRequireReceiver);
-			go.SendMessageUpwards("Reset", SendMessageOptions.DontRequireReceiver);
+            go.SendMessageUpwards("Reset", SendMessageOptions.DontRequireReceiver);
 
 			return go;
 		}
