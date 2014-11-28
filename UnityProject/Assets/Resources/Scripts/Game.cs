@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class EnemyTypeInfo
@@ -9,6 +10,7 @@ public class EnemyTypeInfo
     public int points = 0;
     public int maxSpawned = 0;
     public int currentSpawned = 0;
+    public AnimationCurve SpawnChance;
     public bool AllowMore
     {
         get
@@ -26,8 +28,8 @@ public class Game : MonoBehaviour
         ROBOT1
     }
 
-    public EnemyTypeInfo[] enemyinfos;
-
+    public List<EnemyTypeInfo> enemyinfos = new List<EnemyTypeInfo>();
+    
 
     #region Singleton
     private static Game instance;
@@ -156,9 +158,37 @@ public class Game : MonoBehaviour
     }
     #endregion
 
+    public static float Weight(EnemyTypeInfo info)
+    {
+        return info.SpawnChance.Evaluate(DifficultyLevel);
+    }
+
+    public static bool TrySpawnEnemy(Vector3 position, Quaternion rotation)
+    {
+        EnemyTypeInfo enemy = Instance.enemyinfos.RandomEntry(Weight);
+        if (enemy == default(EnemyTypeInfo))
+            return false;
+
+        EnemyType type = (EnemyType)Instance.enemyinfos.IndexOf(enemy);
+
+        if (Instance.enemyinfos.Count <= (int)type)
+        {
+            Debug.LogWarning("No Info for EnemyType: " + enemy);
+            return false;
+        }
+
+        if (!enemy.AllowMore)
+            return false;
+
+        Instance.SpawnEnemy(type, position, rotation);
+
+        return true;
+    }
+
+
     public static bool TrySpawnEnemy(EnemyType enemy, Vector3 position, Quaternion rotation)
     {
-        if (Instance.enemyinfos.Length <= (int)enemy)
+        if (Instance.enemyinfos.Count <= (int)enemy)
         {
             Debug.LogWarning("No Info for EnemyType: " + enemy);
             return false;

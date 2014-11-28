@@ -47,6 +47,11 @@ public class vp_SpawnPoint : MonoBehaviour
         m_SpawnPoints = null;
     }
 
+    public void OnDestroy()
+    {
+        m_SpawnPoints = null;
+    }
+
 
 	/// <summary>
 	/// picks a random spawnpoint and returns a placement that is snapped

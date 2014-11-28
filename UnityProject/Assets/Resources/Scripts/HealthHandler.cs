@@ -56,11 +56,15 @@ public class HealthHandler : MonoBehaviour {
             return !alive;
         }
     }
-    public float Health
+    public virtual float Health
     {
         get
         {
             return health;
+        }
+        set
+        {
+            health = Mathf.Clamp(value, 0, MaxHealth);
         }
     }
 
