@@ -160,6 +160,8 @@ public class RobotKI : Enemy
 		Body.PlayerControlled = PlayerInput;
 
 		weapon.Owner = Body.body.transform;
+
+        myCollider = GetComponentsInChildren<Transform>();
 	}
 
 	public override void Reset()
@@ -180,6 +182,20 @@ public class RobotKI : Enemy
 	{
 		if (Body.Ragdolled || isDead)
 			return;
+
+        if (WayCheckTimer.Update())
+        {
+            SomeoneInMyWay = false;
+            WayCheckTimer.Reset();
+            RaycastHit hit;
+            if (Physics.Raycast(EyePosition.position, WalkDirection, out hit, ObstacleDistance, ObstacleLayer))
+            {
+                if (!myCollider.Contains(hit.transform))
+                {
+                    SomeoneInMyWay = true;
+                }
+            }
+        }
 
 		if(FindTargetTimer.Update())
 		{
@@ -423,6 +439,12 @@ public class RobotKI : Enemy
     public LayerMask ObstacleLayer;
     public float ObstacleDistance = 1.0f;
 
+    public Transform[] myCollider;
+
+    public Timer WayCheckTimer;
+    public bool SomeoneInMyWay = false;
+    public Vector3 WalkDirection = Vector3.zero;
+
 	public void Move(float verticalInput, float horizontalInput, float delta)
 	{
 		Vector3 inputDirection = Vector3.zero;
@@ -449,10 +471,7 @@ public class RobotKI : Enemy
 			horizontalInput = 0;
 		inputDirection.x = horizontalInput;
 
-        if (Physics.Raycast(EyePosition.position, inputDirection, ObstacleDistance, ObstacleLayer))
-        {
-            return;
-        }
+        WalkDirection = inputDirection;
 
 		inputDirection = Body.body.TransformDirection(inputDirection);
 
