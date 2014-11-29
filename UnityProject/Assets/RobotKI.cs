@@ -296,6 +296,7 @@ public class RobotKI : Enemy
 		}
 	}
 
+
 	private float dot = 0f;
 	public void MovementValue(out float vertical, out float horizontal)
 	{
@@ -418,6 +419,10 @@ public class RobotKI : Enemy
 		
 	}
 
+
+    public LayerMask ObstacleLayer;
+    public float ObstacleDistance = 1.0f;
+
 	public void Move(float verticalInput, float horizontalInput, float delta)
 	{
 		Vector3 inputDirection = Vector3.zero;
@@ -443,6 +448,11 @@ public class RobotKI : Enemy
 		else
 			horizontalInput = 0;
 		inputDirection.x = horizontalInput;
+
+        if (Physics.Raycast(EyePosition.position, inputDirection, ObstacleDistance, ObstacleLayer))
+        {
+            return;
+        }
 
 		inputDirection = Body.body.TransformDirection(inputDirection);
 
