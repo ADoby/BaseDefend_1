@@ -434,6 +434,8 @@ public class RobotBody : MonoBehaviour
 		}
 	}
 
+    public bool local = true;
+
 	public bool grounded;
 	public bool PlayerControlled = true;
 	public float GroundCheckDistance = 1.25f;
@@ -508,6 +510,7 @@ public class RobotBody : MonoBehaviour
 		Vector3 targetVector = Vector3.up;
 		Vector3 wantedPosition = StartGetUpPosition + Vector3.up;
 
+        if (local) wantedPosition = body.TransformPoint(hipStartPos);
 
 		RaycastHit hit;
 		if (Physics.Raycast(body.position, -body.up, out hit, GroundCheckDistance, FootWalkLayerMask))
@@ -643,30 +646,41 @@ public class RobotBody : MonoBehaviour
 		body.rigidbody.angularVelocity += crossResult * turnAngle * RotationSpring * delta;
 		#endregion
 
+
+        if (local)
+        {
+            velocity += (hipStartPos - body.localPosition) * HeightSpring * delta;
+        }
+        else
+        {
+            Vector3 groundPosition;
+            grounded = GetGround(body.position, out groundPosition, GroundCheckDistance);
+
+            if (!grounded)
+            {
+                currentHeightDamping = 0f;
+                currentVelocityDamping = 0f;
+                velocity += Vector3.up * Gravity * delta;
+            }
+            else
+            {
+                groundPosition += Vector3.up * YDistanceToFeet;
+                if (FeetYToBodyY)
+                    groundPosition += Vector3.up * averageYFoot;
+                velocity += (groundPosition - body.position) * HeightSpring * delta;
+
+                if (feetOnGround < 2)
+                {
+                    //Grounded but not enough feet, cheat to disred height
+                    //Vector3 diff = groundPosition - body.position;
+                    //velocity += diff * HeightSpring * delta;
+                }
+            }
+        }
+
+        
+        
 		
-
-		Vector3 groundPosition;
-		grounded = GetGround(body.position, out groundPosition, GroundCheckDistance);
-		if (!grounded)
-		{
-			currentHeightDamping = 0f;
-			currentVelocityDamping = 0f;
-			velocity += Vector3.up * Gravity * delta;
-		}
-		else
-		{
-			groundPosition += Vector3.up * YDistanceToFeet;
-			if (FeetYToBodyY)
-				groundPosition += Vector3.up * averageYFoot;
-			velocity += (groundPosition - body.position) * HeightSpring * delta;
-
-			if (feetOnGround < 2)
-			{
-				//Grounded but not enough feet, cheat to disred height
-				//Vector3 diff = groundPosition - body.position;
-				//velocity += diff * HeightSpring * delta;
-			}
-		}
 		
 		body.rigidbody.angularVelocity -= body.rigidbody.angularVelocity * RotateVelocityDamping * delta;
 

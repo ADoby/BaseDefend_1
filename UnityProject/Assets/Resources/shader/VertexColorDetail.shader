@@ -52,7 +52,7 @@
 			    o.Albedo = tex.rgb * IN.customColor.rgb * _Color.rgb;
 			    o.Gloss = tex.a;
 			    o.Specular = _Shininess;
-			    o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap)) + UnpackNormal(tex2D (_DetailBumpMap, IN.uv_DetailBumpMap));
+			    o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap)) * UnpackNormal(tex2D (_DetailBumpMap, IN.uv_DetailBumpMap));
 		    }
 	    ENDCG
         

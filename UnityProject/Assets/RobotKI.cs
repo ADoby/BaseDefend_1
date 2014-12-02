@@ -73,7 +73,7 @@ public class RobotKI : Enemy
 	{
 		get
 		{
-			if (!agent)
+            if (!agent || !useAgent)
 				return Body.Position;
 			return agent.steeringTarget;
 		}
@@ -142,7 +142,6 @@ public class RobotKI : Enemy
 		//Despawn later
         Game.EnemyDied(Game.EnemyType.ROBOT1);
 		Body.Ragdoll();
-        WaitAfterDeadTimer.Reset();
 	}
 
 	public override void SetPoolName(string value)
@@ -153,9 +152,13 @@ public class RobotKI : Enemy
 	// Use this for initialization
 	void Awake ()
 	{
-		//We do this by force, so dont move guy
-		agent.updatePosition = false;
-		agent.updateRotation = false;
+        if (useAgent)
+        {
+            //We do this by force, so dont move guy
+            agent.updatePosition = false;
+            agent.updateRotation = false;
+        }
+		
 
 		rigidBody = Body.body.rigidbody;
 
@@ -163,7 +166,9 @@ public class RobotKI : Enemy
 
 		weapon.Owner = Body.body.transform;
 
-        myCollider = GetComponentsInChildren<Transform>();
+        myChildren = GetComponentsInChildren<Transform>();
+        renderers = GetComponentsInChildren<Renderer>();
+        myColliders = GetComponentsInChildren<Collider>();
 	}
 
 	public override void Reset()
@@ -171,20 +176,59 @@ public class RobotKI : Enemy
         LastTargetPos = Base.Instance.NavigationTarget.position;
 		base.Reset();
         Body.Reset();
-        agent.enabled = true;
+
+        agent.enabled = useAgent;
+
+        WaitAfterDeadTimer.Reset();
+        UpdateRenderColor();
+        SetCollider(true);
 	}
 
+    public Color AliveColor;
+    public Color DeadColor;
+
+    public void UpdateRenderColor()
+    {
+        foreach (var item in renderers)
+        {
+            item.material.SetColor("_Color", Color.Lerp(AliveColor, DeadColor, WaitAfterDeadTimer.Procentage));
+        }
+    }
+
+    public void SetCollider(bool value)
+    {
+        foreach (var item in myColliders)
+        {
+            item.enabled = value;
+        }
+    }
 
 	public Transform EyePosition;
 	public LayerMask playerSight;
 	public Vector3 LastTargetPos;
 	public bool CanSeeTarget;
 
+    public Renderer[] renderers;
+    public Collider[] myColliders;
+
+    public bool useAgent = false;
+
 	void Update()
 	{
-        if (Body.Ragdolled || isDead)
+        if (Body.Ragdolled && !isDead)
         {
-            WaitAfterDeadTimer.Update();
+            return;
+        }
+        if (isDead)
+        {
+            if(!WaitAfterDeadTimer.Finished)
+            {
+                if (WaitAfterDeadTimer.Update())
+                {
+                    SetCollider(false);
+                }
+                UpdateRenderColor();
+            }
             return;
         }
 
@@ -195,7 +239,7 @@ public class RobotKI : Enemy
             RaycastHit hit;
             if (Physics.Raycast(EyePosition.position, WalkDirection, out hit, ObstacleDistance, ObstacleLayer))
             {
-                if (!myCollider.Contains(hit.transform))
+                if (!myChildren.Contains(hit.transform))
                 {
                     SomeoneInMyWay = true;
                 }
@@ -292,7 +336,8 @@ public class RobotKI : Enemy
 	{
         if (!CanSeeTarget || !TargetInAttackRange || (CanSeeTarget && !TargetInAttackRange))
         {
-            agent.SetDestination(LastTargetPos);
+            if (useAgent)
+                agent.SetDestination(LastTargetPos);
         }
 		else
 		{
@@ -301,7 +346,9 @@ public class RobotKI : Enemy
 				RandomPositionTimer.Reset();
 
 				Vector3 direction = Random.onUnitSphere;
-                agent.SetDestination(Body.Position + direction);
+
+                if (useAgent)
+                    agent.SetDestination(Body.Position + direction);
 			}
 		}
 	}
@@ -436,7 +483,7 @@ public class RobotKI : Enemy
     public LayerMask ObstacleLayer;
     public float ObstacleDistance = 1.0f;
 
-    public Transform[] myCollider;
+    public Transform[] myChildren;
 
     public Timer WayCheckTimer;
     public bool SomeoneInMyWay = false;
