@@ -21,6 +21,8 @@ public class Base : HealthHandler
     }
     #endregion
 
+    public Transform NavigationTarget;
+
 	public override void Reset()
 	{
 		base.Reset();

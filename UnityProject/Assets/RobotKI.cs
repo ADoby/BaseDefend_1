@@ -28,6 +28,7 @@ public class RobotKI : Enemy
 	public Timer FindTargetTimer;
 	public Timer UpdateTargetTimer;
 	public Timer ShootTimer;
+    public Timer WaitAfterDeadTimer;
 
 	public RocketLauncher weapon;
 
@@ -141,6 +142,7 @@ public class RobotKI : Enemy
 		//Despawn later
         Game.EnemyDied(Game.EnemyType.ROBOT1);
 		Body.Ragdoll();
+        WaitAfterDeadTimer.Reset();
 	}
 
 	public override void SetPoolName(string value)
@@ -166,7 +168,7 @@ public class RobotKI : Enemy
 
 	public override void Reset()
 	{
-        LastTargetPos = Base.Instance.Position;
+        LastTargetPos = Base.Instance.NavigationTarget.position;
 		base.Reset();
         Body.Reset();
         agent.enabled = true;
@@ -180,8 +182,11 @@ public class RobotKI : Enemy
 
 	void Update()
 	{
-		if (Body.Ragdolled || isDead)
-			return;
+        if (Body.Ragdolled || isDead)
+        {
+            WaitAfterDeadTimer.Update();
+            return;
+        }
 
         if (WayCheckTimer.Update())
         {
@@ -231,7 +236,7 @@ public class RobotKI : Enemy
 		}
 		if (ShootTimer.Update())
 		{
-			if (CanSeeTarget && TargetInAttackRange)
+			if (CanSeeTarget && TargetInAttackRange && !Body.Ragdolled)
 			{
 
 				if (weapon && weapon.Shoot())
@@ -285,29 +290,18 @@ public class RobotKI : Enemy
 
 	private void UpdateTarget()
 	{
-        if (!CanSeeTarget)
+        if (!CanSeeTarget || !TargetInAttackRange || (CanSeeTarget && !TargetInAttackRange))
+        {
             agent.SetDestination(LastTargetPos);
-        else if (!TargetInAttackRange)
-            agent.SetDestination(LastTargetPos);
+        }
 		else
 		{
-            agent.SetDestination(Body.Position);
-
-            return;
 			if (RandomPositionTimer.Update())
 			{
 				RandomPositionTimer.Reset();
 
 				Vector3 direction = Random.onUnitSphere;
-				NavMeshHit hit;
-				if (NavMesh.SamplePosition(Body.Position + direction, out hit, 2f, NavMesh.GetNavMeshLayerFromName("Default")))
-				{
-					//agent.SetDestination(hit.position);
-				}
-				else
-				{
-					agent.SetDestination(Body.Position);
-				}
+                agent.SetDestination(Body.Position + direction);
 			}
 		}
 	}
@@ -382,10 +376,13 @@ public class RobotKI : Enemy
 		float delta = Time.fixedDeltaTime / Game.DefaultFixedTime;
 		if (Body.Ragdolled)
 		{
-			if (isDead)
+            if (isDead)
 			{
-				Body.body.rigidbody.useGravity = false;
-				Body.body.rigidbody.AddForce(Vector3.up * UpforceWhenDead * delta);
+                if (WaitAfterDeadTimer.Finished)
+                {
+                    Body.body.rigidbody.useGravity = false;
+                    Body.body.rigidbody.AddForce(Vector3.up * UpforceWhenDead * delta);
+                }
                 if (Body.Position.y > DeathYPosition)
 					Despawn();
 			}
