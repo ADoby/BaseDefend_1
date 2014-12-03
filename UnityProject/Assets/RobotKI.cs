@@ -149,9 +149,23 @@ public class RobotKI : Enemy
 		base.SetPoolName(value);
 	}
 
+    public void OnMessage_EnemyFixedDeltaTimeChanged(float difference)
+    {
+        Body.body.rigidbody.velocity -= Body.body.rigidbody.velocity * difference;
+        Body.body.rigidbody.angularVelocity -= Body.body.rigidbody.angularVelocity * difference;
+
+        if (Game.EnemyFixedDelta == 0)
+        {
+            Body.body.rigidbody.velocity = Vector3.zero;
+            Body.body.rigidbody.angularVelocity = Vector3.zero;
+        }
+    }
+
 	// Use this for initialization
 	void Awake ()
 	{
+        Data.Instance.Register(this);
+
         if (useAgent)
         {
             //We do this by force, so dont move guy
@@ -215,6 +229,9 @@ public class RobotKI : Enemy
 
 	void Update()
 	{
+        if (Game.EnemyTimeScale == 0)
+            return;
+
         if (Body.Ragdolled && !isDead)
         {
             return;
@@ -290,6 +307,8 @@ public class RobotKI : Enemy
 			}
 		}
 	}
+
+
 
 	private void TargetChanged()
 	{
@@ -420,7 +439,10 @@ public class RobotKI : Enemy
 	// Update is called once per frame
 	void FixedUpdate ()
 	{
-		float delta = Time.fixedDeltaTime / Game.DefaultFixedTime;
+        if (Game.EnemyTimeScale == 0)
+            return;
+
+		float delta = Game.EnemyFixedDelta;
 		if (Body.Ragdolled)
 		{
             if (isDead)

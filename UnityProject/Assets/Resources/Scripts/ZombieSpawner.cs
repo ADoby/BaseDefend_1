@@ -46,7 +46,7 @@ public class ZombieSpawner : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        SpawnTimer -= Time.deltaTime;
+        SpawnTimer -= Game.EnemyDeltaTime;
         if (SpawnTimer <= 0)
             RandomSpawn();
 	}

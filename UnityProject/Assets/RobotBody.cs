@@ -580,7 +580,8 @@ public class RobotBody : MonoBehaviour
 		if (!Application.isPlaying)
 			return;
 
-		float delta = Time.fixedDeltaTime / Game.DefaultFixedTime;
+		float delta = Game.EnemyFixedDelta;
+
 		if (Ragdolled)
 		{
 			return;

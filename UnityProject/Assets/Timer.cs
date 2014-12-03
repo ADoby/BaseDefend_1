@@ -6,6 +6,14 @@ public class Timer {
     public float Value = 0f;
     private float timer = 0f;
 
+    public float CurrentTime
+    {
+        get
+        {
+            return timer;
+        }
+    }
+
 	// Use this for initialization
 	void Start () 
     {

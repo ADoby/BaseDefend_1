@@ -23,5 +23,6 @@ public class Events : vp_EventHandler
     #endregion
 
     public vp_Attempt<Game.EnemyType> SpawnZombie;
+    public vp_Attempt ActivateSilence;
 
 }

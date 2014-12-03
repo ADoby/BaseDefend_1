@@ -42,6 +42,11 @@ public class Base : HealthHandler
 		Data.Instance.BaseHealthChanged.Send(this);
 	}
 
+    void Update()
+    {
+        Health += HealthRegeneration * Time.deltaTime;
+    }
+
 	public override void Damage(vp_DamageInfo info)
 	{
 		base.Damage(info);
@@ -52,4 +57,6 @@ public class Base : HealthHandler
     {
         Game.TriggerGameOver();
     }
+
+    public float HealthRegeneration = 0f;
 }

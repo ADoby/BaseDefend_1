@@ -33,6 +33,11 @@ public class Rocket : MonoBehaviour {
 
     public Collider Collider;
 
+    public void Awake()
+    {
+        Data.Instance.Register(this);
+    }
+
 	// Use this for initialization
 	void Reset () 
 	{
@@ -49,6 +54,18 @@ public class Rocket : MonoBehaviour {
 		poolName = value;
 	}
 
+    public void OnMessage_EnemyFixedDeltaTimeChanged(float difference)
+    {
+        rigidbody.velocity -= rigidbody.velocity * difference;
+        rigidbody.angularVelocity -= rigidbody.angularVelocity * difference;
+
+        if (Game.EnemyFixedDelta == 0)
+        {
+            rigidbody.velocity = Vector3.zero;
+            rigidbody.angularVelocity = Vector3.zero;
+        }
+    }
+
 	void Update()
 	{
 		if (!IsDead && lifeTimer.Update())
@@ -63,7 +80,7 @@ public class Rocket : MonoBehaviour {
         if (IsDead)
             return;
 
-		float delta = Time.fixedDeltaTime / Game.DefaultFixedTime;
+		float delta = Game.EnemyFixedDelta;
 		rigidbody.velocity += transform.forward * ForceForward * delta;
 		rigidbody.velocity -= rigidbody.velocity * Damping * delta;
 	}

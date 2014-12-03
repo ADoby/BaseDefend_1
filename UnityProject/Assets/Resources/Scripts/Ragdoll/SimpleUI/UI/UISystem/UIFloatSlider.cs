@@ -16,6 +16,26 @@ public class UIFloatSlider : UIRect
 
     public FloatSliderEvent OnFloatSliderChanged;
     public static FloatSliderEvent OnAnyFloatSliderChanged;
+    
+    public float Procentage
+    {
+        get
+        {
+            return (currentValue - minValue) / (maxValue - minValue);
+        }
+    }
+
+    public void Start()
+    {
+        if (Callback != null)
+            Callback.CallBack(this);
+
+        if (OnFloatSliderChanged != null)
+            OnFloatSliderChanged(this);
+
+        if (OnAnyFloatSliderChanged != null)
+            OnAnyFloatSliderChanged(this);
+    }
 
     public override void DrawMeBeforeChildren()
     {

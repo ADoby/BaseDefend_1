@@ -17,7 +17,7 @@ public class RocketLauncher : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-		float delta = Time.deltaTime / 0.016f;
+		float delta = Game.EnemyDelta;
 
 		Vector3 diff = Rocket_Pos1.localPosition;
 		Vector3 currentDirection = transform.forward;

@@ -104,7 +104,7 @@ public class SimpleIKSolver : MonoBehaviour
  
 				turnAngle = Mathf.Acos (cosAngle); 
 
-                turnAngle = IsDamping ? Mathf.Min(turnAngle * DynamicDamping * (Time.deltaTime / 0.016f), DampingMax * 0.01f) : turnAngle;
+                turnAngle = IsDamping ? Mathf.Min(turnAngle * DynamicDamping * Game.EnemyDelta, DampingMax * 0.01f) : turnAngle;
 
 				turnAngle = turnAngle * Mathf.Rad2Deg;
  
