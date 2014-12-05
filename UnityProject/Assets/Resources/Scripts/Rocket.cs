@@ -29,6 +29,8 @@ public class Rocket : MonoBehaviour {
 
     public Transform target = null;
 
+    public Vector3 wantedDirection = Vector3.forward;
+
     public void Awake()
     {
         Data.Instance.Register(this);
@@ -43,6 +45,7 @@ public class Rocket : MonoBehaviour {
         Collider.enabled = true;
         particles.enableEmission = true;
         rocketRenderer.enabled = true;
+        wantedDirection = transform.forward;
 	}
 
 	void SetPoolName(string value)
@@ -89,7 +92,8 @@ public class Rocket : MonoBehaviour {
 
         if(target)
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(target.position - transform.position), Time.deltaTime * RotateSpeed);
-
+        else
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(wantedDirection), Time.deltaTime * RotateSpeed);
 
 		rigidbody.velocity += transform.forward * ForceForward * delta;
 		rigidbody.velocity -= rigidbody.velocity * Damping * delta;

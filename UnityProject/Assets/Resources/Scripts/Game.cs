@@ -434,10 +434,10 @@ public class Game : MonoBehaviour
                 value = string.Format("{0:0.#}m", info.CurrentValue);
                 break;
             case AttributeInfo.Attribute.Base_Rocket_Speed:
-                value = string.Format("{0}SomeSpeed", info.CurrentValue);
+                value = string.Format("{0}m/s", info.CurrentValue);
                 break;
             case AttributeInfo.Attribute.Base_Rocket_Targeting_Speed:
-                value = string.Format("{0}SomeSpeed", info.CurrentValue);
+                value = string.Format("{0}°/s", info.CurrentValue);
                 break;
             case AttributeInfo.Attribute.Enemy_Health:
                 break;

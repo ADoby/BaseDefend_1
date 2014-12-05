@@ -50,6 +50,7 @@ public class RocketLauncher : MonoBehaviour
 		{
 			rocket.Owner = this.Owner;
             rocket.ExplosionDamage = damage;
+            rocket.target = target;
 		}
 		return true;
 	}
