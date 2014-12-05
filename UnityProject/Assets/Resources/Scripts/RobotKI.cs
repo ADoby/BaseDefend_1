@@ -142,6 +142,7 @@ public class RobotKI : Enemy
 		//Despawn later
         Game.EnemyDied(Game.EnemyType.ROBOT1);
 		Body.Ragdoll();
+        alive = false;
 	}
 
 	public override void SetPoolName(string value)
