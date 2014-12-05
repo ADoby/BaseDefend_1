@@ -27,6 +27,8 @@ public class Rocket : MonoBehaviour {
 
     public Collider Collider;
 
+    public Transform target = null;
+
     public void Awake()
     {
         Data.Instance.Register(this);
@@ -71,6 +73,8 @@ public class Rocket : MonoBehaviour {
             GameObjectPool.Instance.Despawn(poolName, gameObject);
 	}
 
+    public float RotateSpeed = 2.0f;
+
 	// Update is called once per frame
 	void FixedUpdate()
 	{
@@ -81,6 +85,11 @@ public class Rocket : MonoBehaviour {
 
         if (!EnemyTimeScale)
             delta = Time.fixedDeltaTime / Game.DefaultFixedTime;
+
+
+        if(target)
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(target.position - transform.position), Time.deltaTime * RotateSpeed);
+
 
 		rigidbody.velocity += transform.forward * ForceForward * delta;
 		rigidbody.velocity -= rigidbody.velocity * Damping * delta;

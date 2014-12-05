@@ -48,6 +48,7 @@ public class AttributeInfo
         Base_Shoot_Speed,
         Base_Range,
         Base_Rocket_Speed,
+        Base_Rocket_Targeting_Speed,
         Enemy_Health,
         Enemy_Damage
     }
@@ -337,6 +338,9 @@ public class Game : MonoBehaviour
             case AttributeInfo.Attribute.Base_Rocket_Speed:
                 Base.Instance.RocketSpeed = info.CurrentValue;
                 break;
+            case AttributeInfo.Attribute.Base_Rocket_Targeting_Speed:
+                Base.Instance.RocketSpeed = info.CurrentValue;
+                break;
             case AttributeInfo.Attribute.Enemy_Health:
                 break;
             case AttributeInfo.Attribute.Enemy_Damage:
@@ -430,7 +434,10 @@ public class Game : MonoBehaviour
                 value = string.Format("{0:0.#}m", info.CurrentValue);
                 break;
             case AttributeInfo.Attribute.Base_Rocket_Speed:
-                value = string.Format("{0}Speed", info.CurrentValue);
+                value = string.Format("{0}SomeSpeed", info.CurrentValue);
+                break;
+            case AttributeInfo.Attribute.Base_Rocket_Targeting_Speed:
+                value = string.Format("{0}SomeSpeed", info.CurrentValue);
                 break;
             case AttributeInfo.Attribute.Enemy_Health:
                 break;

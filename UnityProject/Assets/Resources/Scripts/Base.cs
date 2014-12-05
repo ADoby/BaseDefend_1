@@ -34,6 +34,7 @@ public class Base : HealthHandler
 
     public int RocketDamage = 10;
     public float RocketSpeed = 2.0f;
+    public float RocketTargetingSpeed = 2.0f;
     public float RocketCooldown
     {
         get
@@ -107,6 +108,8 @@ public class Base : HealthHandler
             rocket.Owner = AutoTurretPos;
             rocket.ExplosionDamage = RocketDamage;
             rocket.ForceForward = RocketSpeed;
+            rocket.RotateSpeed = RocketTargetingSpeed;
+            rocket.target = target.GetBody;
         }
     }
 
