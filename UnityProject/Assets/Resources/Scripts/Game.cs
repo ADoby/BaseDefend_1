@@ -7,7 +7,16 @@ using System.Collections.Generic;
 public class EnemyTypeInfo
 {
     public string poolName = "";
+
+    public int Points
+    {
+        get
+        {
+            return points + (int)(PointPerDifficulty * Game.DifficultyLevel);
+        }
+    }
     public int points = 0;
+    public int PointPerDifficulty = 0;
     public int maxSpawned = 0;
     public int currentSpawned = 0;
     public AnimationCurve SpawnChance;
@@ -20,6 +29,93 @@ public class EnemyTypeInfo
     }
 }
 
+[System.Serializable]
+public class AttributeInfo
+{
+    public enum Attribute
+    {
+        Player_Health,
+        Player_Regeneration,
+        Player_Weapon_Ammo_Regeneration,
+        Player_Weapon_Damage,
+        Base_Health,
+        Base_Regeneration,
+        Base_Shield1_Health,
+        Base_Shield1_Regeneration,
+        Base_Shield2_Health,
+        Base_Shield2_Regeneration,
+        Enemy_Health,
+        Enemy_Damage
+    }
+
+    public string Name = string.Empty;
+    public Attribute type;
+    
+    private int currentPoints = 0;
+    public int maxPoints = 0;
+
+    public float defaultValue = 0f;
+    public float valuePerPoint = 0f;
+
+    public int defaultCost = 0;
+    public int costPerPoint = 0;
+
+    public int CurrentPoints
+    {
+        get
+        {
+            return currentPoints;
+        }
+    }
+
+    public float CurrentValue
+    {
+        get
+        {
+            return defaultValue + valuePerPoint * CurrentPoints;
+        }
+    }
+
+    public int CurrentCost
+    {
+        get
+        {
+            return defaultCost + costPerPoint * CurrentPoints;
+        }
+    }
+
+    public bool AllowMore
+    {
+        get
+        {
+            return currentPoints < maxPoints;
+        }
+    }
+    public bool AllowLess
+    {
+        get
+        {
+            return currentPoints > 0;
+        }
+    }
+
+    public bool AddPoint()
+    {
+        if (!AllowMore)
+            return false;
+        currentPoints++;
+        return true;
+    }
+
+    public bool TakePoint()
+    {
+        if (!AllowLess)
+            return false;
+        currentPoints--;
+        return true;
+    }
+}
+
 public class Game : MonoBehaviour
 {
 
@@ -28,11 +124,23 @@ public class Game : MonoBehaviour
         ROBOT1
     }
 
+    [System.Serializable]
+    public struct GameInfo
+    {
+        public vp_FPPlayerDamageHandler playerHealthThing;
+        public PlayerHealthRegeneration healthRegen;
+        public PlayerAmmiRegeneration ammoRegen;
+    }
+
+    public AttributeInfo[] attributeInfo;
+
     public List<EnemyTypeInfo> enemyinfos = new List<EnemyTypeInfo>();
     public Timer SilenceTimer;
     public Timer SilenceCooldownTimer;
     private float WantedEnemyTimeScale = 1f;
     public float EnemyTimeScaleChangeSpeed = 5f;
+
+    public GameInfo gameInfo;
 
     #region Singleton
     private static Game instance;
@@ -48,6 +156,7 @@ public class Game : MonoBehaviour
     protected void Awake()
     {
         instance = this;
+        Data.Instance.Register(this);
     }
     #endregion
 
@@ -91,7 +200,7 @@ public class Game : MonoBehaviour
         TimeScale = 1f;
         EnemyTimeScale = 1f;
         PlayerTimeScale = 1f;
-        Data.Instance.UIStateChanged.Send(GameUI.State.GAME);
+
         Data.Instance.PointsChanged.Send(Points);
         Data.Instance.TimePlayedChanged.Send(TimePlayed);
         Data.Instance.DeathsChanged.Send(Deaths);
@@ -102,6 +211,17 @@ public class Game : MonoBehaviour
         Data.Instance.SilenceAvaible.Send();
         Data.Instance.SilenceTimeChanged.Send(SilenceTimer);
         Data.Instance.SilenceCooldownChanged.Send(SilenceCooldownTimer);
+
+        AttributeInfo info;
+        foreach (var type in (AttributeInfo.Attribute[])AttributeInfo.Attribute.GetValues(typeof(AttributeInfo.Attribute)))
+        {
+            info = GetAttributeInfo(type);
+            if (info == default(AttributeInfo))
+                continue;
+            UpdateAttribute(type, info);
+        }
+
+        Pause();
     }
 
     #region PublicInspector
@@ -110,10 +230,15 @@ public class Game : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-            Pause();
+        if (InputController.GetClicked("PAUSE"))
+        {
+            if (!Paused)
+                Pause();
+            else
+                Resume();
+        }
 
-        if (Input.GetButtonDown("Silence"))
+        if (InputController.GetClicked("SILENCE"))
             TryActivatingSilence();
 
         if (!SilenceTimer.Finished)
@@ -147,6 +272,162 @@ public class Game : MonoBehaviour
         Data.Instance.TimePlayedChanged.Send(TimePlayed);
     }
 
+    public AttributeInfo GetAttributeInfo(AttributeInfo.Attribute type)
+    {
+        return attributeInfo.FirstOrDefault(t => t.type == type);
+    }
+
+    public void UpdateAttribute(AttributeInfo.Attribute type, AttributeInfo info)
+    {
+        float before = 0f;
+        switch (type)
+        {
+            case AttributeInfo.Attribute.Player_Health:
+                before = gameInfo.playerHealthThing.MaxHealth;
+                gameInfo.playerHealthThing.MaxHealth = info.CurrentValue;
+                gameInfo.playerHealthThing.CurrentHealth += gameInfo.playerHealthThing.MaxHealth - before;
+                break;
+            case AttributeInfo.Attribute.Player_Regeneration:
+                gameInfo.healthRegen.ValuePerSecond = info.CurrentValue;
+                break;
+            case AttributeInfo.Attribute.Player_Weapon_Ammo_Regeneration:
+                gameInfo.ammoRegen.AmmoPerSecond = info.CurrentValue;
+                break;
+            case AttributeInfo.Attribute.Player_Weapon_Damage:
+                break;
+            case AttributeInfo.Attribute.Base_Health:
+                before = Base.Instance.MaxHealth;
+                Base.Instance.MaxHealth = info.CurrentValue;
+                Base.Instance.Health += Base.Instance.MaxHealth - before;
+                break;
+            case AttributeInfo.Attribute.Base_Regeneration:
+                Base.Instance.HealthRegeneration = info.CurrentValue;
+                break;
+            case AttributeInfo.Attribute.Base_Shield1_Health:
+
+                Debug.Log(string.Format("{0}: {1}", info.type, info.CurrentValue));
+                before = Base.Instance.Shield1.MaxHealth;
+                Base.Instance.Shield1.MaxHealth = info.CurrentValue;
+                Base.Instance.Shield1.Health += Base.Instance.Shield1.MaxHealth - before;
+                break;
+            case AttributeInfo.Attribute.Base_Shield1_Regeneration:
+                Base.Instance.Shield1.HealthRegeneration = info.CurrentValue;
+                break;
+            case AttributeInfo.Attribute.Base_Shield2_Health:
+                before = Base.Instance.Shield2.MaxHealth;
+                Base.Instance.Shield2.MaxHealth = info.CurrentValue;
+                Base.Instance.Shield2.Health += Base.Instance.Shield2.MaxHealth - before;
+                break;
+            case AttributeInfo.Attribute.Base_Shield2_Regeneration:
+                Base.Instance.Shield2.HealthRegeneration = info.CurrentValue;
+                break;
+            case AttributeInfo.Attribute.Enemy_Health:
+                break;
+            case AttributeInfo.Attribute.Enemy_Damage:
+                break;
+            default:
+                break;
+        }
+    }
+
+    void OnMessage_AttributePluss(AttributeInfo.Attribute type)
+    {
+        AttributeInfo info = GetAttributeInfo(type);
+        if (info == null)
+            return;
+
+        if (Points < info.CurrentCost)
+            return;
+        int cost = info.CurrentCost;
+
+        if (!info.AddPoint())
+            return;
+
+        Points -= cost;
+        Data.Instance.PointsChanged.Send(Points);
+
+        UpdateAttribute(type, info);
+    }
+    void OnMessage_AttributeMinus(AttributeInfo.Attribute type)
+    {
+        AttributeInfo info = GetAttributeInfo(type);
+        if (info == null)
+            return;
+        if (!info.TakePoint())
+            return;
+
+        Points += info.CurrentCost;
+        Data.Instance.PointsChanged.Send(Points);
+
+        UpdateAttribute(type, info);
+    }
+
+    public string GetAttributeText(AttributeInfo.Attribute type)
+    {
+        AttributeInfo info = GetAttributeInfo(type);
+        if (info == null)
+            return "";
+
+        string name = "";
+        string value = "";
+
+        name = info.Name;
+
+        switch (type)
+        {
+            case AttributeInfo.Attribute.Player_Health:
+                value = string.Format("{0}HP", info.CurrentValue);
+                break;
+            case AttributeInfo.Attribute.Player_Regeneration:
+                value = string.Format("{0:0.#}/s", info.CurrentValue);
+                break;
+            case AttributeInfo.Attribute.Player_Weapon_Ammo_Regeneration:
+                value = string.Format("{0:0.#}/s", info.CurrentValue);
+                break;
+            case AttributeInfo.Attribute.Player_Weapon_Damage:
+                break;
+            case AttributeInfo.Attribute.Base_Health:
+                value = string.Format("{0}", info.CurrentValue);
+                break;
+            case AttributeInfo.Attribute.Base_Regeneration:
+                value = string.Format("{0:0.#}/s", info.CurrentValue);
+                break;
+            case AttributeInfo.Attribute.Base_Shield1_Health:
+                value = string.Format("{0}", info.CurrentValue);
+                break;
+            case AttributeInfo.Attribute.Base_Shield1_Regeneration:
+                value = string.Format("{0:0.#}/s", info.CurrentValue);
+                break;
+            case AttributeInfo.Attribute.Base_Shield2_Health:
+                value = string.Format("{0}", info.CurrentValue);
+                break;
+            case AttributeInfo.Attribute.Base_Shield2_Regeneration:
+                value = string.Format("{0:0.#}/s", info.CurrentValue);
+                break;
+            case AttributeInfo.Attribute.Enemy_Health:
+                break;
+            case AttributeInfo.Attribute.Enemy_Damage:
+                break;
+            default:
+                break;
+        }
+        return string.Format("{0}: <color=#22ff55>{1}</color>", name, value);
+    }
+    public string GetAttributeDescription(AttributeInfo.Attribute type)
+    {
+        AttributeInfo info = GetAttributeInfo(type);
+        if (info == null)
+            return "";
+
+        string value = "";
+        string cost = "";
+
+        value = string.Format("{0:0.##}", info.valuePerPoint);
+        cost = string.Format("{0}", info.CurrentCost);
+
+        return string.Format("Add or Remove <color=#22AAff>{0}</color>, Takes or Gives you <color=#ff2255>{1}</color> points.", value, cost);
+    }
+
     private void ActivateSilence()
     {
         SilenceCooldownTimer.Reset();
@@ -171,17 +452,21 @@ public class Game : MonoBehaviour
         return false;
     }
 
+    public bool Paused = false;
+
     public void Pause()
     {
+        Paused = true;
         Time.timeScale = 0f;
         TimeScale = 0f;
         Data.Instance.UIStateChanged.Send(GameUI.State.MENU);
     }
     public void Resume()
     {
-        Data.Instance.UIStateChanged.Send(GameUI.State.GAME);
         Time.timeScale = 1f;
         TimeScale = 1f;
+        Paused = false;
+        Data.Instance.UIStateChanged.Send(GameUI.State.GAME);
     }
 
     #region PublicStatic
@@ -270,7 +555,7 @@ public class Game : MonoBehaviour
     }
     public static void EnemyDied(EnemyType type)
     {
-        int pointsAdd = Instance.enemyinfos[(int)type].points;
+        int pointsAdd = Instance.enemyinfos[(int)type].Points;
         Points += pointsAdd;
         Data.Instance.OnPointsGained.Send(pointsAdd);
         Data.Instance.PointsChanged.Send(Points);

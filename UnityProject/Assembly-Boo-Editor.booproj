@@ -49,6 +49,7 @@
      <Compile Include="Assets\RAIN\Editor\ScriptTemplates\ActionTemplate_BOO.boo" />
      <Compile Include="Assets\RAIN\Editor\ScriptTemplates\DecisionTemplate_BOO.boo" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Shooter\ShooterPistolOutOfControl.txt" />
+     <None Include="Assets\Magical Box\Base\_EditorEnabledScriptTemplate.txt" />
      <None Include="Assets\Resources\shader\Reflect-BumpSpecDetail.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\Pistol01\ShooterPistol01OutOfControl.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Camera\CameraClimb.txt" />
@@ -69,6 +70,7 @@
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\CowboyWeaponZoom.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MaceWeaponSwingRight.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\ModernCameraZoom.txt" />
+     <None Include="Assets\Magical Box\EmitterTypes\_EditorTemplate.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\OldSchoolInput.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\ModernInput.txt" />
      <None Include="Assets\ThirdParty\ProCore\QuickEdit\About\pc_AboutEntry_QuickEdit.txt" />
@@ -246,7 +248,9 @@
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\ModernWeapon.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\PivotChestWeapon.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Controller\ControllerClimb.txt" />
+     <None Include="Assets\Magical Box\Parameters\_EditorTemplate.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MeleeAttackToDownLeft.txt" />
+     <None Include="Assets\Magical Box\EmitterTypes\_Template.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\CameraMotionBlurDX11.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Camera\CameraRun.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\SeparableBlurPlus.shader" />
@@ -264,6 +268,7 @@
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\CameraMotionBlur.shader" />
      <None Include="Assets\ThirdParty\ProCore\Prototype\About\pc_AboutEntry_ProBuilder.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\DLAA.shader" />
+     <None Include="Assets\Magical Box Examples\Single Tests\README.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\PerspOldCamera.txt" />
      <None Include="Assets\RAIN\Editor\Shaders\VisualSensorRingShader.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\NoiseAndGrainDX11.shader" />
@@ -330,12 +335,14 @@
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\OldSchoolController.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Shooter\ShooterMachinegunOutOfControl.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\SniperCamera.txt" />
+     <None Include="Assets\Magical Box\readme.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\SimpleClear.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MouseRawUnityWeapon.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\Pistol01\WeaponPistol01Crouch.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\Pistol01\WeaponPistol01Default.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\AssaultRifle01\WeaponAssaultRifle01Default.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MafiaWeaponCrouch.txt" />
+     <None Include="Assets\Magical Box\Parameters\_Template.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\AstronautController.txt" />
      <None Include="Assets\Resources\shader\Normal-BumpSpecDetail.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\FXAA3Console.shader" />

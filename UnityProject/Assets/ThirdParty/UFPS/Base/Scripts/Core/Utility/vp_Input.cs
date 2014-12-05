@@ -162,20 +162,20 @@ public class vp_Input : MonoBehaviour
 		{
 			if(ButtonKeys.Count == 0)
 			{
-				AddButton("Attack", KeyCode.Mouse0);
-				AddButton("SetNextWeapon", KeyCode.E);
-				AddButton("SetPrevWeapon", KeyCode.Q);
-				AddButton("ClearWeapon", KeyCode.Backspace);
-				AddButton("Zoom", KeyCode.Mouse1);
-				AddButton("Reload", KeyCode.R);
-				AddButton("Jump", KeyCode.Space);
-				AddButton("Crouch", KeyCode.C);
-				AddButton("Run", KeyCode.LeftShift);
-				AddButton("Interact", KeyCode.F);
-				AddButton("Accept1", KeyCode.Return);
-				AddButton("Accept2", KeyCode.KeypadEnter);
-				AddButton("Pause", KeyCode.P);
-				AddButton("Menu", KeyCode.Escape);
+				AddButton("Attack", KeyCode.None);
+                AddButton("SetNextWeapon", KeyCode.None);
+                AddButton("SetPrevWeapon", KeyCode.None);
+                AddButton("ClearWeapon", KeyCode.None);
+                AddButton("Zoom", KeyCode.None);
+                AddButton("Reload", KeyCode.None);
+                AddButton("Jump", KeyCode.None);
+                AddButton("Crouch", KeyCode.None);
+                AddButton("Run", KeyCode.None);
+                AddButton("Interact", KeyCode.None);
+                AddButton("Accept1", KeyCode.None);
+                AddButton("Accept2", KeyCode.None);
+                AddButton("Pause", KeyCode.None);
+                AddButton("Menu", KeyCode.None);
 			}
 		}
 		
@@ -183,8 +183,8 @@ public class vp_Input : MonoBehaviour
 		{
 			if(AxisKeys.Count == 0)
 			{
-				AddAxis("Vertical", KeyCode.W, KeyCode.S);
-				AddAxis("Horizontal", KeyCode.D, KeyCode.A);
+                AddAxis("Vertical", KeyCode.None, KeyCode.None);
+                AddAxis("Horizontal", KeyCode.None, KeyCode.None);
 			}
 		}
 		
