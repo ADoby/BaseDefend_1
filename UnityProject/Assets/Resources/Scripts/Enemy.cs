@@ -6,12 +6,12 @@ public class Enemy : HealthHandler
     public AnimationCurve HealthCurve;
 
     public float DefaultDamage = 10f;
-    public float MaxDifficultyDamage = 200f;
-    protected virtual float CurrentDamage
+    public float DamagePerDifficulty = 200f;
+    public float CurrentDamage
     {
         get
         {
-            return DefaultDamage + Game.DifficultyLevel * MaxDifficultyDamage;
+            return DefaultDamage + DamagePerDifficulty * Game.DifficultyLevel;
         }
     }
 

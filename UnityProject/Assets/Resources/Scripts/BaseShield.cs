@@ -23,9 +23,22 @@ public class BaseShield : HealthHandler
         base.Reset();
     }
 
-    public override void Despawn()
+    public override void Die()
     {
-        //Dont despawn
+
+    }
+
+    public Color color;
+    public void UpdateColor()
+    {
+        color.a = Mathf.Lerp(color.a, Procentage, Time.deltaTime * ChangeSpeed);
+
+        renderer.material.SetColor("_Color", color);
+
+        if (collider.enabled && Procentage < 0.05f)
+            collider.enabled = false;
+        if (!collider.enabled && Procentage > 0.1f)
+            collider.enabled = true;
     }
 
     public void UpdateHeight()
@@ -47,7 +60,7 @@ public class BaseShield : HealthHandler
     {
         Health += HealthRegeneration * Time.deltaTime;
 
-        UpdateHeight();
+        UpdateColor();
     }
 
 }

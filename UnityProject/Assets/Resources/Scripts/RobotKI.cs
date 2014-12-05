@@ -300,7 +300,7 @@ public class RobotKI : Enemy
 			if (CanSeeTarget && TargetInAttackRange && !Body.Ragdolled)
 			{
 
-				if (weapon && weapon.Shoot())
+				if (weapon && weapon.Shoot(CurrentDamage))
 				{
 					ShootTimer.Reset();
 				}

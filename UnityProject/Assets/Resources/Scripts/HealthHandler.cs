@@ -7,6 +7,16 @@ public class HealthHandler : MonoBehaviour {
     public float health;
     public bool alive = true;
 
+    public Transform bodyThing;
+
+    public Transform GetBody
+    {
+        get
+        {
+            return bodyThing ? bodyThing : transform;
+        }
+    }
+
     public float Procentage
     {
         get
@@ -34,7 +44,6 @@ public class HealthHandler : MonoBehaviour {
         if (health == 0)
         {
             Die();
-            alive = false;
         }
     }
 
@@ -70,6 +79,7 @@ public class HealthHandler : MonoBehaviour {
 
     public virtual void Die()
     {
+        alive = false;
         Despawn();
     }
 

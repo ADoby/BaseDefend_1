@@ -44,6 +44,10 @@ public class AttributeInfo
         Base_Shield1_Regeneration,
         Base_Shield2_Health,
         Base_Shield2_Regeneration,
+        Base_Damage,
+        Base_Shoot_Speed,
+        Base_Range,
+        Base_Rocket_Speed,
         Enemy_Health,
         Enemy_Damage
     }
@@ -321,6 +325,18 @@ public class Game : MonoBehaviour
             case AttributeInfo.Attribute.Base_Shield2_Regeneration:
                 Base.Instance.Shield2.HealthRegeneration = info.CurrentValue;
                 break;
+            case AttributeInfo.Attribute.Base_Damage:
+                Base.Instance.RocketDamage = (int)info.CurrentValue;
+                break;
+            case AttributeInfo.Attribute.Base_Shoot_Speed:
+                Base.Instance.RocketCooldown = info.CurrentValue;
+                break;
+            case AttributeInfo.Attribute.Base_Range:
+                Base.Instance.AutoTurretRange = info.CurrentValue;
+                break;
+            case AttributeInfo.Attribute.Base_Rocket_Speed:
+                Base.Instance.RocketSpeed = info.CurrentValue;
+                break;
             case AttributeInfo.Attribute.Enemy_Health:
                 break;
             case AttributeInfo.Attribute.Enemy_Damage:
@@ -403,6 +419,18 @@ public class Game : MonoBehaviour
                 break;
             case AttributeInfo.Attribute.Base_Shield2_Regeneration:
                 value = string.Format("{0:0.#}/s", info.CurrentValue);
+                break;
+            case AttributeInfo.Attribute.Base_Damage:
+                value = string.Format("{0}", info.CurrentValue);
+                break;
+            case AttributeInfo.Attribute.Base_Shoot_Speed:
+                value = string.Format("{0:0.#}s", info.CurrentValue);
+                break;
+            case AttributeInfo.Attribute.Base_Range:
+                value = string.Format("{0:0.#}m", info.CurrentValue);
+                break;
+            case AttributeInfo.Attribute.Base_Rocket_Speed:
+                value = string.Format("{0}Speed", info.CurrentValue);
                 break;
             case AttributeInfo.Attribute.Enemy_Health:
                 break;

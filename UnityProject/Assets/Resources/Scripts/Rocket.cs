@@ -6,6 +6,8 @@ public class Rocket : MonoBehaviour {
 	private string poolName = "";
 	public Transform Owner;
 
+    public bool EnemyTimeScale = true;
+
 	public Timer lifeTimer;
 
     public ParticleSystem particles;
@@ -15,15 +17,7 @@ public class Rocket : MonoBehaviour {
 	public float Damping = 0.5f;
 
     public float ExplosionRange = 2.0f;
-    public float DefaultExplosionDamage = 10f;
-    public float ExplosionDamageForDifficulty = 100f;
-    public float ExplosionDamage
-    {
-        get
-        {
-            return DefaultExplosionDamage + ExplosionDamageForDifficulty * Game.DifficultyLevel;
-        }
-    }
+    public float ExplosionDamage = 10f;
 	public float ExplosionForce = 100f;
 
     public Renderer rocketRenderer;
@@ -56,6 +50,9 @@ public class Rocket : MonoBehaviour {
 
     public void OnMessage_EnemyFixedDeltaTimeChanged(float difference)
     {
+        if (!EnemyTimeScale)
+            return;
+
         rigidbody.velocity -= rigidbody.velocity * difference;
         rigidbody.angularVelocity -= rigidbody.angularVelocity * difference;
 
@@ -81,6 +78,10 @@ public class Rocket : MonoBehaviour {
             return;
 
 		float delta = Game.EnemyFixedDelta;
+
+        if (!EnemyTimeScale)
+            delta = Time.fixedDeltaTime / Game.DefaultFixedTime;
+
 		rigidbody.velocity += transform.forward * ForceForward * delta;
 		rigidbody.velocity -= rigidbody.velocity * Damping * delta;
 	}

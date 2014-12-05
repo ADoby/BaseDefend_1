@@ -34,8 +34,8 @@ public class RocketLauncher : MonoBehaviour
 
 		transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(lookDirection), Mathf.Min(delta * RotateSpeed, 1f));
 	}
-
-	public bool Shoot()
+    
+	public bool Shoot(float damage)
 	{
 		if (angle > MaxAngle)
 			return false;
@@ -49,6 +49,7 @@ public class RocketLauncher : MonoBehaviour
 		if (rocket)
 		{
 			rocket.Owner = this.Owner;
+            rocket.ExplosionDamage = damage;
 		}
 		return true;
 	}
