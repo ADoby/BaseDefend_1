@@ -17,19 +17,35 @@ public class Robot2_KI : HealthHandler
     public LayerMask PlayerMask;
     public LayerMask SightMask;
 
-	void Reset () 
+    public bool NoTargetIsBase = true;
+
+    void Awake()
     {
+        Reset();
+    }
+
+    public override void Reset()
+    {
+        base.Reset();
         FindTargetTimer.Reset();
         StayRagdollTimer.Reset();
-	}
+        LaserEffect.Stop();
+    }
 
     public Transform Target = null;
+    public bool CanSeeTarget = false;
+
+    public Timer ShootCooldown;
+    public Timer ShootTimer;
 
     public override void Die()
     {
         alive = false;
         Ragdoll();
     }
+
+    public float ColorChangeSpeed = 2.0f;
+    float ColorValue = 0f;
 
 	// Update is called once per frame
 	void Update () 
@@ -40,9 +56,9 @@ public class Robot2_KI : HealthHandler
             {
                 if (StayRagdollTimer.Update())
                 {
-                    holder.Ragdolled = true;
+                    holder.Ragdolled = false;
                 }
-                if (holder.Distance < 0.2f && holder.AngleDiff < 5)
+                if (holder.Distance < 0.25f && holder.AngleDiff < 5)
                     UnRagdoll();
             }
             return;
@@ -54,14 +70,72 @@ public class Robot2_KI : HealthHandler
             FindTargetTimer.Reset();
         }
 
+
+        ShootCooldown.Update();
         if (Target)
         {
             agent.SetDestination(Target.position);
+            if (CanSeeTarget)
+            {
+                Shoot();
+            }
         }
+
+        if (!Target || !CanSeeTarget)
+            ShootTimer.Reset();
+
+        if (OutOfControl)
+            agent.Stop();
+        else
+        {
+            agent.Warp(BodyTransform.position);
+            agent.Resume();
+        }
+            
+
+
+        ColorValue = Mathf.Lerp(ColorValue, (CanSeeTarget ? 1f : 0f), Game.EnemyDelta * ColorChangeSpeed);
+        EyeRenderer.materials[1].SetColor("_Color", Color.Lerp(NormalColor, AngryColor, ColorValue));
 	}
+
+    public ParticleSystem LaserEffect;
+    public Color NormalColor, AngryColor;
+
+    public float DamagePerSecond = 10f;
+
+    public Renderer EyeRenderer;
+
+    public void Shoot()
+    {
+        if (ShootCooldown.Finished)
+        {
+            ShootTimer.Update();
+            //Shoot
+            //LaserEffect.enableEmission = true;
+            LaserEffect.Play();
+
+            Shooting = true;
+
+            RaycastHit hit;
+            if (Physics.Raycast(EyeTransform.position, EyeTransform.forward, out hit, SightRange, SightMask))
+            {
+                hit.transform.SendMessageUpwards("Damage", new vp_DamageInfo(DamagePerSecond * Game.EnemyDeltaTime, BodyTransform), SendMessageOptions.DontRequireReceiver);
+            }
+
+            if (ShootTimer.Finished)
+            {
+                LaserEffect.Stop();
+                //LaserEffect.enableEmission = false;
+                ShootCooldown.Reset();
+                ShootTimer.Reset();
+                Shooting = false;
+            }
+        }
+    }
 
     public void FindTarget()
     {
+        CanSeeTarget = false;
         if (Target)
         {
             if (Vector3.Distance(EyeTransform.position, Target.position) > SightRange)
@@ -70,23 +144,32 @@ public class Robot2_KI : HealthHandler
             if (Target && Physics.Raycast(EyeTransform.position, (Target.position - EyeTransform.position).normalized, out hit, SightRange, SightMask))
             {
                 if (hit.transform == Target)
+                {
+                    CanSeeTarget = true;
                     return;
+                }
             }
         }
         Target = null;
         Collider[] colliders = Physics.OverlapSphere(EyeTransform.position, SightRange, PlayerMask);
-        if (colliders.Length == 0)
-            return;
         foreach (var target in colliders)
         {
             RaycastHit hit;
-            if (Target && Physics.Raycast(EyeTransform.position, (Target.position - EyeTransform.position).normalized, out hit, SightRange, SightMask))
+            if (Physics.Raycast(EyeTransform.position, (target.transform.position - EyeTransform.position).normalized, out hit, SightRange, SightMask))
             {
                 if (hit.collider == target)
                 {
                     Target = target.transform;
+                    CanSeeTarget = true;
                     return;
                 }
+            }
+        }
+        if (NoTargetIsBase)
+        {
+            if (Base.Instance)
+            {
+                Target = Base.Instance.NavigationTarget;
             }
         }
     }
@@ -108,11 +191,11 @@ public class Robot2_KI : HealthHandler
     {
         Ragdolled = false;
         holder.Ragdolled = false;
+        /*
         NavMeshHit hit;
         if (NavMesh.FindClosestEdge(BodyTransform.position, out hit, 1 << NavMesh.GetNavMeshLayerFromName("Default")))
-            agent.transform.position = hit.position;
-        else
-            agent.transform.position = BodyTransform.position;
+            agent.Warp(hit.position);*/
+        agent.Warp(BodyTransform.position);
         agent.enabled = true;
     }
 
@@ -121,6 +204,11 @@ public class Robot2_KI : HealthHandler
     public float ndSpeed = 0f;
 
     public float StopDistance = 1.0f;
+
+    public float OutOfControlDistance = 2.0f;
+    public bool OutOfControl = false;
+
+    public bool Shooting = false;
 
     void FixedUpdate()
     {
@@ -134,20 +222,36 @@ public class Robot2_KI : HealthHandler
         Vector3 crossResult = Vector3.zero;
         float cosAngle = 0f, turnAngle = 0f;
 
-        targetVector = (holder.targetPosition.position - BodyTransform.position).normalized;
-        currentVector = transform.forward;
-        cosAngle = Vector3.Dot(currentVector, targetVector);
-        crossResult = Vector3.Cross(currentVector, targetVector);
-        crossResult.Normalize();
-        turnAngle = Mathf.Acos(cosAngle);
-        turnAngle = Mathf.Min(turnAngle * holder.LookSpring * delta, holder.MaxLookForce);
-        turnAngle = turnAngle * Mathf.Rad2Deg;
-        crossResult.x = 0f;
-        crossResult.z = 0f;
-        rigidbody.angularVelocity += crossResult * turnAngle;
+        if (holder.Distance > 0.5f || Target)
+        {
+            targetVector = (holder.targetPosition.position - BodyTransform.position).normalized;
+            if (Target)
+            {
+                targetVector = (Target.position - BodyTransform.position).normalized;
+            }
+            currentVector = transform.forward;
+            cosAngle = Vector3.Dot(currentVector, targetVector);
+            crossResult = Vector3.Cross(currentVector, targetVector);
+            crossResult.Normalize();
+            turnAngle = Mathf.Acos(cosAngle);
+            turnAngle = Mathf.Min(turnAngle * holder.LookSpring * delta, holder.MaxLookForce);
+            turnAngle = turnAngle * Mathf.Rad2Deg;
+            rigidbody.angularVelocity += crossResult * turnAngle;
+        }
 
-        ndSpeed = holder.AngleDiff / 180f;
+        OutOfControl = holder.Distance > OutOfControlDistance;
+
         if (holder.Distance > StopDistance)
-            rigidbody.velocity += transform.forward * ndSpeed * Speed * delta;
+        {
+            if (!Target)
+            {
+                ndSpeed = holder.AngleDiff / 180f;
+                rigidbody.velocity += transform.forward * ndSpeed * Speed * delta;
+            }
+            else
+            {
+                rigidbody.velocity += (holder.targetPosition.position - BodyTransform.position).normalized * Speed * delta;
+            }
+        }
     }
 }
