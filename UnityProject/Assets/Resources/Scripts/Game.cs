@@ -309,8 +309,6 @@ public class Game : MonoBehaviour
                 Base.Instance.HealthRegeneration = info.CurrentValue;
                 break;
             case AttributeInfo.Attribute.Base_Shield1_Health:
-
-                Debug.Log(string.Format("{0}: {1}", info.type, info.CurrentValue));
                 before = Base.Instance.Shield1.MaxHealth;
                 Base.Instance.Shield1.MaxHealth = info.CurrentValue;
                 Base.Instance.Shield1.Health += Base.Instance.Shield1.MaxHealth - before;

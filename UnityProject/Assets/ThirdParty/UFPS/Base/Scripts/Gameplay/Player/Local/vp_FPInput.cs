@@ -46,13 +46,7 @@ public class vp_FPInput : vp_Component
 
 
     // when true, the mouse arrow is enabled all over the screen and firing is disabled
-    public bool MouseCursorForced
-    {
-        get
-        {
-            return InputHandler.Instance.ForceMouseLock;
-        }
-    }
+    public bool MouseCursorForced = false;
 
 	public bool MouseCursorBlocksMouseLook = true;	// if true, mouselook will be disabled while the mouse arrow is visible
 	public Vector2 MousePos { get { return m_MousePos; } }

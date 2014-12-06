@@ -33,7 +33,8 @@ public class Terminal : MonoBehaviour
             }
         }
 
-        overlay.Visible = Activated && Shown;
+        if(PlayerNeedsToBeNear)
+            overlay.Visible = Activated && Shown;
         if (!Activated)
             return;
         if (PlayerNeedsToBeNear)

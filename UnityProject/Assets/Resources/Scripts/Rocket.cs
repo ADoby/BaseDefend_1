@@ -90,12 +90,16 @@ public class Rocket : MonoBehaviour {
             delta = Time.fixedDeltaTime / Game.DefaultFixedTime;
 
 
-        if(target)
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(target.position - transform.position), Time.deltaTime * RotateSpeed);
-        else
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(wantedDirection), Time.deltaTime * RotateSpeed);
+        Vector3 Direction = wantedDirection;
+        if (target)
+            Direction = (target.position - transform.position).normalized;
 
-		rigidbody.velocity += transform.forward * ForceForward * delta;
+        float dot = Vector3.Dot(transform.forward, Direction);
+
+        if(dot > 0)
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(Direction), Time.deltaTime * RotateSpeed);
+
+        rigidbody.velocity += transform.forward * ForceForward * delta * Mathf.Abs(dot);
 		rigidbody.velocity -= rigidbody.velocity * Damping * delta;
 	}
 
