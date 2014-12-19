@@ -461,16 +461,26 @@ public class Game : MonoBehaviour
         return string.Format("Add or Remove <color=#22AAff>{0}</color>, Takes or Gives you <color=#ff2255>{1}</color> points.", value, cost);
     }
 
+    public AudioSource SlowDown;
     private void ActivateSilence()
     {
         SilenceCooldownTimer.Reset();
         SilenceTimer.Reset();
         WantedEnemyTimeScale = 0f;
         Data.Instance.SilenceUsed.Send();
+
+
+        SlowDown.pitch = 2;
+        SlowDown.Play();
     }
 
     private void DeactivateSilence()
     {
+        SlowDown.pitch = -2;
+        if (SlowDown.pitch < 0)
+            SlowDown.time = SlowDown.clip.length;
+        SlowDown.Play();
+
         WantedEnemyTimeScale = 1f;
         Data.Instance.SilenceEnded.Send();
     }

@@ -19,7 +19,7 @@
 	<DebugType>full</DebugType>
 	<Optimize>false</Optimize>
 	<OutputPath>Temp\bin\Debug\</OutputPath>
-	<DefineConstants>DEBUG;TRACE;UNITY_4_6_0;UNITY_4_6;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_4_6_FEATURES;INCLUDE_WP_BLUE_SUPPORT;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN</DefineConstants>
+	<DefineConstants>DEBUG;TRACE;UNITY_4_6_0;UNITY_4_6;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_4_6_FEATURES;INCLUDE_WP_BLUE_SUPPORT;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE;UNITY_PRO_LICENSE</DefineConstants>
 	<ErrorReport>prompt</ErrorReport>
 	<WarningLevel>4</WarningLevel>
 	<NoWarn>0169</NoWarn>
@@ -46,10 +46,10 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\RAIN\Editor\ScriptTemplates\ActionTemplate_BOO.boo" />
-     <Compile Include="Assets\RAIN\Editor\ScriptTemplates\DecisionTemplate_BOO.boo" />
+     <Compile Include="Assets\ThirdParty\RAIN\Editor\ScriptTemplates\ActionTemplate_BOO.boo" />
+     <Compile Include="Assets\ThirdParty\RAIN\Editor\ScriptTemplates\DecisionTemplate_BOO.boo" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Shooter\ShooterPistolOutOfControl.txt" />
-     <None Include="Assets\Magical Box\Base\_EditorEnabledScriptTemplate.txt" />
+     <None Include="Assets\Typogenic\Readme.txt" />
      <None Include="Assets\Resources\shader\Reflect-BumpSpecDetail.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\Pistol01\ShooterPistol01OutOfControl.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Camera\CameraClimb.txt" />
@@ -61,7 +61,7 @@
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_DepthOfField\SeparableWeightedBlurDof34.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Controller\ControllerDead.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Controller\ControllerCrouch.txt" />
-     <None Include="Assets\RAIN\Editor\Shaders\AspectSphereShader.shader" />
+     <None Include="Assets\ThirdParty\RAIN\Editor\Shaders\AspectSphereShader.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Weapon\WeaponRevolverCrouch.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Camera\CameraOutOfControl.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\ArtilleryController.txt" />
@@ -70,7 +70,6 @@
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\CowboyWeaponZoom.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MaceWeaponSwingRight.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\ModernCameraZoom.txt" />
-     <None Include="Assets\Magical Box\EmitterTypes\_EditorTemplate.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\OldSchoolInput.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\ModernInput.txt" />
      <None Include="Assets\ThirdParty\ProCore\QuickEdit\About\pc_AboutEntry_QuickEdit.txt" />
@@ -80,7 +79,7 @@
      <None Include="Assets\ThirdParty\ProCore\Prototype\About\changelog.txt" />
      <None Include="Assets\ThirdParty\ProCore\Prototype\Shader\VertexBillboard.shader" />
      <None Include="Assets\ThirdParty\ProCore\Prototype\Shader\DiffuseVertexColor.shader" />
-     <None Include="Assets\IK\Readme.txt" />
+     <None Include="Assets\ThirdParty\IK\Readme.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MafiaCamera.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Controller\ControllerFreeze.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\StompingCamera.txt" />
@@ -104,7 +103,9 @@
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\ModernCamera.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Weapon\WeaponRevolverZoom.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MafiaShooter.txt" />
+     <None Include="Assets\Typogenic\Shaders\TypogenicLit.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Weapon\WeaponPistolReload2.txt" />
+     <None Include="Assets\Typogenic\Demos\Curly Stars\Curly Stars.fnt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Camera\CameraReload.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\SmackController.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Camera\CameraFreeze.txt" />
@@ -119,6 +120,7 @@
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\FreezeController.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MaceWeaponSwingDown.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\CowboyController.txt" />
+     <None Include="Assets\Typogenic\Shaders\TypogenicLitTexturedShadowcaster.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\Persp1999Input.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Weapon\WeaponMachinegunCrouch.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\MotionBlur.shader" />
@@ -139,7 +141,7 @@
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\SSAA.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Camera\CameraCrouch.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\RadialBlur.shader" />
-     <None Include="Assets\RAIN\Editor\Shaders\VisualSensorLineShader.shader" />
+     <None Include="Assets\ThirdParty\RAIN\Editor\Shaders\VisualSensorLineShader.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MaceInput.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\WallFacingCamera.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Camera\InputClimb.txt" />
@@ -171,6 +173,7 @@
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\DrunkWeapon.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MaceWeaponPullRight.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\frag_ao.cginc" />
+     <None Include="Assets\Typogenic\Demos\Arial\Arial.fnt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Camera\InputDead.txt" />
      <None Include="Assets\ThirdParty\ProCore\QuickEdit\About\changelog.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Weapon\WeaponPistolOutOfControl.txt" />
@@ -179,18 +182,19 @@
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Weapon\WeaponRevolver.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\ImmobileCamera.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\Shotgun01\ShooterShotgun01Default.txt" />
+     <None Include="Assets\Typogenic\Shaders\TypogenicLitShadowcaster.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MaceCamera.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\ImmobileController.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MaceWeaponSwingLeft.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MechController.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\DrunkController.txt" />
-     <None Include="Assets\RAIN\Editor\Shaders\NavMeshContourShader.shader" />
+     <None Include="Assets\ThirdParty\RAIN\Editor\Shaders\NavMeshContourShader.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Shooter\ShooterPistol.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\DrunkCamera.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Weapon\WeaponMachinegunReload.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\ArtilleryCamera.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\Shotgun01\WeaponShotgun01Crouch.txt" />
-     <None Include="Assets\RAIN\Editor\Shaders\WaypointShader.shader" />
+     <None Include="Assets\ThirdParty\RAIN\Editor\Shaders\WaypointShader.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Weapon\WeaponPistolCrouch.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MechWeapon.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_DepthOfField\DepthOfField34.shader" />
@@ -199,13 +203,14 @@
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\SniperInput.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Camera\CameraDead.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MouseSmoothingInput.txt" />
-     <None Include="Assets\RAIN\Editor\ScriptTemplates\BehaviorTreeTemplate.xml" />
+     <None Include="Assets\ThirdParty\RAIN\Editor\ScriptTemplates\BehaviorTreeTemplate.xml" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\Pistol01\ShooterPistol01Zoom.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\Pistol01\WeaponPistol01Slide.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\MobileBlur.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\SSAOShader.shader" />
      <None Include="Assets\ThirdParty\ProCore\QuickBrush\Docs\ChangeLog.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\ConvertDepth.shader" />
+     <None Include="Assets\Resources\shader\AlphaSelfIllum.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\CowboyShooter.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\ColorCorrectionCurvesSimple.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MouseLowSensWeapon.txt" />
@@ -237,6 +242,7 @@
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MeleeAttackToRight.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MouseLowSensCamera.txt" />
      <None Include="Assets\ThirdParty\ProCore\QuickDecals\About\pc_AboutEntry_QuickDecals.txt" />
+     <None Include="Assets\Resources\shader\3DText.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\Contrast Stretch\Luminance.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Weapon\WeaponMachinegunZoom.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Weapon\WeaponPistolReload.txt" />
@@ -248,13 +254,12 @@
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\ModernWeapon.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\PivotChestWeapon.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Controller\ControllerClimb.txt" />
-     <None Include="Assets\Magical Box\Parameters\_EditorTemplate.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MeleeAttackToDownLeft.txt" />
-     <None Include="Assets\Magical Box\EmitterTypes\_Template.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\CameraMotionBlurDX11.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Camera\CameraRun.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\SeparableBlurPlus.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\CowboyInput.txt" />
+     <None Include="Assets\Typogenic\Changelog.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Camera\CameraZoom.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\Pistol01\WeaponPistol01Zoom.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\SystemOFFWeaponGlideIn.txt" />
@@ -268,12 +273,12 @@
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\CameraMotionBlur.shader" />
      <None Include="Assets\ThirdParty\ProCore\Prototype\About\pc_AboutEntry_ProBuilder.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\DLAA.shader" />
-     <None Include="Assets\Magical Box Examples\Single Tests\README.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\PerspOldCamera.txt" />
-     <None Include="Assets\RAIN\Editor\Shaders\VisualSensorRingShader.shader" />
+     <None Include="Assets\ThirdParty\RAIN\Editor\Shaders\VisualSensorRingShader.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\NoiseAndGrainDX11.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\Shotgun01\WeaponShotgun01Run.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Weapon\WeaponGenericSlide.txt" />
+     <None Include="Assets\Typogenic\Shaders\TypogenicUnlit.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BrightPassFilter2.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_DepthOfField\SeparableBlur.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\MotionBlurClear.shader" />
@@ -288,13 +293,15 @@
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\Contrast Stretch\Adaptation.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\AssaultRifle01\WeaponAssaultRifle01Crouch.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\OldSchoolShooter.txt" />
-     <None Include="Assets\RAIN\ReleaseNotes.txt" />
-     <None Include="Assets\RAIN\Editor\Shaders\AspectRingShader.shader" />
+     <None Include="Assets\ThirdParty\RAIN\ReleaseNotes.txt" />
+     <None Include="Assets\Typogenic\Shaders\TypogenicLitTextured.shader" />
+     <None Include="Assets\ThirdParty\RAIN\Editor\Shaders\AspectRingShader.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MechShooter.txt" />
      <None Include="Assets\ThirdParty\ProCoreUtilityBundle\!!README.txt" />
      <None Include="Assets\ThirdParty\ProCore\ProGrids\About\changelog.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MechInput.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MeleeAttackToLeft.txt" />
+     <None Include="Assets\Typogenic\Shaders\TypogenicUnlitShadowcaster.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\NoiseAndGrain.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\TurretCamera.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\CowboyWeapon.txt" />
@@ -312,13 +319,14 @@
      <None Include="Assets\Resources\shader\VertexColorDetail.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\FXAA2.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\PerspModernWeapon.txt" />
+     <None Include="Assets\Typogenic\Shaders\TypogenicUnlitTextured.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Weapon\WeaponPistolRun.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\PerspModernCamera.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\Pistol01\ShooterPistol01Default.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\ModernControllerZoom.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\ColorCorrection3DLut.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MeleeAttackToUp.txt" />
-     <None Include="Assets\RAIN\Editor\Shaders\NavMeshColliderShader.shader" />
+     <None Include="Assets\ThirdParty\RAIN\Editor\Shaders\NavMeshColliderShader.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\LensFlareCreate.shader" />
      <None Include="Assets\ThirdParty\ProCore\Prototype\Shader\UnlitColor-Overlay.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\EdgeDetectNormals.shader" />
@@ -331,24 +339,26 @@
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MechCamera.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\CowboyShooterZoom.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\ModernCameraZoomInput.txt" />
+     <None Include="Assets\Typogenic\Demos\News Cycle\News Cycle.fnt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MouseRawUnityInput.txt" />
+     <None Include="Assets\Typogenic\Demos\Heydings\Heydings.fnt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\OldSchoolController.txt" />
+     <None Include="Assets\Typogenic\LICENSE.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Shooter\ShooterMachinegunOutOfControl.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\SniperCamera.txt" />
-     <None Include="Assets\Magical Box\readme.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\SimpleClear.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MouseRawUnityWeapon.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\Pistol01\WeaponPistol01Crouch.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\Pistol01\WeaponPistol01Default.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\WeaponsHD\AssaultRifle01\WeaponAssaultRifle01Default.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\MafiaWeaponCrouch.txt" />
-     <None Include="Assets\Magical Box\Parameters\_Template.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\AstronautController.txt" />
      <None Include="Assets\Resources\shader\Normal-BumpSpecDetail.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\FXAA3Console.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\TurretShooter.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\ImmobileInput.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\SniperShooter.txt" />
+     <None Include="Assets\Typogenic\Shaders\TypogenicUnlitTexturedShadowcaster.shader" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\CowboyWeaponCrouch.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Demo\FreezeCamera.txt" />
      <None Include="Assets\ThirdParty\UFPS\Base\Scripts\Presets\Standard\Weapon\WeaponMachinegunOutOfControl.txt" />
@@ -376,12 +386,6 @@
  <Reference Include="UnityEditor.UI">
  <HintPath>G:/Programmieren/Unity/Editor-4.6/Data/UnityExtensions/Unity/GUISystem/4.6.0/Editor/UnityEditor.UI.dll</HintPath>
  </Reference>
- <Reference Include="RAIN">
- <HintPath>C:/Users/ADoby/Documents/GitHub/BaseDefend_1/UnityProject/Assets/RAIN/RAIN.dll</HintPath>
- </Reference>
- <Reference Include="RAINEditor">
- <HintPath>C:/Users/ADoby/Documents/GitHub/BaseDefend_1/UnityProject/Assets/RAIN/Editor/RAINEditor.dll</HintPath>
- </Reference>
  <Reference Include="ProBuilderCore">
  <HintPath>C:/Users/ADoby/Documents/GitHub/BaseDefend_1/UnityProject/Assets/ThirdParty/ProCore/Prototype/Classes/ProBuilderCore.dll</HintPath>
  </Reference>
@@ -396,6 +400,12 @@
  </Reference>
  <Reference Include="SixBySeven">
  <HintPath>C:/Users/ADoby/Documents/GitHub/BaseDefend_1/UnityProject/Assets/ThirdParty/ProCore/Shared/Code/SixBySeven.dll</HintPath>
+ </Reference>
+ <Reference Include="RAIN">
+ <HintPath>C:/Users/ADoby/Documents/GitHub/BaseDefend_1/UnityProject/Assets/ThirdParty/RAIN/RAIN.dll</HintPath>
+ </Reference>
+ <Reference Include="RAINEditor">
+ <HintPath>C:/Users/ADoby/Documents/GitHub/BaseDefend_1/UnityProject/Assets/ThirdParty/RAIN/Editor/RAINEditor.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>G:/Programmieren/Unity/Editor-4.6/Data/Managed/UnityEditor.Graphs.dll</HintPath>

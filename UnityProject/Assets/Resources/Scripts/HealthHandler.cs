@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HealthHandler : MonoBehaviour {
-
+public class HealthHandler : MonoBehaviour 
+{
+    
     public float MaxHealth;
     public float health;
     public bool alive = true;
