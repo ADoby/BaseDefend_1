@@ -24,7 +24,7 @@ public class LevelManager : MonoBehaviour
     public Transform Player;
     public float MaxZPosToLoadNewPart = 0f;
 
-    void Awake()
+    void Start()
     {
         AddPart(SpawnPart);
         LoadTutorial();
@@ -61,27 +61,28 @@ public class LevelManager : MonoBehaviour
         do
         {
             part = partInfos.RandomEntry(Weight).LevelPart;
-        } while (part == CurrentPart && part == NextPart);
+        } while (part == CurrentPart || part == NextPart || part == null);
         AddPart(part);
     }
 
     public void AddPart(LevelPart part)
     {
-        if (part == null)
-            return;
-
         DespawnLastPart();
 
         LastPart = CurrentPart;
         CurrentPart = NextPart;
         NextPart = part;
 
-        NextPart.Spawn(CurrentZPos);
-        CurrentZPos += NextPart.Length;
+        if (NextPart != null)
+        {
+            NextPart.Spawn(CurrentZPos);
+            CurrentZPos += NextPart.Length;
+        }
 
         if (CurrentPart != null)
             MaxZPosToLoadNewPart += CurrentPart.Length / 2f;
-        MaxZPosToLoadNewPart += NextPart.Length / 2f;
+        if(NextPart != null)
+            MaxZPosToLoadNewPart += NextPart.Length / 2f;
     }
     public void DespawnLastPart()
     {
