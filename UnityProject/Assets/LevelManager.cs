@@ -38,6 +38,7 @@ public class LevelManager : MonoBehaviour
             PlayerPositionCheck.Reset();
             if (Player.position.z > MaxZPosToLoadNewPart)
             {
+                CurrentPart.Start();
                 AddRandomPart();
             }
         }
@@ -78,11 +79,9 @@ public class LevelManager : MonoBehaviour
             NextPart.Spawn(CurrentZPos);
             CurrentZPos += NextPart.Length;
         }
-
+        
         if (CurrentPart != null)
-            MaxZPosToLoadNewPart += CurrentPart.Length / 2f;
-        if(NextPart != null)
-            MaxZPosToLoadNewPart += NextPart.Length / 2f;
+            MaxZPosToLoadNewPart += CurrentPart.Length;
     }
     public void DespawnLastPart()
     {
