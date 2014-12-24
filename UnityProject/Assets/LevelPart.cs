@@ -34,6 +34,7 @@ public class LevelPart : MonoBehaviour
         return true;
     }
 
+
     public virtual void Spawn(float CurrentZPos)
     {
         Init();

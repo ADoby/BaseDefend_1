@@ -126,7 +126,8 @@ public class Game : MonoBehaviour
 
     public enum EnemyType
     {
-        ROBOT1
+        ROBOT1,
+        ROBOT2
     }
 
     [System.Serializable]
