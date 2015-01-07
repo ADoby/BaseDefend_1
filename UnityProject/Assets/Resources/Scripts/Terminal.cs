@@ -18,7 +18,7 @@ public class Terminal : MonoBehaviour
 	// Use this for initialization
 	void Awake () 
     {
-        Data.Instance.Register(this);
+        Events.Instance.Register(this);
 	}
 	
 	// Update is called once per frame

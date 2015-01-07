@@ -63,13 +63,13 @@ public class Base : HealthHandler
 	// Use this for initialization
 	void Start ()
 	{
-		Data.Instance.BaseHealthChanged.Send(this);
+        Events.Instance.BaseHealthChanged.Send(this);
 	}
 
     void Update()
     {
         Health += HealthRegeneration * Time.deltaTime;
-        Data.Instance.BaseHealthChanged.Send(this);
+        Events.Instance.BaseHealthChanged.Send(this);
 
         FindTarget();
         if (AutoTurretShootTimer.Update())
@@ -85,7 +85,7 @@ public class Base : HealthHandler
 	public override void Damage(vp_DamageInfo info)
 	{
 		base.Damage(info);
-		Data.Instance.BaseHealthChanged.Send(this);
+        Events.Instance.BaseHealthChanged.Send(this);
 	}
 
     public override void Despawn()

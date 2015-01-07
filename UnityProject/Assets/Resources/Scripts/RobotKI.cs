@@ -165,7 +165,7 @@ public class RobotKI : Enemy
 	// Use this for initialization
 	void Awake ()
 	{
-        Data.Instance.Register(this);
+        Events.Instance.Register(this);
 
         if (useAgent)
         {
@@ -188,7 +188,7 @@ public class RobotKI : Enemy
 
 	public override void Reset()
 	{
-        LastTargetPos = Base.Instance.NavigationTarget.position;
+        if(Base.Instance) LastTargetPos = Base.Instance.NavigationTarget.position;
 		base.Reset();
         Body.Reset();
 

@@ -29,8 +29,8 @@ public class InputHandler : MonoBehaviour {
 	// Use this for initialization
 	void OnAwake () 
     {
-        if(Data.Instance)
-            Data.Instance.Register(this);
+        if (Events.Instance)
+            Events.Instance.Register(this);
 	}
 	
 

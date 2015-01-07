@@ -33,7 +33,7 @@ public class Rocket : MonoBehaviour {
 
     public void Awake()
     {
-        Data.Instance.Register(this);
+        Events.Instance.Register(this);
     }
 
 	// Use this for initialization

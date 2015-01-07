@@ -22,7 +22,7 @@ public class BaseHealthView : MonoBehaviour
 	// Use this for initialization
     void Awake()
 	{
-		Data.Instance.Register(this);
+        Events.Instance.Register(this);
 	}
 
 	private bool TransitionFinished

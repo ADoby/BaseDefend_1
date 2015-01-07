@@ -96,7 +96,7 @@ public class GameUI : MonoBehaviour
 	void Awake() {
         instance = this;
 
-		Data.Instance.Register(this);
+		Events.Instance.Register(this);
         foreach (var item in lights)
         {
             item.Init();
@@ -117,7 +117,7 @@ public class GameUI : MonoBehaviour
             {
                 currentRebindButton.button.Text = string.Format("{0}: {1}", currentRebindButton.Desc, InputController.Instance.GetInfo(currentRebindButton.Action).GetInfo());
                 currentRebindButton = null;
-                Data.Instance.UIStateChanged.Send(State.MENU);
+                Events.Instance.UIStateChanged.Send(State.MENU);
             }
         }
 	}
@@ -182,22 +182,22 @@ public class GameUI : MonoBehaviour
 
     public void OpenShop()
     {
-        Data.Instance.UIStateChanged.Send(lastShopState);
+        Events.Instance.UIStateChanged.Send(lastShopState);
     }
 
     void ChangeShopTab(UIButton button)
     {
         if (button == Tab_Player)
         {
-            Data.Instance.UIStateChanged.Send(State.SHOPPLAYER);
+            Events.Instance.UIStateChanged.Send(State.SHOPPLAYER);
         }
         else if(button == Tab_Base)
         {
-            Data.Instance.UIStateChanged.Send(State.SHOPBASE);
+            Events.Instance.UIStateChanged.Send(State.SHOPBASE);
         }
         else if (button == Tab_Enemies)
         {
-            Data.Instance.UIStateChanged.Send(State.SHOPENEMIES);
+            Events.Instance.UIStateChanged.Send(State.SHOPENEMIES);
         }
     }
 
@@ -262,6 +262,6 @@ public class GameUI : MonoBehaviour
             return;
 
         InputController.Instance.RebindKey(currentRebindButton.Action);
-        Data.Instance.UIStateChanged.Send(State.REBINDKEY);
+        Events.Instance.UIStateChanged.Send(State.REBINDKEY);
     }
 }

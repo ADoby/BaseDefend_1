@@ -65,6 +65,8 @@ public class AttributeInfo
     public int defaultCost = 0;
     public int costPerPoint = 0;
 
+    
+
     public int CurrentPoints
     {
         get
@@ -162,7 +164,7 @@ public class Game : MonoBehaviour
     protected void Awake()
     {
         instance = this;
-        Data.Instance.Register(this);
+        Events.Instance.Register(this);
     }
     #endregion
 
@@ -206,17 +208,14 @@ public class Game : MonoBehaviour
         TimeScale = 1f;
         EnemyTimeScale = 1f;
         PlayerTimeScale = 1f;
-
-        Data.Instance.PointsChanged.Send(Points);
-        Data.Instance.TimePlayedChanged.Send(TimePlayed);
-        Data.Instance.DeathsChanged.Send(Deaths);
+        
 
         SilenceCooldownTimer.Finish();
         SilenceTimer.Finish();
 
-        Data.Instance.SilenceAvaible.Send();
-        Data.Instance.SilenceTimeChanged.Send(SilenceTimer);
-        Data.Instance.SilenceCooldownChanged.Send(SilenceCooldownTimer);
+        Events.Instance.SilenceAvaible.Send();
+        Events.Instance.SilenceTimeChanged.Send(SilenceTimer);
+        Events.Instance.SilenceCooldownChanged.Send(SilenceCooldownTimer);
 
         AttributeInfo info;
         foreach (var type in (AttributeInfo.Attribute[])AttributeInfo.Attribute.GetValues(typeof(AttributeInfo.Attribute)))
@@ -250,7 +249,7 @@ public class Game : MonoBehaviour
         if (!SilenceTimer.Finished)
         {
             SilenceTimer.Update();
-            Data.Instance.SilenceTimeChanged.Send(SilenceTimer);
+            Events.Instance.SilenceTimeChanged.Send(SilenceTimer);
             if (SilenceTimer.Finished)
             {
                 DeactivateSilence();
@@ -260,22 +259,22 @@ public class Game : MonoBehaviour
         if (!SilenceCooldownTimer.Finished)
         {
             SilenceCooldownTimer.Update();
-            Data.Instance.SilenceCooldownChanged.Send(SilenceCooldownTimer);
+            Events.Instance.SilenceCooldownChanged.Send(SilenceCooldownTimer);
             if (SilenceCooldownTimer.Finished)
             {
-                Data.Instance.SilenceAvaible.Send();
+                Events.Instance.SilenceAvaible.Send();
             }
         }
 
         float newEnemyTimeScale = Mathf.Lerp(EnemyTimeScale, WantedEnemyTimeScale, Time.deltaTime * EnemyTimeScaleChangeSpeed);
         if (Mathf.Abs(newEnemyTimeScale - WantedEnemyTimeScale) < 0.05f)
             newEnemyTimeScale = WantedEnemyTimeScale;
-        Data.Instance.EnemyFixedDeltaTimeChanged.Send(EnemyTimeScale - newEnemyTimeScale);
+        Events.Instance.EnemyFixedDeltaTimeChanged.Send(EnemyTimeScale - newEnemyTimeScale);
         EnemyTimeScale = newEnemyTimeScale;
 
 
         TimePlayed += Time.deltaTime;
-        Data.Instance.TimePlayedChanged.Send(TimePlayed);
+        Events.Instance.TimePlayedChanged.Send(TimePlayed);
     }
 
     public AttributeInfo GetAttributeInfo(AttributeInfo.Attribute type)
@@ -363,7 +362,7 @@ public class Game : MonoBehaviour
             return;
 
         Points -= cost;
-        Data.Instance.PointsChanged.Send(Points);
+        Events.Instance.PointsChanged.Send(Points);
 
         UpdateAttribute(type, info);
     }
@@ -376,7 +375,7 @@ public class Game : MonoBehaviour
             return;
 
         Points += info.CurrentCost;
-        Data.Instance.PointsChanged.Send(Points);
+        Events.Instance.PointsChanged.Send(Points);
 
         UpdateAttribute(type, info);
     }
@@ -468,7 +467,7 @@ public class Game : MonoBehaviour
         SilenceCooldownTimer.Reset();
         SilenceTimer.Reset();
         WantedEnemyTimeScale = 0f;
-        Data.Instance.SilenceUsed.Send();
+        Events.Instance.SilenceUsed.Send();
 
 
         SlowDown.pitch = 2;
@@ -483,7 +482,7 @@ public class Game : MonoBehaviour
         SlowDown.Play();
 
         WantedEnemyTimeScale = 1f;
-        Data.Instance.SilenceEnded.Send();
+        Events.Instance.SilenceEnded.Send();
     }
 
     public bool TryActivatingSilence()
@@ -503,14 +502,14 @@ public class Game : MonoBehaviour
         Paused = true;
         Time.timeScale = 0f;
         TimeScale = 0f;
-        Data.Instance.UIStateChanged.Send(GameUI.State.MENU);
+        Events.Instance.UIStateChanged.Send(GameUI.State.MENU);
     }
     public void Resume()
     {
         Time.timeScale = 1f;
         TimeScale = 1f;
         Paused = false;
-        Data.Instance.UIStateChanged.Send(GameUI.State.GAME);
+        Events.Instance.UIStateChanged.Send(GameUI.State.GAME);
     }
 
     #region PublicStatic
@@ -587,7 +586,7 @@ public class Game : MonoBehaviour
     public static void PlayerDied()
     {
         Deaths++;
-        Data.Instance.DeathsChanged.Send(Deaths);
+        Events.Instance.DeathsChanged.Send(1);
     }
     public static void EnemySpawned(EnemyType type)
     {
@@ -601,14 +600,14 @@ public class Game : MonoBehaviour
     {
         int pointsAdd = Instance.enemyinfos[(int)type].Points;
         Points += pointsAdd;
-        Data.Instance.OnPointsGained.Send(pointsAdd);
-        Data.Instance.PointsChanged.Send(Points);
+        Events.Instance.PointsChanged.Send(pointsAdd);
+        Events.Instance.EnemyDied.Send();
     }
 
     public static void TriggerGameOver()
     {
         Time.timeScale = 0f;
-        Data.Instance.UIStateChanged.Send(GameUI.State.GAMEOVER);
+        Events.Instance.UIStateChanged.Send(GameUI.State.GAMEOVER);
     }
     #endregion
 

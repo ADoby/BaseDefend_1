@@ -38,10 +38,27 @@ public class LevelManager : MonoBehaviour
             PlayerPositionCheck.Reset();
             if (Player.position.z > MaxZPosToLoadNewPart)
             {
-                CurrentPart.Start();
+                if (CheckPartPosition(NextPart, MaxZPosToLoadNewPart))
+                {
+                    if (CurrentPart && CurrentPart.IsActive) CurrentPart.StopPart();
+                }
                 AddRandomPart();
             }
         }
+    }
+
+    public bool CheckPartPosition(LevelPart part, float posZ)
+    {
+        if (Player.position.z >= posZ && Player.position.z <= posZ + part.Length)
+        {
+            if (!part.IsActive)
+            {
+                Debug.Log(string.Format("Part: {0} Pos: {1} Player: {2}", part.name, posZ, Player.position.z));
+                part.StartPart();
+                return true;
+            }
+        }
+        return false;
     }
 
     public void LoadTutorial()
@@ -76,7 +93,8 @@ public class LevelManager : MonoBehaviour
 
         if (NextPart != null)
         {
-            NextPart.Spawn(CurrentZPos);
+            NextPart.SpawnPart(CurrentZPos);
+            CheckPartPosition(NextPart, CurrentZPos);
             CurrentZPos += NextPart.Length;
         }
         
@@ -88,7 +106,7 @@ public class LevelManager : MonoBehaviour
         if (LastPart == null)
             return;
 
-        LastPart.Despawn();
+        LastPart.DespawnPart();
         LastPart = null;
     }
 

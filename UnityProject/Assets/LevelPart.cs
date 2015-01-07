@@ -8,15 +8,31 @@ public class LevelPart : MonoBehaviour
     public delegate void LevelPartEvent();
     public event LevelPartEvent OnPartStart;
     public event LevelPartEvent OnPartStop;
+    public bool IsActive = false;
+
+    public Door Entrance;
+    public Door Exit;
 
     public float Length = 10f;
 
+    [SerializeField]
+    public List<WinCondition> WinConditions = new List<WinCondition>();
+
+    public bool Won()
+    {
+        foreach (var condition in WinConditions)
+        {
+            if (!condition.Finished)
+                return false;
+        }
+        return true;
+    }
 
     private bool Initiated = false;
 
     void Awake()
     {
-        if (Init()) Despawn();
+        if (Init()) DespawnPart();
     }
 
     public bool Init()
@@ -34,26 +50,47 @@ public class LevelPart : MonoBehaviour
         return true;
     }
 
+    public Timer CheckWonTimer;
 
-    public virtual void Spawn(float CurrentZPos)
+    void Update()
+    {
+        if (CheckWonTimer.Update())
+        {
+            CheckWonTimer.Reset();
+            if (Won())
+            {
+                StopPart();
+            }
+        }
+    }
+
+    public virtual void SpawnPart(float CurrentZPos)
     {
         Init();
         transform.position = Vector3.forward * CurrentZPos;
         gameObject.SetActive(true);
+
+        if (Entrance) Entrance.Open();
+        if (Exit) Exit.Close();
     }
 
-    public virtual void Start()
+    public virtual void StartPart()
     {
+        IsActive = true;
+        if(Entrance) Entrance.Close();
         if (OnPartStart != null) OnPartStart();
     }
 
-    public virtual void Stop()
+    public virtual void StopPart()
     {
+        IsActive = false;
+        if(Exit) Exit.Open();
         if (OnPartStop != null) OnPartStop();
     }
 
-    public virtual void Despawn()
+    public virtual void DespawnPart()
     {
+        IsActive = false;
         gameObject.SetActive(false);
     }
 }

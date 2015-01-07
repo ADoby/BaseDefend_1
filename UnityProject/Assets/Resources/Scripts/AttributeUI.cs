@@ -11,17 +11,17 @@ public class AttributeUI : MonoBehaviour {
 
     void Awake()
     {
-        Data.Instance.Register(this);
+        Events.Instance.Register(this);
     }
 
     public void Minus()
     {
-        Data.Instance.AttributeMinus.Send(type);
+        Events.Instance.AttributeMinus.Send(type);
         UpdateText();
     }
     public void Pluss()
     {
-        Data.Instance.AttributePluss.Send(type);
+        Events.Instance.AttributePluss.Send(type);
         UpdateText();
     }
 
