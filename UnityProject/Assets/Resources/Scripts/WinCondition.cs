@@ -13,9 +13,9 @@ public class WinCondition
     public bool Finished = false;
 
     public int NeededKills = 1;
-    private int KillCount = 0;
+    public int KillCount = 0;
 
-    public bool Update(LevelPart part)
+    public bool CheckFinished()
     {
         switch (MyType)
         {
@@ -36,7 +36,7 @@ public class WinCondition
         Events.Instance.Register(this);
     }
 
-    public void End()
+    public void Stop()
     {
         KillCount = NeededKills;
 
@@ -48,6 +48,19 @@ public class WinCondition
     public void OnMessage_EnemyDied()
     {
         KillCount++;
+        if (MyType == ConType.KILLCOUNT)
+            CheckFinished();
+    }
+
+    public string GetText()
+    {
+        switch (MyType)
+        {
+            case ConType.KILLCOUNT:
+                return string.Format("Kill Enemies <color=#ff0bb>{0}</color>/<color=#00ffaa>{1}</color>", KillCount, NeededKills);
+            default:
+                return "WinCondition Template";
+        }
     }
 }
 

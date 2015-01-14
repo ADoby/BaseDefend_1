@@ -33,7 +33,7 @@ public class EnemyTypeSortedSpawnInfo
 	{
 		get
 		{
-			return Amount >= 0 && spawned == Amount;
+			return Amount >= 0 && spawned == Amount + 1;
 		}
 	}
 

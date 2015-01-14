@@ -123,8 +123,82 @@ public class AttributeInfo
     }
 }
 
+[System.Serializable]
+public class ConditionInfo
+{
+    public WinCondition condition;
+    public ConditionUI conditionUI;
+
+    public void UpdateUI()
+    {
+        conditionUI.conditionText.Text = condition.GetText();
+    }
+}
+
 public class Game : MonoBehaviour
 {
+
+    public Timer UpdateConditionUITimer;
+
+    public List<ConditionInfo> ConditionInfos = new List<ConditionInfo>();
+
+    public List<ConditionInfo> RemovingInfos = new List<ConditionInfo>();
+
+    public void AddCondition(WinCondition condition)
+    {
+        ConditionInfo info = new ConditionInfo();
+        info.condition = condition;
+        info.conditionUI = GameUI.Instance.AddUICondition();
+        info.UpdateUI();
+        ConditionInfos.Add(info);
+
+        info.conditionUI.SetPositionIndex(ConditionInfos.Count);
+    }
+
+    public bool ContainsCondition(WinCondition condition)
+    {
+        foreach (var con in ConditionInfos)
+        {
+            if (con.condition == condition)
+                return true;
+        }
+        return false;
+    }
+    public void RemoveConditionInfo(ConditionInfo info)
+    {
+        GameUI.Instance.RemoveCondition(info.conditionUI);
+        RemovingInfos.Remove(info);
+
+        int index = 0;
+        foreach (var item in ConditionInfos)
+        {
+            item.conditionUI.SetPositionIndex(index);
+            index++;
+        }
+    }
+    public void StartRemovingConditionInfo(ConditionInfo info)
+    {
+        if (RemovingInfos.Contains(info))
+            return;
+        ConditionInfos.Remove(info);
+        RemovingInfos.Add(info);
+        info.conditionUI.SetPositionIndex(-5);
+    }
+    public void RemoveCondition(WinCondition condition)
+    {
+        foreach (var item in ConditionInfos.ToArray())
+        {
+            if (item.condition == condition)
+                StartRemovingConditionInfo(item);
+        }
+    }
+    public void ClearConditions()
+    {
+        foreach (var item in ConditionInfos)
+        {
+            StartRemovingConditionInfo(item);
+        }
+    }
 
     public enum EnemyType
     {
@@ -233,8 +307,27 @@ public class Game : MonoBehaviour
     public int MaxZombies = 10;
     #endregion
 
+    public void UpdateConditionsUI()
+    {
+        foreach (var item in ConditionInfos)
+        {
+            item.UpdateUI();
+        }
+        foreach (var item in RemovingInfos.ToArray())
+        {
+            if (item.conditionUI.CurrentLerpValue >= 0.95f)
+                RemoveConditionInfo(item);
+        }
+    }
+
     public void Update()
     {
+        if (UpdateConditionUITimer.Update())
+        {
+            UpdateConditionUITimer.Reset();
+            UpdateConditionsUI();
+        }
+
         if (InputController.GetClicked("PAUSE"))
         {
             if (!Paused)
@@ -301,25 +394,25 @@ public class Game : MonoBehaviour
             case AttributeInfo.Attribute.Player_Weapon_Damage:
                 break;
             case AttributeInfo.Attribute.Base_Health:
-                before = Base.Instance.MaxHealth;
-                Base.Instance.MaxHealth = info.CurrentValue;
-                Base.Instance.Health += Base.Instance.MaxHealth - before;
+                before = Base.Instance.DefaultHealth;
+                Base.Instance.DefaultHealth = info.CurrentValue;
+                Base.Instance.Health += Base.Instance.DefaultHealth - before;
                 break;
             case AttributeInfo.Attribute.Base_Regeneration:
                 Base.Instance.HealthRegeneration = info.CurrentValue;
                 break;
             case AttributeInfo.Attribute.Base_Shield1_Health:
-                before = Base.Instance.Shield1.MaxHealth;
-                Base.Instance.Shield1.MaxHealth = info.CurrentValue;
-                Base.Instance.Shield1.Health += Base.Instance.Shield1.MaxHealth - before;
+                before = Base.Instance.Shield1.DefaultHealth;
+                Base.Instance.Shield1.DefaultHealth = info.CurrentValue;
+                Base.Instance.Shield1.Health += Base.Instance.Shield1.DefaultHealth - before;
                 break;
             case AttributeInfo.Attribute.Base_Shield1_Regeneration:
                 Base.Instance.Shield1.HealthRegeneration = info.CurrentValue;
                 break;
             case AttributeInfo.Attribute.Base_Shield2_Health:
-                before = Base.Instance.Shield2.MaxHealth;
-                Base.Instance.Shield2.MaxHealth = info.CurrentValue;
-                Base.Instance.Shield2.Health += Base.Instance.Shield2.MaxHealth - before;
+                before = Base.Instance.Shield2.DefaultHealth;
+                Base.Instance.Shield2.DefaultHealth = info.CurrentValue;
+                Base.Instance.Shield2.Health += Base.Instance.Shield2.DefaultHealth - before;
                 break;
             case AttributeInfo.Attribute.Base_Shield2_Regeneration:
                 Base.Instance.Shield2.HealthRegeneration = info.CurrentValue;
@@ -470,6 +563,7 @@ public class Game : MonoBehaviour
         Events.Instance.SilenceUsed.Send();
 
 
+        SlowDown.time = 0;
         SlowDown.pitch = 2;
         SlowDown.Play();
     }
@@ -659,7 +753,13 @@ public class Game : MonoBehaviour
     {
         GameObject go = GameObjectPool.Instance.Spawn(enemyinfos[(int)enemy].poolName, position, rotation);
         Enemy enemyObject = go.GetComponent<Enemy>();
-        enemyObject.OnSpawn();
+        if(enemyObject)
+            enemyObject.OnSpawn();
         EnemySpawned(enemy);
+    }
+
+    public void PartFinished()
+    {
+        GameUI.Instance.ShowPartFinished();
     }
 }

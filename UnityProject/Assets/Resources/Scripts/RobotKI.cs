@@ -16,7 +16,7 @@ public class RobotKI : Enemy
 	public bool CanRotate = true;
 	public float RotationSpeed = 2.0f;
 
-	public NavMeshAgent agent;
+    public float StopDistance = 1.0f;
 
 	public RobotBody Body;
 	private Rigidbody rigidBody;
@@ -34,7 +34,6 @@ public class RobotKI : Enemy
 
     public override void Despawn()
     {
-        agent.enabled = false;
         Game.EnemyDespawned(Game.EnemyType.ROBOT1);
         base.Despawn();
     }
@@ -68,14 +67,13 @@ public class RobotKI : Enemy
 			rigidBody.angularVelocity = value;
 		}
 	}
-	
+
+    private Vector3 CurrentSteeringTarget;
 	public Vector3 CurrentDestination
 	{
 		get
 		{
-            if (!agent || !useAgent)
-				return Body.Position;
-			return agent.steeringTarget;
+            return CurrentSteeringTarget;
 		}
 	}
 	public Vector3 MoveDirection
@@ -139,6 +137,7 @@ public class RobotKI : Enemy
 	}
 	public override void Die()
 	{
+        DropSettings.Drop(bodyThing.position);
 		//Despawn later
         Game.EnemyDied(Game.EnemyType.ROBOT1);
 		Body.Ragdoll();
@@ -167,14 +166,6 @@ public class RobotKI : Enemy
 	{
         Events.Instance.Register(this);
 
-        if (useAgent)
-        {
-            //We do this by force, so dont move guy
-            agent.updatePosition = false;
-            agent.updateRotation = false;
-        }
-		
-
 		rigidBody = Body.body.rigidbody;
 
 		Body.PlayerControlled = PlayerInput;
@@ -191,8 +182,6 @@ public class RobotKI : Enemy
         if(Base.Instance) LastTargetPos = Base.Instance.NavigationTarget.position;
 		base.Reset();
         Body.Reset();
-
-        agent.enabled = useAgent;
 
         WaitAfterDeadTimer.Reset();
         UpdateRenderColor();
@@ -352,12 +341,45 @@ public class RobotKI : Enemy
 
 	public Timer RandomPositionTimer;
 
+    public System.Collections.Generic.List<Vector3> CurrentPath = new System.Collections.Generic.List<Vector3>();
+    private int currentPathIndex = 0;
+
+    public bool IsLastWaypoint
+    {
+        get
+        {
+            return CurrentPath == null || CurrentPath.Count == 0 || (currentPathIndex == CurrentPath.Count);
+        }
+    }
+
+    public void NewPath(System.Collections.Generic.List<Vector3> path)
+    {
+        CurrentPath = path;
+        currentPathIndex = -1;
+        //Debug.Log(string.Format("New path: {0}", path.Count));
+        NextWaypoint();
+    }
+
+    public void NextWaypoint()
+    {
+        if (IsLastWaypoint)
+        {
+            CurrentSteeringTarget = Body.Position;
+            return;
+        }
+        if (currentPathIndex < CurrentPath.Count-1)
+        {
+            currentPathIndex++;
+            CurrentSteeringTarget = CurrentPath[currentPathIndex];
+            //Debug.Log(string.Format("New Position: {0}", CurrentSteeringTarget));
+        }
+    }
+
 	private void UpdateTarget()
 	{
         if (!CanSeeTarget || !TargetInAttackRange || (CanSeeTarget && !TargetInAttackRange))
         {
-            if (useAgent)
-                agent.SetDestination(LastTargetPos);
+            LevelManager.Instance.CurrentPart.PathFinder.FindPath(Body.Position, LastTargetPos, NewPath);
         }
 		else
 		{
@@ -367,8 +389,7 @@ public class RobotKI : Enemy
 
 				Vector3 direction = Random.onUnitSphere;
 
-                if (useAgent)
-                    agent.SetDestination(Body.Position + direction);
+                LevelManager.Instance.CurrentPart.PathFinder.FindPath(transform.position, Body.Position + direction, NewPath);
 			}
 		}
 	}
@@ -479,7 +500,8 @@ public class RobotKI : Enemy
 			MovementValue(out verticalInput, out horizontalInput);
 		}
 
-		Move(verticalInput, horizontalInput, delta);
+        if (!IsLastWaypoint || Vector3.Distance(Body.Position, CurrentSteeringTarget) > StopDistance)
+            Move(verticalInput, horizontalInput, delta);
 		#endregion
 		
 
@@ -499,7 +521,10 @@ public class RobotKI : Enemy
 		Rotate(rotationInput, delta);
 		#endregion
 
-		
+        if (Vector3.Distance(Body.Position, CurrentSteeringTarget) < StopDistance)
+        {
+            NextWaypoint();
+        }
 	}
 
 

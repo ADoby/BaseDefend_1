@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 public class LevelPart : MonoBehaviour 
 {
+    public Pathfinder PathFinder;
+
     public delegate void LevelPartEvent();
     public event LevelPartEvent OnPartStart;
     public event LevelPartEvent OnPartStop;
@@ -24,6 +26,8 @@ public class LevelPart : MonoBehaviour
         {
             if (!condition.Finished)
                 return false;
+            else
+                Game.Instance.RemoveCondition(condition);
         }
         return true;
     }
@@ -54,11 +58,15 @@ public class LevelPart : MonoBehaviour
 
     void Update()
     {
+        if (!IsActive)
+            return;
+
         if (CheckWonTimer.Update())
         {
             CheckWonTimer.Reset();
             if (Won())
             {
+                Game.Instance.PartFinished();
                 StopPart();
             }
         }
@@ -79,6 +87,12 @@ public class LevelPart : MonoBehaviour
         IsActive = true;
         if(Entrance) Entrance.Close();
         if (OnPartStart != null) OnPartStart();
+
+        foreach (var item in WinConditions)
+        {
+            item.Start();
+            Game.Instance.AddCondition(item);
+        }
     }
 
     public virtual void StopPart()
@@ -86,6 +100,12 @@ public class LevelPart : MonoBehaviour
         IsActive = false;
         if(Exit) Exit.Open();
         if (OnPartStop != null) OnPartStop();
+
+        foreach (var item in WinConditions)
+        {
+            item.Stop();
+            Game.Instance.RemoveCondition(item);
+        }
     }
 
     public virtual void DespawnPart()

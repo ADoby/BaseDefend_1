@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Robot2_KI : HealthHandler 
+public class Robot2_KI : Enemy
 {
-    public NavMeshAgent agent;
     public HoldPositionRigidbody holder;
 
     public bool Ragdolled = false;
@@ -17,7 +16,50 @@ public class Robot2_KI : HealthHandler
     public LayerMask PlayerMask;
     public LayerMask SightMask;
 
+    public Transform AgentTransform;
+    public CharacterController MovingAgent;
+
+    public float StopDistance = 1.0f;
+
     public bool NoTargetIsBase = true;
+
+    private Vector3 CurrentSteeringTarget;
+
+    public System.Collections.Generic.List<Vector3> CurrentPath = new System.Collections.Generic.List<Vector3>();
+    private int currentPathIndex = 0;
+
+
+    public float UpforceWhenDead = 2.0f;
+    public float DeathYPosition = 100f;
+
+    public bool IsLastWaypoint
+    {
+        get
+        {
+            return CurrentPath == null || CurrentPath.Count == 0 || (currentPathIndex == CurrentPath.Count);
+        }
+    }
+
+    public void NewPath(System.Collections.Generic.List<Vector3> path)
+    {
+        CurrentPath = path;
+        currentPathIndex = -1;
+        NextWaypoint();
+    }
+
+    public void NextWaypoint()
+    {
+        if (IsLastWaypoint)
+        {
+            CurrentSteeringTarget = AgentTransform.position;
+            return;
+        }
+        if (currentPathIndex < CurrentPath.Count - 1)
+        {
+            currentPathIndex++;
+            CurrentSteeringTarget = CurrentPath[currentPathIndex];
+        }
+    }
 
     void Awake()
     {
@@ -30,7 +72,15 @@ public class Robot2_KI : HealthHandler
         FindTargetTimer.Reset();
         StayRagdollTimer.Reset();
 
+        WaitAfterDeadTimer.Reset();
         laser.gameObject.SetActive(false);
+
+        SetTarget(null, true);
+
+        BodyTransform.position = transform.position;
+        AgentTransform.position = transform.position;
+
+        UnRagdoll();
     }
 
     public Transform Target = null;
@@ -41,8 +91,10 @@ public class Robot2_KI : HealthHandler
 
     public override void Die()
     {
+        DropSettings.Drop(BodyTransform.position);
         alive = false;
         Ragdoll();
+        Game.EnemyDied(Game.EnemyType.ROBOT2);
     }
 
     public float ColorChangeSpeed = 2.0f;
@@ -63,6 +115,10 @@ public class Robot2_KI : HealthHandler
                 if (holder.Distance < 0.25f && holder.AngleDiff < 5)
                     UnRagdoll();
             }
+            else if (isDead)
+            {
+                WaitAfterDeadTimer.Update();
+            }
             return;
         }
 
@@ -74,9 +130,15 @@ public class Robot2_KI : HealthHandler
 
 
         ShootCooldown.Update();
+        if (UpdateTargetTimer.Update())
+        {
+            UpdateTargetTimer.Reset();
+            if(Target)
+                LevelManager.Instance.CurrentPart.PathFinder.FindPath(AgentTransform.position, Target.position, NewPath);
+        }
+
         if (Target)
         {
-            agent.SetDestination(Target.position);
             if (CanSeeTarget)
             {
                 Shoot();
@@ -89,23 +151,12 @@ public class Robot2_KI : HealthHandler
             ResetLaser();
         }
 
-        if (OutOfControl)
-            agent.Stop();
-        else
-        {
-            agent.Resume();
-        }
-            
-
-
         ColorValue = Mathf.Lerp(ColorValue, (CanSeeTarget ? 1f : 0f), Game.EnemyDelta * ColorChangeSpeed);
         EyeRenderer.materials[1].SetColor("_Color", Color.Lerp(NormalColor, AngryColor, ColorValue));
 	}
 
     public LineRenderer laser;
     public Color NormalColor, AngryColor;
-
-    public float DamagePerSecond = 10f;
 
     public Renderer EyeRenderer;
 
@@ -125,7 +176,7 @@ public class Robot2_KI : HealthHandler
             RaycastHit hit;
             if (Physics.Raycast(EyeTransform.position, EyeTransform.forward, out hit, SightRange, SightMask))
             {
-                hit.transform.SendMessageUpwards("Damage", new vp_DamageInfo(DamagePerSecond * Game.EnemyDeltaTime, BodyTransform), SendMessageOptions.DontRequireReceiver);
+                hit.transform.SendMessageUpwards("Damage", new vp_DamageInfo(CurrentDamage * Game.EnemyDeltaTime, BodyTransform), SendMessageOptions.DontRequireReceiver);
             }
 
             if (ShootTimer.Finished)
@@ -143,13 +194,29 @@ public class Robot2_KI : HealthHandler
         Shooting = false;
     }
 
+    public void SetTarget(Transform target, bool force = false)
+    {
+        if (!force && target == Target)
+            return;
+        Target = target;
+        if (Target)
+        {
+            LevelManager.Instance.CurrentPart.PathFinder.FindPath(AgentTransform.position, Target.position, NewPath);
+        }
+        else
+        {
+            CurrentSteeringTarget = AgentTransform.position;
+            CurrentPath = null;
+        }
+    }
+
     public void FindTarget()
     {
         CanSeeTarget = false;
         if (Target)
         {
             if (Vector3.Distance(EyeTransform.position, Target.position) > SightRange)
-                Target = null;
+                SetTarget(null);
             RaycastHit hit;
             if (Target && Physics.Raycast(EyeTransform.position, (Target.position - EyeTransform.position).normalized, out hit, SightRange, SightMask))
             {
@@ -160,7 +227,7 @@ public class Robot2_KI : HealthHandler
                 }
             }
         }
-        Target = null;
+        
         Collider[] colliders = Physics.OverlapSphere(EyeTransform.position, SightRange, PlayerMask);
         foreach (var target in colliders)
         {
@@ -169,7 +236,7 @@ public class Robot2_KI : HealthHandler
             {
                 if (hit.collider == target)
                 {
-                    Target = target.transform;
+                    SetTarget(target.transform);
                     CanSeeTarget = true;
                     return;
                 }
@@ -179,9 +246,11 @@ public class Robot2_KI : HealthHandler
         {
             if (Base.Instance)
             {
-                Target = Base.Instance.NavigationTarget;
+                SetTarget(Base.Instance.NavigationTarget);
+                return;
             }
         }
+        SetTarget(null);
     }
 
     public override void HitForce(float forceAmount, float minForceForRagdoll)
@@ -194,38 +263,46 @@ public class Robot2_KI : HealthHandler
     {
         Ragdolled = true;
         holder.Ragdolled = true;
-        agent.enabled = false;
     }
 
     public void UnRagdoll()
     {
         Ragdolled = false;
         holder.Ragdolled = false;
-        /*
-        NavMeshHit hit;
-        if (NavMesh.FindClosestEdge(BodyTransform.position, out hit, 1 << NavMesh.GetNavMeshLayerFromName("Default")))
-            agent.Warp(hit.position);*/
-        agent.Warp(BodyTransform.position);
-        agent.enabled = true;
     }
 
     public float MaxAngle = 80;
     public float Speed = 2.0f;
     public float ndSpeed = 0f;
 
-    public float StopDistance = 1.0f;
+    public float HolderStopDistance = 1.0f;
 
     public float OutOfControlDistance = 2.0f;
     public bool OutOfControl = false;
 
     public bool Shooting = false;
 
+    public Timer UpdateTargetTimer;
+
+    public Timer WaitAfterDeadTimer;
+
     void FixedUpdate()
     {
-        if (Ragdolled)
-            return;
-
         float delta = Game.EnemyFixedDelta;
+        if (Ragdolled)
+        {
+            if (isDead)
+            {
+                if (WaitAfterDeadTimer.Finished)
+                {
+                    BodyTransform.rigidbody.useGravity = false;
+                    BodyTransform.rigidbody.AddForce(Vector3.up * UpforceWhenDead * delta);
+                }
+                if (BodyTransform.position.y > DeathYPosition)
+                    Despawn();
+            }
+            return;
+        }
 
         Vector3 targetVector = Vector3.zero;
         Vector3 currentVector = Vector3.zero;
@@ -239,29 +316,85 @@ public class Robot2_KI : HealthHandler
             {
                 targetVector = (Target.position - BodyTransform.position).normalized;
             }
-            currentVector = transform.forward;
+            currentVector = BodyTransform.forward;
             cosAngle = Vector3.Dot(currentVector, targetVector);
             crossResult = Vector3.Cross(currentVector, targetVector);
             crossResult.Normalize();
             turnAngle = Mathf.Acos(cosAngle);
             turnAngle = Mathf.Min(turnAngle * holder.LookSpring * delta, holder.MaxLookForce);
             turnAngle = turnAngle * Mathf.Rad2Deg;
-            rigidbody.angularVelocity += crossResult * turnAngle;
+            BodyTransform.rigidbody.angularVelocity += crossResult * turnAngle;
         }
 
         OutOfControl = holder.Distance > OutOfControlDistance;
 
-        if (holder.Distance > StopDistance)
+        if (holder.Distance > HolderStopDistance)
         {
             if (!Target)
             {
                 ndSpeed = holder.AngleDiff / 180f;
-                rigidbody.velocity += transform.forward * ndSpeed * Speed * delta;
+                BodyTransform.rigidbody.velocity += BodyTransform.forward * ndSpeed * Speed * delta;
             }
             else
             {
-                rigidbody.velocity += (holder.targetPosition.position - BodyTransform.position).normalized * Speed * delta;
+                BodyTransform.rigidbody.velocity += (holder.targetPosition.position - BodyTransform.position).normalized * Speed * delta;
             }
+       }
+
+        #region Movement
+
+
+        if (!IsLastWaypoint || Vector3.Distance(AgentTransform.position, CurrentSteeringTarget) > StopDistance)
+            Move(delta);
+        #endregion
+
+        if (Vector3.Distance(AgentTransform.position, CurrentSteeringTarget) < StopDistance)
+        {
+            NextWaypoint();
         }
     }
+
+    public Vector3 MoveDirection
+    {
+        get
+        {
+            return (CurrentSteeringTarget - AgentTransform.position).normalized;
+        }
+    }
+    public float DestinationDistance
+    {
+        get
+        {
+            return Vector3.Distance(CurrentSteeringTarget, AgentTransform.position);
+        }
+    }
+    public float TargetDistance
+    {
+        get
+        {
+            if (!Target)
+                return 0f;
+            return Vector3.Distance(Target.position, AgentTransform.position);
+        }
+    }
+    public Vector3 TargetDirection
+    {
+        get
+        {
+            if (!Target)
+                return Vector3.zero;
+            return (Target.position - AgentTransform.position).normalized;
+        }
+    }
+
+    #region Movement
+    public float AgentMoveSpeed = 1.0f;
+
+    public void Move(float delta)
+    {
+        MovingAgent.Move(MoveDirection * AgentMoveSpeed * delta);
+        //MovingAgent.Move(-MovingAgent.velocity * 0.2f * delta);
+        //MovingAgent.Move(Vector3.down * delta);
+    }
+    #endregion
 }

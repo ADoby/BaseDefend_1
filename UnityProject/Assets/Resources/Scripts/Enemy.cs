@@ -3,10 +3,15 @@ using System.Collections;
 
 public class Enemy : HealthHandler 
 {
-    public AnimationCurve HealthCurve;
+    public float HealthPerDifficulty = 50f;
 
     public float DefaultDamage = 10f;
     public float DamagePerDifficulty = 200f;
+    protected override void Awake()
+    {
+        Reset();
+    }
+
     public float CurrentDamage
     {
         get
@@ -18,5 +23,11 @@ public class Enemy : HealthHandler
     public virtual void OnSpawn()
     {
 
+    }
+
+    public override void Reset()
+    {
+        CurrentMaxHealth = DefaultHealth + HealthPerDifficulty * Game.DifficultyLevel;
+        base.Reset();
     }
 }

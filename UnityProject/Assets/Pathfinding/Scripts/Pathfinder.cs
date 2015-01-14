@@ -224,8 +224,15 @@ public class Pathfinder : MonoBehaviour
     #region astar
     //---------------------------------------FIND PATH: A*------------------------------------------//
 
+
+    [SerializeField]
+    [HideInInspector]
     private Node[] openList;
+
+    [SerializeField]
+    [HideInInspector]
     private Node[] closedList;
+
     private Node startNode;
     private Node endNode;
     private Node currentNode;
@@ -391,6 +398,8 @@ public class Pathfinder : MonoBehaviour
 
         if (x < 0 || z < 0 || x > mapWidth || z > mapHeight)
             return null;
+        if ((x + z * mapWidth) > Map.Length)
+            return null;
 
         Node n = Map[x + z * mapWidth];
 
@@ -420,11 +429,23 @@ public class Pathfinder : MonoBehaviour
     }
 
     private void FindEndNode(Vector3 pos)
-    {       
+    {
+        if (LocalCoordinates)
+            pos = transform.TransformPoint(pos);
+
         int x = (MapStartPosition.x < 0F) ? Mathf.FloorToInt(((pos.x + Mathf.Abs(MapStartPosition.x)) / Tilesize)) : Mathf.FloorToInt((pos.x - MapStartPosition.x) / Tilesize);
         int z = (MapStartPosition.y < 0F) ? Mathf.FloorToInt(((pos.z + Mathf.Abs(MapStartPosition.y)) / Tilesize)) : Mathf.FloorToInt((pos.z - MapStartPosition.y) / Tilesize);
+        Node closestNode;
+        try
+        {
+            closestNode = Map[x + z * mapWidth];
+        }
+        catch (Exception)
+        {
+            //UnityEngine.Debug.Log(string.Format("Error finding: {0} {1} => {2}", x, z, (x + z * mapWidth)));
+            return;
+        }
 
-        Node closestNode = Map[x + z * mapWidth];
         List<Node> walkableNodes = new List<Node>();
 
         int turns = 1;

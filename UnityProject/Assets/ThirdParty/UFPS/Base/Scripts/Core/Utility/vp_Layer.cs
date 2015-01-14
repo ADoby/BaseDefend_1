@@ -26,7 +26,13 @@ public sealed class vp_Layer
 	public const int IgnoreRaycast = 2;
 	public const int Water = 4;
 
-    public const int EnemyDamageCollider = 12;
+    public const int PlayerHelper = 8;
+    public const int PlayerDamage = 9;
+    public const int PlayerNavigation = 10;
+
+    public const int EnemyHelper = 11;
+    public const int EnemyDamage = 12;
+    public const int EnemyNavigation = 13;
 
 	// standard layers
 	public const int Ragdoll = 22;
@@ -40,13 +46,14 @@ public sealed class vp_Layer
 	public const int LocalPlayer = 30;
 	public const int Weapon = 31;
 
+
 	public static class Mask
 	{
 
 		// layer mask for raycasting away from the local player, ignoring the player itself
 		// and all non-solid objects, including rigidbody pickups (used for bullets)
 		public const int BulletBlockers = ~((1 << LocalPlayer) | (1 << Debris) |
-                                (1 << IgnoreRaycast) | (1 << IgnoreBullets) | (1 << Trigger) | (1 << Water) | (1 << Pickup) | (1 << Enemy));
+                                (1 << IgnoreRaycast) | (1 << IgnoreBullets) | (1 << Trigger) | (1 << Water) | (1 << Pickup) | (1 << Enemy) | (1 << EnemyNavigation) | (1 << PlayerNavigation) | (1 << Default));
 
 		// layer mask for raycasting away from the local player, ignoring the player itself
 		// and all non-solid objects. (used for player physics)

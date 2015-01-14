@@ -10,10 +10,26 @@ public class LevelPartInfo
 
 public class LevelManager : MonoBehaviour 
 {
+    private static LevelManager instance;
+    public static LevelManager Instance
+    {
+        get
+        {
+            if (instance == null)
+                instance = FindObjectOfType<LevelManager>();
+            return instance;
+        }
+    }
+    void Awake()
+    {
+        instance = this;
+    }
+
     public LevelPartInfo[] partInfos;
 
     public LevelPart SpawnPart;
     public LevelPart TutorialPart;
+    public bool SpawnTutorial = true;
 
     public LevelPart LastPart = null;
     public LevelPart CurrentPart = null;
@@ -27,7 +43,7 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         AddPart(SpawnPart);
-        LoadTutorial();
+        if(SpawnTutorial) LoadTutorial();
     }
 
     public Timer PlayerPositionCheck;
@@ -74,7 +90,10 @@ public class LevelManager : MonoBehaviour
     public void AddRandomPart()
     {
         if (partInfos.Length < 3)
+        {
+            AddPart(null);
             return;
+        }
         LevelPart part = null;
         do
         {

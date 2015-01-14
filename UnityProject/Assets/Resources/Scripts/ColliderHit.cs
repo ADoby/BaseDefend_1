@@ -80,7 +80,8 @@ public class ColliderHit : MonoBehaviour {
 
     public void ForceForRagdoll(float amount)
     {
-        healthScript.HitForce(amount, minForceForRagdoll);
+        if(healthScript)
+            healthScript.HitForce(amount, minForceForRagdoll);
     }
 }
 

@@ -42,6 +42,10 @@ public class GameUI : MonoBehaviour
     }
     #endregion
 
+    public string ConditionUIPool = "Condition";
+
+    public UIRect BottomRight_Condition;
+
 	public UIRect InGameUI;
 	public UIRect InGameMenu;
     public UIRect RebindMenu;
@@ -111,6 +115,10 @@ public class GameUI : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+        float delta = (Time.deltaTime / 0.016f);
+        PartFinishedLerpValue = Mathf.Min(PartFinishedLerpValue + delta * (PartFinishedAlphaChange + PartFinishedLerpValue * PartFinishedAlphaChange), 1f);
+        PartFinishedText.normalTextColor = Color.Lerp(PartFinishedShownColor, PartFinishedHideColor, PartFinishedLerpValue * PartFinishedLerpValue);
+
         if (state == State.REBINDKEY)
         {
             if(InputController.Instance.CheckForInput())
@@ -203,7 +211,7 @@ public class GameUI : MonoBehaviour
 
 	void OnMessage_PointsChanged(int points)
 	{
-		pointText.Text = System.String.Format("Points: {0}", points);
+		pointText.Text = System.String.Format("Points: {0}", Game.Points);
         AvaiblePoints.Text = string.Format("Available Points:\n<color=#ff2255>{0}</color>", Game.Points);
 	}
 
@@ -263,5 +271,47 @@ public class GameUI : MonoBehaviour
 
         InputController.Instance.RebindKey(currentRebindButton.Action);
         Events.Instance.UIStateChanged.Send(State.REBINDKEY);
+    }
+
+    public System.Collections.Generic.List<ConditionUI> Conditions = new System.Collections.Generic.List<ConditionUI>();
+
+    public ConditionUI AddUICondition()
+    {
+        GameObject go = GameObjectPool.Instance.Spawn(ConditionUIPool, Vector3.zero, Quaternion.identity);
+        if (go)
+        {
+            go.transform.parent = BottomRight_Condition.transform;
+            BottomRight_Condition.UpdateChildren();
+            var condition = go.GetComponent<ConditionUI>();
+            if(condition) Conditions.Add(condition);
+            return condition;
+        }
+        return null;
+    }
+
+    public void RemoveCondition(ConditionUI item)
+    {
+        GameObjectPool.Instance.Despawn(ConditionUIPool, item.gameObject);
+        Conditions.Remove(item);
+        BottomRight_Condition.UpdateChildren();
+    }
+
+    public void ClearConditions()
+    {
+        foreach (var condition in Conditions)
+        {
+            GameObjectPool.Instance.Despawn(ConditionUIPool, condition.gameObject);
+        }
+        BottomRight_Condition.UpdateChildren();
+    }
+
+    public UIText PartFinishedText;
+    public Color PartFinishedShownColor, PartFinishedHideColor;
+    public float PartFinishedAlphaChange = 0.05f;
+    private float PartFinishedLerpValue = 0f;
+    public void ShowPartFinished()
+    {
+        PartFinishedLerpValue = 0f;
+        PartFinishedText.normalTextColor = Color.Lerp(PartFinishedShownColor, PartFinishedHideColor, PartFinishedLerpValue);
     }
 }

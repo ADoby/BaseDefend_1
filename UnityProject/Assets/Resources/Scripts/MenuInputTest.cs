@@ -5,7 +5,7 @@ public class MenuInputTest : MonoBehaviour {
 
     void PlayShooter()
     {
-        Application.LoadLevel(1);
+        Application.LoadLevel(2);
     }
 
     void Exit()
