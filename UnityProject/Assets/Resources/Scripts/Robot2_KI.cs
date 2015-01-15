@@ -94,7 +94,7 @@ public class Robot2_KI : Enemy
         DropSettings.Drop(BodyTransform.position);
         alive = false;
         Ragdoll();
-        Game.EnemyDied(Game.EnemyType.ROBOT2);
+        Game.EnemyDied(this);
     }
 
     public float ColorChangeSpeed = 2.0f;
@@ -285,6 +285,12 @@ public class Robot2_KI : Enemy
     public Timer UpdateTargetTimer;
 
     public Timer WaitAfterDeadTimer;
+
+    public override void Despawn()
+    {
+        Game.EnemyDespawned(this);
+        base.Despawn();
+    }
 
     void FixedUpdate()
     {

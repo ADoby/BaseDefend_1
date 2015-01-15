@@ -283,13 +283,12 @@ public class Game : MonoBehaviour
         EnemyTimeScale = 1f;
         PlayerTimeScale = 1f;
         
-
         SilenceCooldownTimer.Finish();
         SilenceTimer.Finish();
 
-        Events.Instance.SilenceAvaible.Send();
         Events.Instance.SilenceTimeChanged.Send(SilenceTimer);
         Events.Instance.SilenceCooldownChanged.Send(SilenceCooldownTimer);
+        Events.Instance.SilenceAvaible.Send();
 
         AttributeInfo info;
         foreach (var type in (AttributeInfo.Attribute[])AttributeInfo.Attribute.GetValues(typeof(AttributeInfo.Attribute)))
@@ -360,9 +359,10 @@ public class Game : MonoBehaviour
         }
 
         float newEnemyTimeScale = Mathf.Lerp(EnemyTimeScale, WantedEnemyTimeScale, Time.deltaTime * EnemyTimeScaleChangeSpeed);
-        if (Mathf.Abs(newEnemyTimeScale - WantedEnemyTimeScale) < 0.05f)
+        float change = newEnemyTimeScale - WantedEnemyTimeScale;
+        if (Mathf.Abs(change) < 0.05f)
             newEnemyTimeScale = WantedEnemyTimeScale;
-        Events.Instance.EnemyFixedDeltaTimeChanged.Send(EnemyTimeScale - newEnemyTimeScale);
+        if (change != 0) Events.Instance.EnemyFixedDeltaTimeChanged.Send(change);
         EnemyTimeScale = newEnemyTimeScale;
 
 
@@ -682,20 +682,22 @@ public class Game : MonoBehaviour
         Deaths++;
         Events.Instance.DeathsChanged.Send(1);
     }
-    public static void EnemySpawned(EnemyType type)
+    public static void EnemySpawned(Enemy enemy)
     {
-        Instance.enemyinfos[(int)type].currentSpawned++;
+        Instance.enemyinfos[(int)enemy.MyType].currentSpawned++;
+        Events.Instance.EnemySpawned.Send(enemy);
     }
-    public static void EnemyDespawned(EnemyType type)
+    public static void EnemyDespawned(Enemy enemy)
     {
-        Instance.enemyinfos[(int)type].currentSpawned--;
+        Instance.enemyinfos[(int)enemy.MyType].currentSpawned--;
+        Events.Instance.EnemyDespawned.Send(enemy);
     }
-    public static void EnemyDied(EnemyType type)
+    public static void EnemyDied(Enemy enemy)
     {
-        int pointsAdd = Instance.enemyinfos[(int)type].Points;
+        int pointsAdd = Instance.enemyinfos[(int)enemy.MyType].Points;
         Points += pointsAdd;
         Events.Instance.PointsChanged.Send(pointsAdd);
-        Events.Instance.EnemyDied.Send();
+        Events.Instance.EnemyDied.Send(enemy);
     }
 
     public static void TriggerGameOver()
@@ -755,7 +757,7 @@ public class Game : MonoBehaviour
         Enemy enemyObject = go.GetComponent<Enemy>();
         if(enemyObject)
             enemyObject.OnSpawn();
-        EnemySpawned(enemy);
+        EnemySpawned(enemyObject);
     }
 
     public void PartFinished()

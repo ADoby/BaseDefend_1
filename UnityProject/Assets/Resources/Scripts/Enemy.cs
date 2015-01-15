@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Enemy : HealthHandler 
 {
+    public Game.EnemyType MyType;
+
     public float HealthPerDifficulty = 50f;
 
     public float DefaultDamage = 10f;

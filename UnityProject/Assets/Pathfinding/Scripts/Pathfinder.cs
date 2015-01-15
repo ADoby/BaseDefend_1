@@ -486,6 +486,9 @@ public class Pathfinder : MonoBehaviour
                 //Check that we are within bounderis, and goes in ring around our end pos
                 if (i > -1 && j > -1 && i < mapWidth && j < mapHeight && ((i < z - r + 1 || i > z + r - 1) || (j < x - r + 1 || j > x + r - 1)))
                 {
+                    if (j + i * mapWidth > Map.Length)
+                        continue;
+
                     //if it is walkable put it on the right list
                     if (Map[j + i * mapWidth].walkable)
                     {

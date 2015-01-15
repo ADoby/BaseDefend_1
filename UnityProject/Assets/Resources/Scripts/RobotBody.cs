@@ -678,10 +678,6 @@ public class RobotBody : MonoBehaviour
                 }
             }
         }
-
-        
-        
-		
 		
 		body.rigidbody.angularVelocity -= body.rigidbody.angularVelocity * RotateVelocityDamping * delta;
 

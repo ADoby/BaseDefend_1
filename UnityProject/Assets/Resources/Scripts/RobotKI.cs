@@ -34,7 +34,7 @@ public class RobotKI : Enemy
 
     public override void Despawn()
     {
-        Game.EnemyDespawned(Game.EnemyType.ROBOT1);
+        Game.EnemyDespawned(this);
         base.Despawn();
     }
 
@@ -139,7 +139,7 @@ public class RobotKI : Enemy
 	{
         DropSettings.Drop(bodyThing.position);
 		//Despawn later
-        Game.EnemyDied(Game.EnemyType.ROBOT1);
+        Game.EnemyDied(this);
 		Body.Ragdoll();
         alive = false;
 	}

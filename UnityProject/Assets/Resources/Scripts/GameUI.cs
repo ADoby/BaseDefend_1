@@ -134,6 +134,7 @@ public class GameUI : MonoBehaviour
     {
         SilenceCooldownTimeText.Text = string.Format("Cooldown: {0:0.0}s", timer.Value - timer.CurrentTime);
         SilenceCooldown.RelativeSize.x = timer.Procentage;
+        SilenceCooldown.UpdateRects();
         SilenceCooldown.Visible = SilenceCooldown.absoluteRect.width > 4;
     }
 
@@ -141,6 +142,7 @@ public class GameUI : MonoBehaviour
     {
         SilenceTimeText.Text = string.Format("Time left: {0:0.0}s", timer.Value - timer.CurrentTime);
         SilenceTime.RelativeSize.x = 1f - timer.Procentage;
+        SilenceTime.UpdateRects();
         SilenceTime.Visible = SilenceTime.absoluteRect.width > 4;
     }
 

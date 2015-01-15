@@ -25,7 +25,9 @@ public class Events : vp_EventHandler
     public vp_Attempt<Game.EnemyType> SpawnZombie;
     public vp_Attempt ActivateSilence;
 
-    public vp_Message EnemyDied;
+    public vp_Message<Enemy> EnemySpawned;
+    public vp_Message<Enemy> EnemyDespawned;
+    public vp_Message<Enemy> EnemyDied;
 
     public vp_Message<vp_PlayerDamageHandler> PlayerSpawned;
     public vp_Message<vp_PlayerDamageHandler> PlayerDied;

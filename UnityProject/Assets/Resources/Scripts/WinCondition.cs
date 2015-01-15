@@ -45,7 +45,7 @@ public class WinCondition
     }
 
 
-    public void OnMessage_EnemyDied()
+    public void OnMessage_EnemyDied(Enemy enemy)
     {
         KillCount++;
         if (MyType == ConType.KILLCOUNT)

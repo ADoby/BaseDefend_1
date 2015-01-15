@@ -93,6 +93,7 @@ public class LevelPart : MonoBehaviour
             item.Start();
             Game.Instance.AddCondition(item);
         }
+        Events.Instance.Register(this);
     }
 
     public virtual void StopPart()
@@ -106,11 +107,32 @@ public class LevelPart : MonoBehaviour
             item.Stop();
             Game.Instance.RemoveCondition(item);
         }
+        Events.Instance.Unregister(this);
+
+        foreach (var enemy in SpawnedEnemies)
+        {
+            enemy.Despawn();
+        }
+        SpawnedEnemies.Clear();
     }
 
     public virtual void DespawnPart()
     {
         IsActive = false;
         gameObject.SetActive(false);
+        Events.Instance.Unregister(this);
+    }
+
+    public List<Enemy> SpawnedEnemies = new List<Enemy>();
+
+    public void OnMessage_EnemySpawned(Enemy enemy)
+    {
+        if (!SpawnedEnemies.Contains(enemy))
+            SpawnedEnemies.Add(enemy);
+    }
+    public void OnMessage_EnemyDespawned(Enemy enemy)
+    {
+        if (SpawnedEnemies.Contains(enemy))
+            SpawnedEnemies.Remove(enemy);
     }
 }
