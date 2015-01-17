@@ -20,18 +20,14 @@ public class RocketLauncher : MonoBehaviour
 		float delta = Game.EnemyDelta;
 
 		Vector3 diff = Rocket_Pos1.localPosition;
-		Vector3 currentDirection = transform.forward;
 		Vector3 lookDirection = Owner.forward;
 		if (target)
 		{
-            lookDirection = target.position - (transform.position - diff);
+            lookDirection = (target.position - Rocket_Pos1.position).normalized;
 			angle = Vector3.Angle(Owner.forward, lookDirection);
 			if (angle > MaxAngle)
 				lookDirection = Owner.forward;
 		}
-
-		
-
 		transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(lookDirection), Mathf.Min(delta * RotateSpeed, 1f));
 	}
     

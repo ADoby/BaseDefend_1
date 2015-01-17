@@ -186,6 +186,8 @@ public class Leg
 
 	public void Update()
 	{
+        
+
 		NewPositionTimer.Update();
 
 		//Stick on ground
@@ -465,7 +467,7 @@ public class RobotBody : MonoBehaviour
 				joint.yMotion = ConfigurableJointMotion.Locked;
 				joint.zMotion = ConfigurableJointMotion.Locked;
 			}
-			item.collider.isTrigger = false;
+			//item.collider.isTrigger = false;
 			item.isKinematic = false;
 			item.useGravity = true;
 		}
@@ -481,65 +483,75 @@ public class RobotBody : MonoBehaviour
 
 		StayRagdollTimer.Reset();
 		GetUpTimer.Reset();
-		StartGetUpPosition = body.position;
 		RagdollAfterNoGroundTimer.Reset();
+
+        GetUpStartPos = body.position;
+        GetUpInit = false;
 	}
 
-	private Vector3 StartGetUpPosition = Vector3.zero;
+
+    private Vector3 GetUpStartPos;
 
 	public float GetUpSpring = 2.0f;
 	public float GetUpDamp = 0.5f;
 	public float GetUpRotationSpring = 2.0f;
 	public float GetUpRotationDamp = 0.5f;
 
+    public float GetUpClamp = 0.5f;
+    public float GetUpRotClamp = 2f;
+
+    private bool GetUpInit = false;
+
 	public void GetUp(float delta)
 	{
 		if (!StayRagdollTimer.Update())
 			return;
 
-		body.rigidbody.useGravity = false;
+        body.rigidbody.useGravity = false;
 
-		if (GetUpTimer.Update())
-		{
-			UnRagdoll();
-			return;
-		}
+        if (!GetUpInit)
+        {
+            GetUpInit = true;
+        }
 
 		//Update Position and Rotation
 		Vector3 currentVector = body.up;
 		Vector3 targetVector = Vector3.up;
-		Vector3 wantedPosition = StartGetUpPosition + Vector3.up;
-
-        if (local) wantedPosition = body.TransformPoint(hipStartPos);
+        Vector3 wantedPosition = GetUpStartPos + Vector3.up;
 
 		RaycastHit hit;
 		if (Physics.Raycast(body.position, -body.up, out hit, GroundCheckDistance, FootWalkLayerMask))
 		{
 			wantedPosition = hit.point + Vector3.up;
-			//targetVector = hit.normal;
 		}
 
-		body.rigidbody.velocity += (wantedPosition - body.position) * GetUpSpring * delta;
+        Vector3 movement = (wantedPosition - body.position);
+        movement = Vector3.ClampMagnitude(movement * GetUpSpring, GetUpClamp);
 
+        body.rigidbody.velocity += movement * delta;
 		body.rigidbody.velocity -= body.rigidbody.velocity * GetUpDamp * delta;
 
 		float cosAngle;
 		Vector3 crossResult;
 		float turnAngle;
+        
+        targetVector = Vector3.up;
+        currentVector = transform.up;
+        cosAngle = Vector3.Dot(currentVector, targetVector);
+        crossResult = Vector3.Cross(currentVector, targetVector);
+        crossResult.Normalize();
+        turnAngle = Mathf.Acos(cosAngle);
+        turnAngle = Mathf.Min(turnAngle * GetUpRotationSpring, GetUpRotClamp);
+        turnAngle = turnAngle * Mathf.Rad2Deg;
 
+        body.rigidbody.angularVelocity += crossResult * turnAngle * delta;
 
-		cosAngle = Vector3.Dot(currentVector, targetVector);
+        body.rigidbody.angularVelocity -= body.rigidbody.angularVelocity * GetUpRotationDamp * delta;
 
-		crossResult = Vector3.Cross(currentVector, targetVector);
-		crossResult.Normalize();
-
-		turnAngle = Mathf.Acos(cosAngle);
-		turnAngle = Mathf.Min(turnAngle, RotateDamping);
-		turnAngle = turnAngle * Mathf.Rad2Deg;
-
-		body.rigidbody.angularVelocity += crossResult * turnAngle * GetUpRotationSpring * delta;
-
-		body.rigidbody.angularVelocity -= body.rigidbody.angularVelocity * GetUpRotationDamp * delta;
+        if (turnAngle <= 5f && Vector3.Distance(body.position, wantedPosition) <= 0.2f)
+        {
+            UnRagdoll();
+        }
 	}
 
 	public void UnRagdoll()
@@ -559,7 +571,7 @@ public class RobotBody : MonoBehaviour
 				joint.yMotion = ConfigurableJointMotion.Free;
 				joint.zMotion = ConfigurableJointMotion.Free;
 			}
-			item.collider.isTrigger = true;
+			//item.collider.isTrigger = true;
 			item.isKinematic = true;
 			item.useGravity = false;
 		}

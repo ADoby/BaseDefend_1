@@ -853,7 +853,7 @@ public class vp_Inventory : MonoBehaviour
 	/// to the dictionary from the serialized list. returns null if
 	/// 'itemType' is null or no matching item can be found
 	/// </summary>
-	protected vp_ItemInstance GetItem(vp_ItemType itemType, int id)
+	public vp_ItemInstance GetItem(vp_ItemType itemType, int id)
 	{
 
 		// TIP: turn the comments in this method into debug output for

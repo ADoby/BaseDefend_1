@@ -149,6 +149,11 @@ public class RobotKI : Enemy
 		base.SetPoolName(value);
 	}
 
+    public void OnMessage_SilenceUsed()
+    {
+        Body.Ragdoll();
+    }
+
     public void OnMessage_EnemyFixedDeltaTimeChanged(float difference)
     {
         Body.body.rigidbody.velocity -= Body.body.rigidbody.velocity * difference;
@@ -479,7 +484,7 @@ public class RobotKI : Enemy
 			}
 			else
 			{
-				Body.GetUp(delta);
+			    Body.GetUp(delta);
 			}
 			return;
 		}

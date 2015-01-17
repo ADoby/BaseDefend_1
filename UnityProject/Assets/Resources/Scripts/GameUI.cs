@@ -93,7 +93,7 @@ public class GameUI : MonoBehaviour
 	}
 	public void Restart()
 	{
-		Application.LoadLevel(1);
+		Application.LoadLevel(2);
 	}
 
 	// Use this for initialization
