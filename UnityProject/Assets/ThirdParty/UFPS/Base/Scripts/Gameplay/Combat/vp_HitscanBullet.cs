@@ -128,7 +128,7 @@ public class vp_HitscanBullet : MonoBehaviour
 			// if hit object has physics, add the bullet force to it
 			Rigidbody body = hit.collider.attachedRigidbody;
 			if (body != null && !body.isKinematic)
-				body.AddForceAtPosition(((ray.direction * Force) / Time.timeScale) / vp_TimeUtility.AdjustedTimeScale, hit.point);
+				body.AddForceAtPosition(Game.RepairVector3(((ray.direction * Force) / Time.timeScale) / vp_TimeUtility.AdjustedTimeScale), hit.point);
 
             if (body != null && body.isKinematic) 
             {

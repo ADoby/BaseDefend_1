@@ -30,7 +30,7 @@ public class EnemyTypeInfo
 }
 
 [System.Serializable]
-public class AttributeInfo
+public class AttribInfo
 {
     public enum Attribute
     {
@@ -214,7 +214,7 @@ public class Game : MonoBehaviour
         public PlayerAmmiRegeneration ammoRegen;
     }
 
-    public AttributeInfo[] attributeInfo;
+    public AttribInfo[] attributeInfo;
 
     public List<EnemyTypeInfo> enemyinfos = new List<EnemyTypeInfo>();
     public Timer SilenceTimer;
@@ -290,11 +290,11 @@ public class Game : MonoBehaviour
         Events.Instance.SilenceCooldownChanged.Send(SilenceCooldownTimer);
         Events.Instance.SilenceAvaible.Send();
 
-        AttributeInfo info;
-        foreach (var type in (AttributeInfo.Attribute[])AttributeInfo.Attribute.GetValues(typeof(AttributeInfo.Attribute)))
+        AttribInfo info;
+        foreach (var type in (AttribInfo.Attribute[])AttribInfo.Attribute.GetValues(typeof(AttribInfo.Attribute)))
         {
             info = GetAttributeInfo(type);
-            if (info == default(AttributeInfo))
+            if (info == default(AttribInfo))
                 continue;
             UpdateAttribute(type, info);
         }
@@ -370,80 +370,80 @@ public class Game : MonoBehaviour
         Events.Instance.TimePlayedChanged.Send(TimePlayed);
     }
 
-    public AttributeInfo GetAttributeInfo(AttributeInfo.Attribute type)
+    public AttribInfo GetAttributeInfo(AttribInfo.Attribute type)
     {
         return attributeInfo.FirstOrDefault(t => t.type == type);
     }
 
-    public void UpdateAttribute(AttributeInfo.Attribute type, AttributeInfo info)
+    public void UpdateAttribute(AttribInfo.Attribute type, AttribInfo info)
     {
         float before = 0f;
         switch (type)
         {
-            case AttributeInfo.Attribute.Player_Health:
+            case AttribInfo.Attribute.Player_Health:
                 before = gameInfo.playerHealthThing.MaxHealth;
                 gameInfo.playerHealthThing.MaxHealth = info.CurrentValue;
                 gameInfo.playerHealthThing.CurrentHealth += gameInfo.playerHealthThing.MaxHealth - before;
                 break;
-            case AttributeInfo.Attribute.Player_Regeneration:
+            case AttribInfo.Attribute.Player_Regeneration:
                 gameInfo.healthRegen.ValuePerSecond = info.CurrentValue;
                 break;
-            case AttributeInfo.Attribute.Player_Weapon_Ammo_Regeneration:
+            case AttribInfo.Attribute.Player_Weapon_Ammo_Regeneration:
                 gameInfo.ammoRegen.AmmoPerSecond = info.CurrentValue;
                 break;
-            case AttributeInfo.Attribute.Player_Weapon_Damage:
+            case AttribInfo.Attribute.Player_Weapon_Damage:
                 break;
-            case AttributeInfo.Attribute.Base_Health:
+            case AttribInfo.Attribute.Base_Health:
                 before = Base.Instance.DefaultHealth;
                 Base.Instance.DefaultHealth = info.CurrentValue;
                 Base.Instance.Health += Base.Instance.DefaultHealth - before;
                 break;
-            case AttributeInfo.Attribute.Base_Regeneration:
+            case AttribInfo.Attribute.Base_Regeneration:
                 Base.Instance.HealthRegeneration = info.CurrentValue;
                 break;
-            case AttributeInfo.Attribute.Base_Shield1_Health:
+            case AttribInfo.Attribute.Base_Shield1_Health:
                 before = Base.Instance.Shield1.DefaultHealth;
                 Base.Instance.Shield1.DefaultHealth = info.CurrentValue;
                 Base.Instance.Shield1.Health += Base.Instance.Shield1.DefaultHealth - before;
                 break;
-            case AttributeInfo.Attribute.Base_Shield1_Regeneration:
+            case AttribInfo.Attribute.Base_Shield1_Regeneration:
                 Base.Instance.Shield1.HealthRegeneration = info.CurrentValue;
                 break;
-            case AttributeInfo.Attribute.Base_Shield2_Health:
+            case AttribInfo.Attribute.Base_Shield2_Health:
                 before = Base.Instance.Shield2.DefaultHealth;
                 Base.Instance.Shield2.DefaultHealth = info.CurrentValue;
                 Base.Instance.Shield2.Health += Base.Instance.Shield2.DefaultHealth - before;
                 break;
-            case AttributeInfo.Attribute.Base_Shield2_Regeneration:
+            case AttribInfo.Attribute.Base_Shield2_Regeneration:
                 Base.Instance.Shield2.HealthRegeneration = info.CurrentValue;
                 break;
-            case AttributeInfo.Attribute.Base_Damage:
+            case AttribInfo.Attribute.Base_Damage:
                 Base.Instance.RocketDamage = (int)info.CurrentValue;
                 break;
-            case AttributeInfo.Attribute.Base_Shoot_Speed:
+            case AttribInfo.Attribute.Base_Shoot_Speed:
                 Base.Instance.RocketCooldown = info.CurrentValue;
                 break;
-            case AttributeInfo.Attribute.Base_Range:
+            case AttribInfo.Attribute.Base_Range:
                 Base.Instance.AutoTurretRange = info.CurrentValue;
                 break;
-            case AttributeInfo.Attribute.Base_Rocket_Speed:
+            case AttribInfo.Attribute.Base_Rocket_Speed:
                 Base.Instance.RocketSpeed = info.CurrentValue;
                 break;
-            case AttributeInfo.Attribute.Base_Rocket_Targeting_Speed:
+            case AttribInfo.Attribute.Base_Rocket_Targeting_Speed:
                 Base.Instance.RocketSpeed = info.CurrentValue;
                 break;
-            case AttributeInfo.Attribute.Enemy_Health:
+            case AttribInfo.Attribute.Enemy_Health:
                 break;
-            case AttributeInfo.Attribute.Enemy_Damage:
+            case AttribInfo.Attribute.Enemy_Damage:
                 break;
             default:
                 break;
         }
     }
 
-    void OnMessage_AttributePluss(AttributeInfo.Attribute type)
+    void OnMessage_AttributePluss(AttribInfo.Attribute type)
     {
-        AttributeInfo info = GetAttributeInfo(type);
+        AttribInfo info = GetAttributeInfo(type);
         if (info == null)
             return;
 
@@ -459,9 +459,9 @@ public class Game : MonoBehaviour
 
         UpdateAttribute(type, info);
     }
-    void OnMessage_AttributeMinus(AttributeInfo.Attribute type)
+    void OnMessage_AttributeMinus(AttribInfo.Attribute type)
     {
-        AttributeInfo info = GetAttributeInfo(type);
+        AttribInfo info = GetAttributeInfo(type);
         if (info == null)
             return;
         if (!info.TakePoint())
@@ -473,9 +473,9 @@ public class Game : MonoBehaviour
         UpdateAttribute(type, info);
     }
 
-    public string GetAttributeText(AttributeInfo.Attribute type)
+    public string GetAttributeText(AttribInfo.Attribute type)
     {
-        AttributeInfo info = GetAttributeInfo(type);
+        AttribInfo info = GetAttributeInfo(type);
         if (info == null)
             return "";
 
@@ -486,62 +486,62 @@ public class Game : MonoBehaviour
 
         switch (type)
         {
-            case AttributeInfo.Attribute.Player_Health:
+            case AttribInfo.Attribute.Player_Health:
                 value = string.Format("{0}HP", info.CurrentValue);
                 break;
-            case AttributeInfo.Attribute.Player_Regeneration:
+            case AttribInfo.Attribute.Player_Regeneration:
                 value = string.Format("{0:0.#}/s", info.CurrentValue);
                 break;
-            case AttributeInfo.Attribute.Player_Weapon_Ammo_Regeneration:
+            case AttribInfo.Attribute.Player_Weapon_Ammo_Regeneration:
                 value = string.Format("{0:0.#}/s", info.CurrentValue);
                 break;
-            case AttributeInfo.Attribute.Player_Weapon_Damage:
+            case AttribInfo.Attribute.Player_Weapon_Damage:
                 break;
-            case AttributeInfo.Attribute.Base_Health:
+            case AttribInfo.Attribute.Base_Health:
                 value = string.Format("{0}", info.CurrentValue);
                 break;
-            case AttributeInfo.Attribute.Base_Regeneration:
+            case AttribInfo.Attribute.Base_Regeneration:
                 value = string.Format("{0:0.#}/s", info.CurrentValue);
                 break;
-            case AttributeInfo.Attribute.Base_Shield1_Health:
+            case AttribInfo.Attribute.Base_Shield1_Health:
                 value = string.Format("{0}", info.CurrentValue);
                 break;
-            case AttributeInfo.Attribute.Base_Shield1_Regeneration:
+            case AttribInfo.Attribute.Base_Shield1_Regeneration:
                 value = string.Format("{0:0.#}/s", info.CurrentValue);
                 break;
-            case AttributeInfo.Attribute.Base_Shield2_Health:
+            case AttribInfo.Attribute.Base_Shield2_Health:
                 value = string.Format("{0}", info.CurrentValue);
                 break;
-            case AttributeInfo.Attribute.Base_Shield2_Regeneration:
+            case AttribInfo.Attribute.Base_Shield2_Regeneration:
                 value = string.Format("{0:0.#}/s", info.CurrentValue);
                 break;
-            case AttributeInfo.Attribute.Base_Damage:
+            case AttribInfo.Attribute.Base_Damage:
                 value = string.Format("{0}", info.CurrentValue);
                 break;
-            case AttributeInfo.Attribute.Base_Shoot_Speed:
+            case AttribInfo.Attribute.Base_Shoot_Speed:
                 value = string.Format("{0:0.#}s", info.CurrentValue);
                 break;
-            case AttributeInfo.Attribute.Base_Range:
+            case AttribInfo.Attribute.Base_Range:
                 value = string.Format("{0:0.#}m", info.CurrentValue);
                 break;
-            case AttributeInfo.Attribute.Base_Rocket_Speed:
+            case AttribInfo.Attribute.Base_Rocket_Speed:
                 value = string.Format("{0}m/s", info.CurrentValue);
                 break;
-            case AttributeInfo.Attribute.Base_Rocket_Targeting_Speed:
+            case AttribInfo.Attribute.Base_Rocket_Targeting_Speed:
                 value = string.Format("{0}°/s", info.CurrentValue);
                 break;
-            case AttributeInfo.Attribute.Enemy_Health:
+            case AttribInfo.Attribute.Enemy_Health:
                 break;
-            case AttributeInfo.Attribute.Enemy_Damage:
+            case AttribInfo.Attribute.Enemy_Damage:
                 break;
             default:
                 break;
         }
         return string.Format("{0}: <color=#22ff55>{1}</color>", name, value);
     }
-    public string GetAttributeDescription(AttributeInfo.Attribute type)
+    public string GetAttributeDescription(AttribInfo.Attribute type)
     {
-        AttributeInfo info = GetAttributeInfo(type);
+        AttribInfo info = GetAttributeInfo(type);
         if (info == null)
             return "";
 
@@ -681,6 +681,7 @@ public class Game : MonoBehaviour
     {
         Deaths++;
         Events.Instance.DeathsChanged.Send(1);
+        GameUI.Instance.Restart();
     }
     public static void EnemySpawned(Enemy enemy)
     {
@@ -763,5 +764,25 @@ public class Game : MonoBehaviour
     public void PartFinished()
     {
         GameUI.Instance.ShowPartFinished();
+    }
+
+    public static void RepairVector3(ref Vector3 testVec)
+    {
+        if (float.IsNaN(testVec.x))
+            testVec.x = 0;
+        if (float.IsNaN(testVec.y))
+            testVec.y = 0;
+        if (float.IsNaN(testVec.z))
+            testVec.z = 0;
+    }
+    public static Vector3 RepairVector3(Vector3 testVec)
+    {
+        if (float.IsNaN(testVec.x))
+            testVec.x = 0;
+        if (float.IsNaN(testVec.y))
+            testVec.y = 0;
+        if (float.IsNaN(testVec.z))
+            testVec.z = 0;
+        return testVec;
     }
 }

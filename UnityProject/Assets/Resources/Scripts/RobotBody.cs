@@ -507,6 +507,12 @@ public class RobotBody : MonoBehaviour
 		if (!StayRagdollTimer.Update())
 			return;
 
+        Vector3 velocity = rigidbody.velocity;
+        Vector3 angularVelocity = rigidbody.angularVelocity;
+
+        Game.RepairVector3(ref velocity);
+        Game.RepairVector3(ref angularVelocity);
+
         body.rigidbody.useGravity = false;
 
         if (!GetUpInit)
@@ -528,8 +534,8 @@ public class RobotBody : MonoBehaviour
         Vector3 movement = (wantedPosition - body.position);
         movement = Vector3.ClampMagnitude(movement * GetUpSpring, GetUpClamp);
 
-        body.rigidbody.velocity += movement * delta;
-		body.rigidbody.velocity -= body.rigidbody.velocity * GetUpDamp * delta;
+        velocity += movement * delta;
+		velocity -= velocity * GetUpDamp * delta;
 
 		float cosAngle;
 		Vector3 crossResult;
@@ -544,9 +550,14 @@ public class RobotBody : MonoBehaviour
         turnAngle = Mathf.Min(turnAngle * GetUpRotationSpring, GetUpRotClamp);
         turnAngle = turnAngle * Mathf.Rad2Deg;
 
-        body.rigidbody.angularVelocity += crossResult * turnAngle * delta;
+        angularVelocity += crossResult * turnAngle * delta;
+        angularVelocity -= angularVelocity * GetUpRotationDamp * delta;
 
-        body.rigidbody.angularVelocity -= body.rigidbody.angularVelocity * GetUpRotationDamp * delta;
+        Game.RepairVector3(ref velocity);
+        Game.RepairVector3(ref angularVelocity);
+
+        body.rigidbody.velocity = velocity;
+        body.rigidbody.angularVelocity = angularVelocity;
 
         if (turnAngle <= 5f && Vector3.Distance(body.position, wantedPosition) <= 0.2f)
         {

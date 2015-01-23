@@ -48,6 +48,6 @@ public class Events : vp_EventHandler
 
     public vp_Message<float> EnemyFixedDeltaTimeChanged;
 
-    public vp_Message<AttributeInfo.Attribute> AttributePluss;
-    public vp_Message<AttributeInfo.Attribute> AttributeMinus;
+    public vp_Message<AttribInfo.Attribute> AttributePluss;
+    public vp_Message<AttribInfo.Attribute> AttributeMinus;
 }

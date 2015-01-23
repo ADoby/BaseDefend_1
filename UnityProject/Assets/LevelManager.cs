@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class LevelPartInfo
@@ -8,7 +9,7 @@ public class LevelPartInfo
     public float Weight = 1f;
 }
 
-public class LevelManager : MonoBehaviour 
+public class LevelManager : MonoBehaviour
 {
     private static LevelManager instance;
     public static LevelManager Instance
@@ -24,6 +25,8 @@ public class LevelManager : MonoBehaviour
     {
         instance = this;
     }
+
+    public List<LevelPart> Parts = new List<LevelPart>();
 
     public LevelPartInfo[] partInfos;
 

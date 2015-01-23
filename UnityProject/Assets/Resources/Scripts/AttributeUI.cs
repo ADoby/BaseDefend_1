@@ -7,7 +7,7 @@ public class AttributeUI : MonoBehaviour {
 
     public UIText AttributeText;
     public UIText AttributeDescription;
-    public AttributeInfo.Attribute type;
+    public AttribInfo.Attribute type;
 
     void Awake()
     {
