@@ -66,3 +66,5 @@ $RECYCLE.BIN/
 *.sln
 *.suo
 *.unityproj
+UnityProject/Assets/UnityVS.meta
+UnityProject/Assets/UnityVS/Editor.meta
