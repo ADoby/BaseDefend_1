@@ -72,7 +72,7 @@ public class LevelManager : MonoBehaviour
         {
             if (!part.IsActive)
             {
-                Debug.Log(string.Format("Part: {0} Pos: {1} Player: {2}", part.name, posZ, Player.position.z));
+                //Debug.Log(string.Format("Part: {0} Pos: {1} Player: {2}", part.name, posZ, Player.position.z));
                 part.StartPart();
                 return true;
             }

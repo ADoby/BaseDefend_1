@@ -507,8 +507,8 @@ public class RobotBody : MonoBehaviour
 		if (!StayRagdollTimer.Update())
 			return;
 
-        Vector3 velocity = rigidbody.velocity;
-        Vector3 angularVelocity = rigidbody.angularVelocity;
+        Vector3 velocity = body.rigidbody.velocity;
+        Vector3 angularVelocity = body.rigidbody.angularVelocity;
 
         Game.RepairVector3(ref velocity);
         Game.RepairVector3(ref angularVelocity);

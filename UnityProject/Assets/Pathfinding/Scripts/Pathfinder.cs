@@ -71,7 +71,7 @@ public class Pathfinder : MonoBehaviour
 
         if(CreateMapOnStart) Pathfinder.Instance.CreateMap();
 
-        if(Map != null) UnityEngine.Debug.Log("Map generated " + Map.Length);
+        //if(Map != null) UnityEngine.Debug.Log("Map generated " + Map.Length);
 	}
 
     [ContextMenu("TestMap")]

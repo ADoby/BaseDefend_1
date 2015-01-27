@@ -201,12 +201,12 @@ public class Arena_Spawner : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log(string.Format("NoSpace {0}", position));
+                    //Debug.Log(string.Format("NoSpace {0}", position));
                 }
             }
             else
             {
-                Debug.Log(string.Format("NoFloor {0}", position));
+                //Debug.Log(string.Format("NoFloor {0}", position));
             }
         }
         return false;
