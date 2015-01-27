@@ -89,6 +89,8 @@ public class vp_FPPlayerDamageHandler : vp_PlayerDamageHandler
 	/// </summary>
 	protected virtual void Update()
 	{
+        if (!FPPlayer)
+            return;
 		// TODO: this is demo code and should not be present here!
 		// fade timescale back to normal if dead during slomo (this needs
 		// to be iterated every frame which is why it's in Update)

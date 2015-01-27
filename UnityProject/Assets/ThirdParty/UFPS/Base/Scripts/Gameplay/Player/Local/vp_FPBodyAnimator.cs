@@ -211,8 +211,11 @@ public class vp_FPBodyAnimator : vp_BodyAnimator
 		{
 			Debug.LogWarning("Warning (" + this + ") No invisible material has been set. Head and arms will look buggy in first person.");
 			return;
-		} 
-		
+		}
+
+        if (!Player)
+            return;
+
 		if (!Player.IsFirstPerson.Get())
 		{
 			if (m_ThirdPersonMaterials != null)

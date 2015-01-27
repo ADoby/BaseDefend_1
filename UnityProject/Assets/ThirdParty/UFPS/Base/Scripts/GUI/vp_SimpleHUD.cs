@@ -192,6 +192,9 @@ public class vp_SimpleHUD : MonoBehaviour
 	void Update()
 	{
 
+        if (!m_Player)
+            return;
+
 		// update smooth movement values for sliding in and out of screen
 		m_CurrentAmmoOffset = Mathf.SmoothStep(m_CurrentAmmoOffset, m_TargetAmmoOffset, Time.deltaTime * 10);
 		m_CurrentHealthOffset = Mathf.SmoothStep(m_CurrentHealthOffset, m_TargetHealthOffset, Time.deltaTime * 10);

@@ -161,17 +161,17 @@ public class GameUI : MonoBehaviour
 		{
 			GameOverTime.Text = timeText.Text;
 			GameOverPoints.Text = pointText.Text;
-			GameOverDeaths.Text = Game.Deaths.ToString();
+			GameOverDeaths.Text = Game.Instance.Deaths.ToString();
 		}
 		if (InGameMenu.Visible)
 		{
 			MenuTime.Text = timeText.Text;
 			MenuPoints.Text = pointText.Text;
-			MenuDeaths.Text = Game.Deaths.ToString();
+            MenuDeaths.Text = Game.Instance.Deaths.ToString();
 		}
         if (Shop.Visible)
         {
-            AvaiblePoints.Text = string.Format("Available Points:\n<color=#ff2255>{0}</color>", Game.Points);
+            AvaiblePoints.Text = string.Format("Available Points:\n<color=#ff2255>{0}</color>", Game.Instance.Points);
 
             Shop_Player.Visible = newState == State.SHOPPLAYER;
             Shop_Base.Visible = newState == State.SHOPBASE;
@@ -213,8 +213,8 @@ public class GameUI : MonoBehaviour
 
 	void OnMessage_PointsChanged(int points)
 	{
-		pointText.Text = System.String.Format("Points: {0}", Game.Points);
-        AvaiblePoints.Text = string.Format("Available Points:\n<color=#ff2255>{0}</color>", Game.Points);
+        pointText.Text = System.String.Format("Points: {0}", Game.Instance.Points);
+        AvaiblePoints.Text = string.Format("Available Points:\n<color=#ff2255>{0}</color>", Game.Instance.Points);
 	}
 
 	void OnMessage_TimePlayedChanged(float time)

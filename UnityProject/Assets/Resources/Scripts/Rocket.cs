@@ -87,7 +87,7 @@ public class Rocket : MonoBehaviour {
 		float delta = Game.EnemyFixedDelta;
 
         if (!EnemyTimeScale)
-            delta = Time.fixedDeltaTime / Game.DefaultFixedTime;
+            delta = Time.fixedDeltaTime / Game.Instance.DefaultFixedTime;
 
 
         Vector3 Direction = wantedDirection;

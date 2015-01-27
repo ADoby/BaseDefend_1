@@ -4,7 +4,7 @@
 public class Timer {
 
 	public float Value = 0f;
-	private float timer = 0f;
+	public float timer = 0f;
 
 	public float CurrentTime
 	{
@@ -14,7 +14,6 @@ public class Timer {
 		}
 	}
 
-	// Use this for initialization
 	void Start () 
 	{
 		timer = 0f;
@@ -27,19 +26,38 @@ public class Timer {
 	{
 		timer = Value;
 	}
-	// Update is called once per frame
+
 	public bool Update ()
 	{
-		timer = Mathf.Min(timer + Time.deltaTime, Value);
-		return Finished;
+        return Add(Time.deltaTime);
 	}
+    public bool UpdateAutoReset()
+    {
+        return AddAutoReset(Time.deltaTime);
+    }
+
+    public bool Add(float amount)
+    {
+        timer = Mathf.Min(timer + amount, Value);
+        return Finished;
+    }
+    public bool AddAutoReset(float amount)
+    {
+        if(Add(amount))
+        {
+            Reset();
+            return true;
+        }
+        return false;
+    }
+    
 	public float Procentage
 	{
 		get
 		{
 			if (Value == 0)
 				return 1f;
-			return timer / Value;
+			return Mathf.Clamp01(timer / Value);
 		}
 	}
 	public bool Finished

@@ -184,7 +184,6 @@ public class Arena_Spawner : MonoBehaviour
 
     public bool Spawn(Game.EnemyType type)
     {
-        Debug.Log("Trying to spawn");
         Vector3 position = Vector3.zero;
         for (int tries = 0; tries < TryCountPerSpawn; tries++)
         {
@@ -197,7 +196,6 @@ public class Arena_Spawner : MonoBehaviour
                 position = hit.point + Vector3.up * OccluderCheckHeight;
                 if (!Physics.CheckSphere(position, OccluderCheckRadius, CheckSpawnPositionMask))
                 {
-                    Debug.Log("Spawned something");
                     Game.TrySpawnEnemy(type, position, Quaternion.identity);
                     return true;
                 }

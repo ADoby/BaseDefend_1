@@ -224,7 +224,7 @@ public class RobotKI : Enemy
 
 	void Update()
 	{
-        if (Game.EnemyTimeScale == 0)
+        if (Game.Instance.EnemyTimeScale == 0)
             return;
 
         if (Body.Ragdolled && !isDead)
@@ -466,7 +466,7 @@ public class RobotKI : Enemy
 	// Update is called once per frame
 	void FixedUpdate ()
 	{
-        if (Game.EnemyTimeScale == 0)
+        if (Game.Instance.EnemyTimeScale == 0)
             return;
 
 		float delta = Game.EnemyFixedDelta;

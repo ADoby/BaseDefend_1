@@ -43,6 +43,7 @@ namespace LevelEngine
 
         public void DrawInspector()
         {
+            DrawDefaultInspector();
             if(GUILayout.Button("Add LevelPart"))
             {
                 GameObject go = new GameObject(string.Format("LevelPart_"));

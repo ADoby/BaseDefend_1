@@ -111,7 +111,7 @@ public class LevelPart : MonoBehaviour
 
         foreach (var enemy in SpawnedEnemies)
         {
-            enemy.Despawn();
+            enemy.Kill();
         }
         SpawnedEnemies.Clear();
     }

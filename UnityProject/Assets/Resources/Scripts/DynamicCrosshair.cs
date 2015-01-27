@@ -107,22 +107,40 @@ public class DynamicCrosshair : MonoBehaviour {
 
     private Texture temp = null;
 
+    GUIStyle verticalT;
+    GUIStyle horizontalT;
+
     void OnGUI()
     {
-        if (HideOnFirstPersonZoom && Player.Zoom.Active && Player.IsFirstPerson.Get())
-            return;
-
         if (HideOnDeath && Player.Dead.Active)
             return;
-
         if (input && input.MouseCursorForced)
             return;
 
+
+        if (verticalT == null)
+        {
+            verticalT = new GUIStyle();
+            verticalT.normal.background = verticalTexture;
+        }
+        if (horizontalT == null)
+        {
+            horizontalT = new GUIStyle();
+            horizontalT.normal.background = horizontalTexture;
+        }
+
+        float BoxSize = 4f;
+        GUI.Box(new Rect((Screen.width) / 2 - BoxSize / 2f, (Screen.height) / 2 - BoxSize / 2f, BoxSize, BoxSize), temp, horizontalT);
+
+        if (HideOnFirstPersonZoom && Player.Zoom.Active && Player.IsFirstPerson.Get())
+            return;
+
+        
+
+        
+
         if(showCrosshair && verticalTexture && horizontalTexture){
-                var verticalT = new GUIStyle();
-                var horizontalT = new GUIStyle();
-                verticalT.normal.background = verticalTexture;
-                horizontalT.normal.background = horizontalTexture;
+                
                 spread = Mathf.Clamp(spread, minSpread, maxSpread);
                 Vector2 pivot  = new Vector2(Screen.width/2, Screen.height/2);
                

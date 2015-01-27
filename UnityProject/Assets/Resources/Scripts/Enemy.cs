@@ -32,4 +32,9 @@ public class Enemy : HealthHandler
         CurrentMaxHealth = DefaultHealth + HealthPerDifficulty * Game.DifficultyLevel;
         base.Reset();
     }
+
+    public void Kill()
+    {
+        Damage(CurrentMaxHealth + 10f);
+    }
 }

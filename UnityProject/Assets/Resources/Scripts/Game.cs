@@ -131,7 +131,8 @@ public class ConditionInfo
 
     public void UpdateUI()
     {
-        conditionUI.conditionText.Text = condition.GetText();
+        if(conditionUI && conditionUI.conditionText && condition != null)
+            conditionUI.conditionText.Text = condition.GetText();
     }
 }
 
@@ -238,7 +239,7 @@ public class Game : MonoBehaviour
     protected void Awake()
     {
         instance = this;
-        Events.Instance.Register(this);
+        //Events.Instance.Register(this);
     }
     #endregion
 
@@ -607,29 +608,29 @@ public class Game : MonoBehaviour
     }
 
     #region PublicStatic
-    public static float DefaultFixedTime = 0.02f;
-    public static float DefaultDeltaTime = 0.016f;
+    public float DefaultFixedTime = 0.02f;
+    public float DefaultDeltaTime = 0.016f;
 
-    public static int Points = 0;
-    public static float TimePlayed = 0f;
-    public static int Deaths = 0;
+    public int Points = 0;
+    public float TimePlayed = 0f;
+    public int Deaths = 0;
 
-    public static float TimeScale = 1f;
-    public static float PlayerTimeScale = 1f;
-    public static float EnemyTimeScale = 1f;
+    public float TimeScale = 1f;
+    public float PlayerTimeScale = 1f;
+    public float EnemyTimeScale = 1f;
 
     public static float PlayerDeltaTime
     {
         get
         {
-            return (Time.deltaTime / DefaultDeltaTime) * PlayerTimeScale * TimeScale;
+            return (Time.deltaTime / Instance.DefaultDeltaTime) * Instance.PlayerTimeScale * Instance.TimeScale;
         }
     }
     public static float PlayerFixedDeltaTime
     {
         get
         {
-            return (Time.fixedDeltaTime / DefaultFixedTime) * PlayerTimeScale * TimeScale;
+            return (Time.fixedDeltaTime / Instance.DefaultFixedTime) * Instance.PlayerTimeScale * Instance.TimeScale;
         }
     }
 
@@ -638,28 +639,28 @@ public class Game : MonoBehaviour
     {
         get
         {
-            return Time.deltaTime * EnemyTimeScale * TimeScale;
+            return Time.deltaTime * Instance.EnemyTimeScale * Instance.TimeScale;
         }
     }
     public static float EnemyDelta
     {
         get
         {
-            return (Time.deltaTime / DefaultDeltaTime) * EnemyTimeScale * TimeScale;
+            return (Time.deltaTime / Instance.DefaultDeltaTime) * Instance.EnemyTimeScale * Instance.TimeScale;
         }
     }
     public static float EnemyFixedDeltaTime
     {
         get
         {
-            return Time.fixedDeltaTime * EnemyTimeScale * TimeScale;
+            return Time.fixedDeltaTime * Instance.EnemyTimeScale * Instance.TimeScale;
         }
     }
     public static float EnemyFixedDelta
     {
         get
         {
-            return (Time.fixedDeltaTime / DefaultFixedTime) * EnemyTimeScale * TimeScale;
+            return (Time.fixedDeltaTime / Instance.DefaultFixedTime) * Instance.EnemyTimeScale * Instance.TimeScale;
         }
     }
 
@@ -673,13 +674,13 @@ public class Game : MonoBehaviour
     {
         get
         {
-            return Instance.DifficultyCurve.Evaluate(Mathf.Clamp01(Mathf.Min(TimePlayed, Instance.MaxDifficultyAtTime) / Instance.MaxDifficultyAtTime));
+            return Instance.DifficultyCurve.Evaluate(Mathf.Clamp01(Mathf.Min(Instance.TimePlayed, Instance.MaxDifficultyAtTime) / Instance.MaxDifficultyAtTime));
         }
     }
 
     public static void PlayerDied()
     {
-        Deaths++;
+        Instance.Deaths++;
         Events.Instance.DeathsChanged.Send(1);
         GameUI.Instance.Restart();
     }
@@ -696,7 +697,7 @@ public class Game : MonoBehaviour
     public static void EnemyDied(Enemy enemy)
     {
         int pointsAdd = Instance.enemyinfos[(int)enemy.MyType].Points;
-        Points += pointsAdd;
+        Instance.Points += pointsAdd;
         Events.Instance.PointsChanged.Send(pointsAdd);
         Events.Instance.EnemyDied.Send(enemy);
     }
@@ -755,6 +756,7 @@ public class Game : MonoBehaviour
     public void SpawnEnemy(EnemyType enemy, Vector3 position, Quaternion rotation)
     {
         GameObject go = GameObjectPool.Instance.Spawn(enemyinfos[(int)enemy].poolName, position, rotation);
+        
         Enemy enemyObject = go.GetComponent<Enemy>();
         if(enemyObject)
             enemyObject.OnSpawn();

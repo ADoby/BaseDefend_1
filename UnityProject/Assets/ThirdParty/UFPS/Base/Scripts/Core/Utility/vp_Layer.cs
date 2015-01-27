@@ -53,7 +53,7 @@ public sealed class vp_Layer
 		// layer mask for raycasting away from the local player, ignoring the player itself
 		// and all non-solid objects, including rigidbody pickups (used for bullets)
 		public const int BulletBlockers = ~((1 << LocalPlayer) | (1 << Debris) |
-                                (1 << IgnoreRaycast) | (1 << IgnoreBullets) | (1 << Trigger) | (1 << Water) | (1 << Pickup) | (1 << Enemy) | (1 << EnemyNavigation) | (1 << PlayerNavigation) | (1 << Default));
+                                (1 << IgnoreRaycast) | (1 << IgnoreBullets) | (1 << Trigger) | (1 << Water) | (1 << Pickup) | (1 << Enemy) | (1 << EnemyNavigation) | (1 << PlayerNavigation) | (1 << Default) | (1 << PlayerDamage));
 
 		// layer mask for raycasting away from the local player, ignoring the player itself
 		// and all non-solid objects. (used for player physics)

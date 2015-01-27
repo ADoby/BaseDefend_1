@@ -284,7 +284,8 @@ public class vp_PlayerInventory : vp_Inventory
 		if (CurrentWeaponIdentifier == null)
 			MissingIdentifierError(WeaponHandler.CurrentWeaponIndex);
 
-		Player.SetWeapon.TryStart(0);
+        if(Player)
+		    Player.SetWeapon.TryStart(0);
 
 	}
 
