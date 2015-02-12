@@ -135,7 +135,7 @@ public class Laser : vp_FPWeaponShooter
     public override void Deactivate()
     {
         base.Deactivate();
-        //DeactivateLaser();
+        DeactivateLaser();
         if(regenScript) regenScript.enabled = false;
     }
     public void StartShoot()
@@ -156,7 +156,7 @@ public class Laser : vp_FPWeaponShooter
     public override void DisableFiring(float seconds = 10000000)
     {
         base.DisableFiring(seconds);
-        //DeactivateLaser();
+        DeactivateLaser();
     }
 
     protected override void SpawnProjectiles()
